@@ -29,12 +29,6 @@ public class DaySchedule extends JPanel
         setLayout(layout);
         setBackground(Color.white);
         setOpaque(true);
-
-        AppointmentComponent appointment1 = new AppointmentComponent("Fred");
-        add(appointment1, new Location(new Time(10, 0, 0), 1));
-
-        AppointmentComponent appointment2 = new AppointmentComponent("George");
-        add(appointment2, new Location(new Time(13, 0, 0), 0));
     }
 
 
@@ -47,8 +41,9 @@ public class DaySchedule extends JPanel
             @Override
             public boolean visitAppointment(@NotNull IAppointment appointment)
             {
-                System.out.println("Visting appt " + appointment);
-
+                AppointmentComponent appointmentComponent = new AppointmentComponent(appointment);
+                Location loc = new Location(appointment.getTime(), 1);
+                add(appointmentComponent, loc);
                 return true;
             }
         }, new Date());

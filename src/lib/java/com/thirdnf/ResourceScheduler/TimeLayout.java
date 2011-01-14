@@ -93,7 +93,7 @@ public class TimeLayout implements LayoutManager2
                 int y = _timeMap.get(time);
                 int x = _leftHeader + (int)(_columnWidth * location.getColumn());
 
-                component.setBounds(x, y, (int) _columnWidth - 5, (int) _rowHeight * 4);
+                component.setBounds(x, y, (int) _columnWidth - 15, (int) (_rowHeight * 4));
             }
         }
     }

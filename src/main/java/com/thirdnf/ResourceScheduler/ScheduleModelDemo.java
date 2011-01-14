@@ -33,10 +33,12 @@ public class ScheduleModelDemo implements IScheduleModel
 
 
         @Override
+        @NotNull
         public Color getColor()
         {
             return _color;
         }
+
 
         @NotNull
         @Override

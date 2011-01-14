@@ -12,6 +12,6 @@ public interface ICategory
     String getTitle();
 
 
-    @Nullable
+    @NotNull
     Color getColor();
 }
