@@ -31,6 +31,8 @@ public class DaySchedule extends JPanel implements ComponentListener
     private double _rowHeight = 0;
     private int _rowHeader = 100;
 
+    private boolean _recompute = false;
+
     private AppointmentComponent _appointmentComponent = new AppointmentComponent("Bob");
 
 
@@ -102,6 +104,8 @@ public class DaySchedule extends JPanel implements ComponentListener
     {
         super.paintComponent(g);
 
+        if (_recompute) { recompute(); }
+
         if (_columnWidth < 1.0 || _rowHeight < 1.0 || _timeMap.isEmpty()) { return; }
 
         Graphics2D graphics = (Graphics2D)g;
@@ -151,11 +155,8 @@ public class DaySchedule extends JPanel implements ComponentListener
 
     public void componentResized(ComponentEvent e)
     {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                recompute();
-            }
-        });
+        _recompute = true;
+        repaint();
 
         //        Insets insets = getInsets();
 //        Dimension size = appointment.getPreferredSize();
@@ -191,6 +192,8 @@ public class DaySchedule extends JPanel implements ComponentListener
 
             time = time.addMinutes(_minuteIncrements);
         }
+
+        _recompute = false;
     }
 
 

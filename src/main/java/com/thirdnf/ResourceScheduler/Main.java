@@ -1,12 +1,13 @@
 package com.thirdnf.ResourceScheduler;
 
-/**
- * Created by IntelliJ IDEA.
- * User: jgerth
- * Date: 1/13/11
- * Time: 6:24 PM
- * To change this template use File | Settings | File Templates.
- */
+
+import org.jetbrains.annotations.NotNull;
+
 public class Main
 {
+    public static void main(@NotNull String[] args)
+    {
+        MainWindow mw = new MainWindow();
+        mw.setVisible(true);
+    }
 }

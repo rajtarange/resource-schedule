@@ -5,6 +5,7 @@
 package com.thirdnf.ResourceScheduler;
 
 import javax.swing.*;
+import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 
 /**
@@ -20,14 +21,17 @@ public class Scheduler extends JPanel
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        daySchedule1 = new DaySchedule();
 
         //======== this ========
         setLayout(new FormLayout(
-            "default, $lcgap, default",
-            "2*(default, $lgap), default"));
+            "default:grow",
+            "default:grow"));
+        add(daySchedule1, CC.xy(1, 1, CC.FILL, CC.FILL));
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    private DaySchedule daySchedule1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
