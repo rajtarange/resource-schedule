@@ -1,10 +1,12 @@
 package com.thirdnf.ResourceScheduler;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.event.ActionListener;
+import java.util.*;
 
 
 /**
@@ -15,6 +17,11 @@ import java.util.Map;
 public class DaySchedule extends JPanel
 {
     private Map<AppointmentComponent, Time> _appointmentMap = new HashMap<AppointmentComponent, Time>();
+
+    private Set<ActionListener> _actionListeners = new HashSet<ActionListener>();
+
+    private IScheduleModel _model = null;
+
 
     public DaySchedule()
     {
@@ -28,6 +35,30 @@ public class DaySchedule extends JPanel
 
         AppointmentComponent appointment2 = new AppointmentComponent("George");
         add(appointment2, new Location(new Time(13, 0, 0), 0));
+    }
+
+
+    public void setModel(@NotNull IScheduleModel model)
+    {
+        _model = model;
+
+        _model.visitAppointments(new IAppointmentVisitor()
+        {
+            @Override
+            public boolean visitAppointment(@NotNull IAppointment appointment)
+            {
+                System.out.println("Visting appt " + appointment);
+
+                return true;
+            }
+        }, new Date());
+    }
+
+
+
+    public void addActionListener(@NotNull ActionListener actionListener)
+    {
+        _actionListeners.add(actionListener);
     }
 
 

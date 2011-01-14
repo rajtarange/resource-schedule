@@ -27,7 +27,7 @@
        <object class="com.jformdesigner.model.FormComponent"> 
         <string>com.thirdnf.ResourceScheduler.DaySchedule</string> 
         <void property="name"> 
-         <string>daySchedule1</string> 
+         <string>_daySchedule</string> 
         </void> 
        </object> 
        <object class="com.jformdesigner.model.FormLayoutConstraints"> 

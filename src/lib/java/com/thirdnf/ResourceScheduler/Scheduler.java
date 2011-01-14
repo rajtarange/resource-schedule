@@ -7,6 +7,7 @@ package com.thirdnf.ResourceScheduler;
 import javax.swing.*;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Joshua Gerth
@@ -19,19 +20,25 @@ public class Scheduler extends JPanel
     }
 
 
+    public void setModel(@NotNull IScheduleModel model)
+    {
+        _daySchedule.setModel(model);
+    }
+
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        daySchedule1 = new DaySchedule();
+        _daySchedule = new DaySchedule();
 
         //======== this ========
         setLayout(new FormLayout(
             "default:grow",
             "default:grow"));
-        add(daySchedule1, CC.xy(1, 1, CC.FILL, CC.FILL));
+        add(_daySchedule, CC.xy(1, 1, CC.FILL, CC.FILL));
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    private DaySchedule daySchedule1;
+    private DaySchedule _daySchedule;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -35,7 +35,7 @@
        <object class="com.jformdesigner.model.FormComponent"> 
         <string>com.thirdnf.ResourceScheduler.Scheduler</string> 
         <void property="name"> 
-         <string>scheduler1</string> 
+         <string>_scheduler</string> 
         </void> 
        </object> 
        <object class="com.jformdesigner.model.FormLayoutConstraints"> 

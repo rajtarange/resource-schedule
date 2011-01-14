@@ -10,6 +10,8 @@ import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 
 /**
+ * Just a demo application to show how to use the ResourceScheduler
+ *
  * @author Joshua Gerth
  */
 public class MainWindow extends JFrame 
@@ -17,12 +19,14 @@ public class MainWindow extends JFrame
     public MainWindow() 
     {
         initComponents();
+
+        _scheduler.setModel(new ScheduleModelDemo());
     }
 
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        scheduler1 = new Scheduler();
+        _scheduler = new Scheduler();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -31,13 +35,13 @@ public class MainWindow extends JFrame
         contentPane.setLayout(new FormLayout(
             "default:grow",
             "default:grow"));
-        contentPane.add(scheduler1, CC.xy(1, 1, CC.DEFAULT, CC.FILL));
+        contentPane.add(_scheduler, CC.xy(1, 1, CC.DEFAULT, CC.FILL));
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    private Scheduler scheduler1;
+    private Scheduler _scheduler;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
