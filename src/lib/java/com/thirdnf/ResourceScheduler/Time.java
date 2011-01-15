@@ -1,50 +1,14 @@
 package com.thirdnf.ResourceScheduler;
 
 /**
- * Created by IntelliJ IDEA.
- * User: jgerth
- * Date: 1/13/11
- * Time: 6:29 PM
- * To change this template use File | Settings | File Templates.
+ * A simple simple class to hold hours, minutes and seconds.  This can either represent a point in time, or a
+ * duration.
  */
-public class Time implements Comparable<Time>
+public class Time extends ATime implements Comparable<Time>
 {
-    private final int _hours;
-    private final int _minutes;
-    private final int _seconds;
-
     public Time(int hours, int minutes, int seconds)
     {
-        // Normalize
-        if (seconds >= 60) {
-            minutes += seconds / 60;
-            seconds %= 60;
-        }
-
-        if (minutes >= 60) {
-            hours += minutes / 60;
-            minutes %= 60;
-        }
-
-        _hours = hours;
-        _minutes = minutes;
-        _seconds = seconds;
-    }
-
-
-    public int getHours()
-    {
-        return _hours;
-    }
-
-    public int getMinutes()
-    {
-        return _minutes;
-    }
-
-    public int getSeconds()
-    {
-        return _seconds;
+        super(hours, minutes, seconds);
     }
 
 
@@ -54,50 +18,18 @@ public class Time implements Comparable<Time>
     }
 
 
+    public Time add(Duration duration)
+    {
+        return new Time(_hours + duration._hours, _minutes + duration._minutes, _seconds + duration._seconds);
+    }
+
+
+    @Override
     public int compareTo(Time o)
     {
-        if (o._hours > _hours) { return 1; }
-        if (o._hours < _hours) { return -1; }
-
-        if (o._minutes > _minutes) { return 1; }
-        if (o._minutes < _minutes) { return -1; }
-
-        if (o._seconds > _seconds) { return 1; }
-        if (o._seconds < _seconds) { return -1; }
-
-        return 0;
+        return super.compareTo(o);
     }
 
-
-    public int hashCode()
-    {
-        return (_hours*60 + _minutes)*60 + _seconds;
-    }
-
-
-    public boolean equals(Object o)
-    {
-        if (! (o instanceof Time)) { return false; }
-
-        return compareTo((Time)o) == 0;
-    }
-
-
-    public Time addSeconds(int seconds)
-    {
-        return new Time(_hours, _minutes, _seconds + seconds);
-    }
-
-
-    public Time addMinutes(int minutes)
-    {
-        return new Time(_hours, _minutes + minutes, _seconds);
-    }
-
-    public Time addHours(int hours)
-    {
-        return new Time(_hours + hours, _minutes, _seconds);
-    }
 
     public String toString()
     {

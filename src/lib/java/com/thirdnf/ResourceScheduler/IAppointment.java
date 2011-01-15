@@ -31,9 +31,19 @@ public interface IAppointment
 
 
     /**
+     * Get the resource this appointment was assigned to.  It may return null if the appointment has not
+     * yet been assigned to a resource.
+     *
+     * @return (nullable) The resource this appointment has been assigned to.
+     */
+    @Nullable
+    IResource getResource();
+
+
+    /**
      * Get the length of the appointment.
      * @return
      */
     @NotNull
-    Time getLength();
+    Duration getDuration();
 }

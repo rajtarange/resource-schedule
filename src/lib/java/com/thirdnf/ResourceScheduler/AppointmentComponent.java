@@ -19,13 +19,20 @@ public class AppointmentComponent extends JComponent implements MouseListener
     private ActionListener _actionListener = null;
 
 
-    public AppointmentComponent(IAppointment appointment)
+    public AppointmentComponent(@NotNull IAppointment appointment)
     {
         _appointment = appointment;
 
         setOpaque(true);
         setPreferredSize(new Dimension(100, 100));
         addMouseListener(this);
+    }
+
+
+    @NotNull
+    public IAppointment getAppointment()
+    {
+        return _appointment;
     }
 
 

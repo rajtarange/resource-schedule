@@ -2,6 +2,7 @@ package com.thirdnf.ResourceScheduler;
 
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.Date;
@@ -14,10 +15,32 @@ public class ScheduleModelDemo implements IScheduleModel
     private static final ICategory Green = new DemoCategory("Green", Color.green);
     private static final ICategory Blue  = new DemoCategory("Blue", Color.blue);
 
+    private static final IResource Bobby = new DemoResource("Bobby");
+    private static final IResource Johnny = new DemoResource("Johnny");
+    private static final IResource Sally = new DemoResource("Sally");
+
     private static final IAppointment[] Appointments = new IAppointment[] {
-            DemoAppointment.create("Appointment1", Green, new Time(10, 0, 0), 45),
-            DemoAppointment.create("Appointment2", Blue, new Time(13, 0, 0), 90)
+            DemoAppointment.create("Appointment1", Green, Bobby, new Time(10, 0, 0), new Duration(0, 45, 0)),
+            DemoAppointment.create("Appointment2", Blue, Johnny, new Time(13, 0, 0),  new Duration(1, 15, 0))
     };
+
+
+    private static class DemoResource implements IResource
+    {
+        private final String _title;
+
+        public DemoResource(@NotNull String title)
+        {
+            _title = title;
+        }
+
+
+        @Override
+        public String getTitle()
+        {
+            return _title;
+        }
+    }
 
 
     private static class DemoCategory implements ICategory
@@ -52,14 +75,16 @@ public class ScheduleModelDemo implements IScheduleModel
     private static class DemoAppointment implements IAppointment
     {
         private final ICategory _catgegory;
+        private final IResource _resource;
         private final String _title;
         private Time _time;
-        private Time _length;
+        private Duration _length;
 
-        public DemoAppointment(@NotNull String title, ICategory category)
+        public DemoAppointment(@NotNull String title, ICategory category, IResource resource)
         {
             _title = title;
             _catgegory = category;
+            _resource = resource;
         }
 
 
@@ -76,9 +101,16 @@ public class ScheduleModelDemo implements IScheduleModel
             return _time;
         }
 
+
+        @Override
+        public IResource getResource()
+        {
+            return _resource;
+        }
+
         @NotNull
         @Override
-        public Time getLength()
+        public Duration getDuration()
         {
             return _length;
         }
@@ -97,17 +129,19 @@ public class ScheduleModelDemo implements IScheduleModel
         }
 
 
-        public void setLength(@NotNull Time length)
+        public void setLength(@NotNull Duration length)
         {
             _length = length;
         }
 
 
-        public static DemoAppointment create(@NotNull String title, @NotNull ICategory category, @NotNull Time time, int length)
+        public static DemoAppointment create(@NotNull String title, @NotNull ICategory category,
+                                             @Nullable IResource resource,
+                                             @NotNull Time time, @NotNull Duration duration)
         {
-            DemoAppointment appointment = new DemoAppointment(title, category);
+            DemoAppointment appointment = new DemoAppointment(title, category, resource);
             appointment.setTime(time);
-            appointment.setLength(new Time(0, length, 0));
+            appointment.setLength(duration);
 
             return appointment;
         }

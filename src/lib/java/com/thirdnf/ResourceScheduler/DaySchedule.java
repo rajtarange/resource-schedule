@@ -80,8 +80,11 @@ public class DaySchedule extends JPanel
             }
         });
 
-        Location loc = new Location(appointment.getTime(), 1);
-        _innerPanel.add(appointmentComponent, loc);
+        IResource resource = appointment.getResource();
+
+        // TODO - determine which column corresponds to which resource.
+
+        _innerPanel.add(appointmentComponent, new Integer(1));
     }
 
 
@@ -102,7 +105,7 @@ public class DaySchedule extends JPanel
     {
         InnerPanel()
         {
-            setLayout(new TimeLayout());
+            setLayout(new TimeLayout(new Duration(0, 15, 0)));
             setBackground(Color.white);
             setOpaque(true);
             setBorder(BorderFactory.createEtchedBorder());
@@ -135,6 +138,7 @@ public class DaySchedule extends JPanel
             int rows = layout.getRows();
             int leftHeader = layout.getLeftHeader();
             float columnWidth = layout.getColumnWidth();
+            Duration increments = layout.getIncrements();
 
             for (int i=0; i<columns; ++i) {
                 int x = leftHeader + (int)(i*columnWidth);
@@ -163,7 +167,7 @@ public class DaySchedule extends JPanel
                         graphics.setColor(Color.lightGray);
                     }
                 }
-                time = time.addMinutes(15);
+                time = time.add(increments);
             }
 
             graphics.setColor(oldColor);

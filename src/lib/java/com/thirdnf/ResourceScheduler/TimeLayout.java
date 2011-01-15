@@ -15,7 +15,7 @@ import java.util.Map;
 public class TimeLayout implements LayoutManager2
 {
     // Location map telling us where everything is on the time grid
-    private Map<Component, Location> _locationMap = new HashMap<Component, Location>();
+    private Map<Component, Integer> _columnMap = new HashMap<Component, Integer>();
 
     private Map<Time, Integer> _timeMap = new HashMap<Time, Integer>();
 
@@ -23,18 +23,22 @@ public class TimeLayout implements LayoutManager2
     private float _columnWidth = 0;
     private int _topHeader = 50;
 
-    private int _minuteIncrements = 15;
+    private final Duration _increments;
     private int _hours = 10;
-    private int _rows = _hours * 60 / _minuteIncrements;
+    private int _rows;
     private float _rowHeight = 0;
     private int _leftHeader = 100;
 
     /**
-     * Boring empty constructor.
+     * Constructor.  So far the only thing that must be provided is the increments to use for the layout.
+     * I think changing this would require a nearly full re-layout.
+     *
+     * @param increments (not null) Increments for the layout
      */
-    public TimeLayout()
+    public TimeLayout(@NotNull Duration increments)
     {
-        System.out.println("Making layout");
+        _increments = increments;
+        _rows = _hours * 60 / _increments.getMinutes();
     }
 
 
@@ -71,29 +75,33 @@ public class TimeLayout implements LayoutManager2
     @Override
     public void layoutContainer(Container target)
     {
-        System.out.println("layoutContainer");
-
         synchronized (target.getTreeLock()) {
             recomputeLayout(target);
 
             int componentCount = target.getComponentCount();
 
-
             for (int i = 0 ; i < componentCount ; ++i) {
                 Component component = target.getComponent(i);
                 if (! component.isVisible()) { continue; }
 
-                Location location = _locationMap.get(component);
-                if (location == null) {
-                    continue;
-                }
+                if (! (component instanceof AppointmentComponent)) { continue; }
+                AppointmentComponent appointmentComponent = (AppointmentComponent)component;
 
-                Time time = location.getTime();
+                IAppointment appointment = appointmentComponent.getAppointment();
+                Time time = appointment.getTime();
+                Duration duration = appointment.getDuration();
+
+                int column = _columnMap.get(component);
 
                 int y = _timeMap.get(time);
-                int x = _leftHeader + (int)(_columnWidth * location.getColumn());
+                int x = _leftHeader + (int)(_columnWidth * column);
 
-                component.setBounds(x, y, (int) _columnWidth - 15, (int) (_rowHeight * 4));
+                int width = (int) _columnWidth - 15;
+
+                // One rowHeight is one increment
+                int height = (int) Math.ceil(_rowHeight * duration.divide(_increments));
+
+                component.setBounds(x, y, width, height);
             }
         }
     }
@@ -106,11 +114,8 @@ public class TimeLayout implements LayoutManager2
         int width = target.getWidth() - insets.left - insets.right;
         int height = target.getHeight() - insets.top - insets.bottom;
 
-
-        // Draw rows with hour markers
         _rowHeight = (float)(height - _topHeader) / (float)_rows;
         _columnWidth = (float)(width - _leftHeader) / (float) _columns;
-
 
         Time time = new Time(8, 0, 0);
         _timeMap.clear();
@@ -119,7 +124,7 @@ public class TimeLayout implements LayoutManager2
 
             _timeMap.put(time, y);
 
-            time = time.addMinutes(_minuteIncrements);
+            time = time.add(_increments);
         }
     }
 
@@ -157,14 +162,21 @@ public class TimeLayout implements LayoutManager2
     }
 
 
+    @NotNull
+    public Duration getIncrements()
+    {
+        return _increments;
+    }
+
+
     @Override
     public void addLayoutComponent(Component comp, Object constraints)
     {
-        if (! (constraints instanceof Location)) {
+        if (! (constraints instanceof Integer)) {
             throw new IllegalArgumentException("Constraint must be a Location");
         }
 
-        _locationMap.put(comp, (Location)constraints);
+        _columnMap.put(comp, (Integer)constraints);
     }
 
 
