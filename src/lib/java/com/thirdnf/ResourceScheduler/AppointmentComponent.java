@@ -1,14 +1,22 @@
 package com.thirdnf.ResourceScheduler;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 
-public class AppointmentComponent extends JComponent
+public class AppointmentComponent extends JComponent implements MouseListener
 {
-    private final IAppointment _appointment;
-
     private static final Color Background = new Color(0x11b9f8);
+
+
+    private final IAppointment _appointment;
+    private ActionListener _actionListener = null;
 
 
     public AppointmentComponent(IAppointment appointment)
@@ -17,6 +25,51 @@ public class AppointmentComponent extends JComponent
 
         setOpaque(true);
         setPreferredSize(new Dimension(100, 100));
+        addMouseListener(this);
+    }
+
+
+    public void setActionListener(@NotNull ActionListener actionListener)
+    {
+        _actionListener = actionListener;
+    }
+
+
+    @Override
+    public void mouseClicked(MouseEvent e)
+    {
+        if (_actionListener != null) {
+            ActionEvent actionEvent = new ActionEvent(_appointment, ActionEvent.ACTION_PERFORMED, _appointment.getTitle());
+            _actionListener.actionPerformed(actionEvent);
+        }
+    }
+
+
+    @Override
+    public void mousePressed(MouseEvent e)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    @Override
+    public void mouseReleased(MouseEvent e)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    @Override
+    public void mouseEntered(MouseEvent e)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    @Override
+    public void mouseExited(MouseEvent e)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
 
