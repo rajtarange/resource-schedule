@@ -20,9 +20,9 @@ import com.jgoodies.forms.layout.*;
  *
  * @author Joshua Gerth
  */
-public class MainWindow extends JFrame 
+public class MainWindow extends JFrame
 {
-    public MainWindow() 
+    public MainWindow()
     {
         initComponents();
 
@@ -33,7 +33,13 @@ public class MainWindow extends JFrame
             public void actionPerformed(ActionEvent e)
             {
                 IAppointment appointment = (IAppointment)e.getSource();
-                _detailsPane.setText("Info about: " + appointment.getTitle());
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Info About: ").append(appointment.getTitle()).append('\n')
+                        .append("Start time: ").append(appointment.getTime()).append('\n')
+                        .append("For Resource: ").append(appointment.getResource());
+
+
+                _detailsPane.setText(stringBuilder.toString());
             }
         });
     }
@@ -41,11 +47,12 @@ public class MainWindow extends JFrame
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        panel1 = new JPanel();
         label1 = new JLabel();
         textField1 = new JTextField();
+        _scheduler = new Scheduler();
         scrollPane1 = new JScrollPane();
         _detailsPane = new JTextPane();
-        _scheduler = new Scheduler();
         button2 = new JButton();
         button3 = new JButton();
         button1 = new JButton();
@@ -56,46 +63,55 @@ public class MainWindow extends JFrame
         setTitle("Resource Scheduler Demo");
         Container contentPane = getContentPane();
         contentPane.setLayout(new FormLayout(
-            "2*([50dlu,default], $lcgap), default:grow",
-            "default, $lgap, default:grow, 2*($lgap, default)"));
+                "default:grow",
+                "default:grow"));
 
-        //---- label1 ----
-        label1.setText("Date:");
-        contentPane.add(label1, CC.xy(1, 1));
-        contentPane.add(textField1, CC.xy(3, 1));
-
-        //======== scrollPane1 ========
+        //======== panel1 ========
         {
+            panel1.setLayout(new FormLayout(
+                    "default, $lcgap, [40dlu,default], $lcgap, default:grow",
+                    "default, $lgap, default:grow, 2*($lgap, default)"));
 
-            //---- _detailsPane ----
-            _detailsPane.setBorder(new TitledBorder("Appointment Details"));
-            scrollPane1.setViewportView(_detailsPane);
+            //---- label1 ----
+            label1.setText("Date:");
+            panel1.add(label1, CC.xy(1, 1));
+            panel1.add(textField1, CC.xy(3, 1));
+            panel1.add(_scheduler, CC.xywh(5, 1, 1, 7, CC.DEFAULT, CC.FILL));
+
+            //======== scrollPane1 ========
+            {
+
+                //---- _detailsPane ----
+                _detailsPane.setBorder(new TitledBorder("Appointment Details"));
+                scrollPane1.setViewportView(_detailsPane);
+            }
+            panel1.add(scrollPane1, CC.xywh(1, 3, 3, 1, CC.DEFAULT, CC.FILL));
+
+            //---- button2 ----
+            button2.setText("Add Resource");
+            panel1.add(button2, CC.xy(1, 5));
+
+            //---- button3 ----
+            button3.setText("Add Appointment");
+            panel1.add(button3, CC.xy(3, 5));
+
+            //---- button1 ----
+            button1.setText("Print");
+            panel1.add(button1, CC.xywh(1, 7, 3, 1));
         }
-        contentPane.add(scrollPane1, CC.xywh(1, 3, 3, 1, CC.DEFAULT, CC.FILL));
-        contentPane.add(_scheduler, CC.xywh(5, 1, 1, 7, CC.DEFAULT, CC.FILL));
-
-        //---- button2 ----
-        button2.setText("Add Resource");
-        contentPane.add(button2, CC.xy(1, 5));
-
-        //---- button3 ----
-        button3.setText("Add Appointment");
-        contentPane.add(button3, CC.xy(3, 5));
-
-        //---- button1 ----
-        button1.setText("Print");
-        contentPane.add(button1, CC.xywh(1, 7, 3, 1));
+        contentPane.add(panel1, new CellConstraints(1, 1, 1, 1, CC.DEFAULT, CC.FILL, new Insets(5, 5, 5, 5)));
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    private JPanel panel1;
     private JLabel label1;
     private JTextField textField1;
+    private Scheduler _scheduler;
     private JScrollPane scrollPane1;
     private JTextPane _detailsPane;
-    private Scheduler _scheduler;
     private JButton button2;
     private JButton button3;
     private JButton button1;

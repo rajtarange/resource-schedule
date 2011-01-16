@@ -9,21 +9,26 @@ import java.util.Date;
 
 /**
  * A demo model, has its database hard coded.
+ *
+ * @author Joshua Gerth - jgerth@thirdnf.com
  */
 public class ScheduleModelDemo implements IScheduleModel
 {
+    // Our categories for our appointments
     private static final ICategory Green = new DemoCategory("Green", new Color(9, 246, 76, 200));
     private static final ICategory Blue  = new DemoCategory("Blue", new Color(9, 171, 246, 200));
 
+    // The resources we can assign
     private static final IResource Bobby = new DemoResource("Bobby", new Color(251, 198, 12, 200));
     private static final IResource Johnny = new DemoResource("Johnny", new Color(12, 251, 160, 200));
     private static final IResource Sally = new DemoResource("Sally", new Color(166, 251, 12, 200));
 
+    // The appointments
     private static final IAppointment[] Appointments = new IAppointment[] {
             DemoAppointment.create("Appointment1", Green, Bobby, new Time(10, 0, 0), new Duration(0, 45, 0)),
             DemoAppointment.create("Appointment2", Blue, Johnny, new Time(13, 0, 0),  new Duration(1, 15, 0)),
             DemoAppointment.create("Appointment3", Blue, Sally, new Time(8, 0, 0),  new Duration(1, 0, 0)),
-            DemoAppointment.create("Appointment4", Green, Sally, new Time(9, 0, 0),  new Duration(2, 0, 0))
+            DemoAppointment.create("Appointment4", Green, Sally, new Time(8, 45, 0),  new Duration(2, 0, 0))
     };
 
 
@@ -52,6 +57,14 @@ public class ScheduleModelDemo implements IScheduleModel
         public Color getColor()
         {
             return _color;
+        }
+
+
+        @Override
+        @NotNull
+        public String toString()
+        {
+            return _title;
         }
     }
 

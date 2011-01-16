@@ -8,6 +8,7 @@ public class Main
     public static void main(@NotNull String[] args)
     {
         MainWindow mw = new MainWindow();
+        mw.pack();
         mw.setVisible(true);
     }
 }
