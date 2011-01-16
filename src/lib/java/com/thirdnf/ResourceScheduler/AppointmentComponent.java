@@ -10,25 +10,50 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 
+/**
+ * Instances of this class will be the appointment components which are actually drawn on the panel.
+ * The eventual goal is to have these drawn similar to the Google calendar appointments and allow them
+ * to expand and move by drag and drop.
+ *
+ * @author Joshua Gerth - jgerth@thirdnf.com
+ */
 public class AppointmentComponent extends JComponent implements MouseListener
 {
+    // Background to draw the component if we don't have a color.  I haven't yet decided if all appointments
+    //  must have a group and therefore must have a color.
     private static final Color Background = new Color(0x11b9f8);
 
-
+    // The appointment this component is wrapping.
     private final IAppointment _appointment;
+
+    // The single action listener which will get click events.  This is a single entity for now, but we
+    //  could make this a list if there was a need for it.
     private ActionListener _actionListener = null;
 
 
+    /**
+     * Constructor given an appointment to wrap.
+     *
+     * @param appointment (not null) The appointment to wrap.
+     */
     public AppointmentComponent(@NotNull IAppointment appointment)
     {
         _appointment = appointment;
 
-        setOpaque(true);
+        // The preferred size is pretty much just ignored for right now.
         setPreferredSize(new Dimension(100, 100));
+
+        // Allow this instance to respond to mouse clicks.  I'm a bit uncomfortable with accessing 'this' at
+        //  this point, but I think that is just an old C++ fear.
         addMouseListener(this);
     }
 
 
+    /**
+     * Get the appointment from the component.
+     *
+     * @return (not null) The appointment this component was wrapping.
+     */
     @NotNull
     public IAppointment getAppointment()
     {
@@ -36,6 +61,11 @@ public class AppointmentComponent extends JComponent implements MouseListener
     }
 
 
+    /**
+     * Set the one and only action listener which will get called on mouse clicks.
+     *
+     * @param actionListener (not null) The action listener who cares about mouse clicks.
+     */
     public void setActionListener(@NotNull ActionListener actionListener)
     {
         _actionListener = actionListener;

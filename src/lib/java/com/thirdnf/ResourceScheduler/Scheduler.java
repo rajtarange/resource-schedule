@@ -5,10 +5,10 @@
 package com.thirdnf.ResourceScheduler;
 
 import javax.swing.*;
-import com.jgoodies.forms.factories.*;
-import com.jgoodies.forms.layout.*;
+
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -23,17 +23,18 @@ import java.util.Set;
  */
 public class Scheduler extends JPanel 
 {
+    private static final String DayView = "DayView";
+
     private final Set<ActionListener> _actionListeners = new HashSet<ActionListener>();
+    private final DaySchedule _daySchedule;
 
     public Scheduler() 
     {
-        initComponents();
-    }
+        CardLayout cardLayout = new CardLayout();
 
-
-    public void setModel(@NotNull IScheduleModel model)
-    {
-        _daySchedule.setModel(model);
+        setLayout(cardLayout);
+        _daySchedule = new DaySchedule();
+        add(_daySchedule, DayView);
 
         _daySchedule.setActionListener(new ActionListener() {
             @Override
@@ -44,6 +45,12 @@ public class Scheduler extends JPanel
                 }
             }
         });
+    }
+
+
+    public void setModel(@NotNull IScheduleModel model)
+    {
+        _daySchedule.setModel(model);
     }
 
 
@@ -59,21 +66,4 @@ public class Scheduler extends JPanel
     {
         _actionListeners.add(actionListener);
     }
-
-
-    private void initComponents() {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        _daySchedule = new DaySchedule();
-
-        //======== this ========
-        setLayout(new FormLayout(
-            "default:grow",
-            "default:grow"));
-        add(_daySchedule, CC.xy(1, 1, CC.FILL, CC.FILL));
-        // JFormDesigner - End of component initialization  //GEN-END:initComponents
-    }
-
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    private DaySchedule _daySchedule;
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

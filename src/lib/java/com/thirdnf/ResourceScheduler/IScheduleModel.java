@@ -15,4 +15,7 @@ public interface IScheduleModel
      * @param dateTime (not null) The day to visit the appointments for.
      */
     void visitAppointments(IAppointmentVisitor visitor, @NotNull Date dateTime);
+
+
+    void visitResources(IResourceVisitor visitor, @NotNull Date dateTime);
 }

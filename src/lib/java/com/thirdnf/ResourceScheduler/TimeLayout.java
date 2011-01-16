@@ -3,6 +3,7 @@ package com.thirdnf.ResourceScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class TimeLayout implements LayoutManager2
 
     private Map<Time, Integer> _timeMap = new HashMap<Time, Integer>();
 
-    private int _columns = 3;
+    private int _columns;
     private float _columnWidth = 0;
     private int _topHeader = 50;
 
@@ -28,6 +29,7 @@ public class TimeLayout implements LayoutManager2
     private int _rows;
     private float _rowHeight = 0;
     private int _leftHeader = 100;
+
 
     /**
      * Constructor.  So far the only thing that must be provided is the increments to use for the layout.
@@ -84,24 +86,44 @@ public class TimeLayout implements LayoutManager2
                 Component component = target.getComponent(i);
                 if (! component.isVisible()) { continue; }
 
-                if (! (component instanceof AppointmentComponent)) { continue; }
-                AppointmentComponent appointmentComponent = (AppointmentComponent)component;
+                if (component instanceof ResourceComponent) {
+                    // These are placed at the top of their row
+                    ResourceComponent resourceComponent = (ResourceComponent)component;
 
-                IAppointment appointment = appointmentComponent.getAppointment();
-                Time time = appointment.getTime();
-                Duration duration = appointment.getDuration();
+                    int column = _columnMap.get(component);
 
-                int column = _columnMap.get(component);
+                    int y = 0;
+                    int x = _leftHeader + (int)(_columnWidth * column);
 
-                int y = _timeMap.get(time);
-                int x = _leftHeader + (int)(_columnWidth * column);
+                    int width = (int) _columnWidth;
 
-                int width = (int) _columnWidth - 15;
+                    // One rowHeight is one increment
+                    int height = _topHeader;
 
-                // One rowHeight is one increment
-                int height = (int) Math.ceil(_rowHeight * duration.divide(_increments));
+                    component.setBounds(x, y, width, height);
+                }
+                else if (component instanceof AppointmentComponent) {
+                    AppointmentComponent appointmentComponent = (AppointmentComponent)component;
 
-                component.setBounds(x, y, width, height);
+                    IAppointment appointment = appointmentComponent.getAppointment();
+                    Time time = appointment.getTime();
+                    Duration duration = appointment.getDuration();
+
+                    int column = _columnMap.get(component);
+
+                    int y = _timeMap.get(time);
+                    int x = _leftHeader + (int)(_columnWidth * column);
+
+                    int width = (int) _columnWidth - 15;
+
+                    // One rowHeight is one increment
+                    int height = (int) Math.ceil(_rowHeight * duration.divide(_increments));
+
+                    component.setBounds(x, y, width, height);
+                }
+                else {
+                    System.out.println("Don't know how to layout component: " + component);
+                }
             }
         }
     }
@@ -109,6 +131,15 @@ public class TimeLayout implements LayoutManager2
 
     private void recomputeLayout(Container target)
     {
+        // Dynamically determine how many columns we are going to need.
+        _columns = 0;
+        Collection<Integer> values =  _columnMap.values();
+        for (Integer column : values) {
+            _columns = Math.max(_columns, column);
+        }
+        // The number of columns is one greater than the last column index.
+        _columns +=1;
+
         Insets insets = target.getInsets();
 
         int width = target.getWidth() - insets.left - insets.right;

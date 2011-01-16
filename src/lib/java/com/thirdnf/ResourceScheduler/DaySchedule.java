@@ -27,6 +27,8 @@ public class DaySchedule extends JPanel
 
     private final JLabel _currentDateLabel;
 
+    private int _nextResource = 0;
+
 
     public DaySchedule()
     {
@@ -66,6 +68,25 @@ public class DaySchedule extends JPanel
                 return true;
             }
         }, date);
+
+
+        _model.visitResources(new IResourceVisitor()
+        {
+            @Override
+            public boolean visitResource(@NotNull IResource resource)
+            {
+                addResource(resource);
+                return true;
+            }
+        }, date);
+    }
+
+
+    private void addResource(@NotNull IResource resource)
+    {
+        ResourceComponent resourceComponent = new ResourceComponent(resource);
+
+        _innerPanel.add(resourceComponent, new Integer(_nextResource ++));
     }
 
 

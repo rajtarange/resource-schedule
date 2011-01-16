@@ -12,8 +12,8 @@ import java.util.Date;
  */
 public class ScheduleModelDemo implements IScheduleModel
 {
-    private static final ICategory Green = new DemoCategory("Green", Color.green);
-    private static final ICategory Blue  = new DemoCategory("Blue", Color.blue);
+    private static final ICategory Green = new DemoCategory("Green", new Color(9, 246, 76, 200));
+    private static final ICategory Blue  = new DemoCategory("Blue", new Color(9, 171, 246, 200));
 
     private static final IResource Bobby = new DemoResource("Bobby");
     private static final IResource Johnny = new DemoResource("Johnny");
@@ -36,9 +36,18 @@ public class ScheduleModelDemo implements IScheduleModel
 
 
         @Override
+        @NotNull
         public String getTitle()
         {
             return _title;
+        }
+
+
+        @Override
+        @NotNull
+        public Color getColor()
+        {
+            return Color.green;
         }
     }
 
@@ -156,5 +165,14 @@ public class ScheduleModelDemo implements IScheduleModel
         for (IAppointment appointment : Appointments) {
             visitor.visitAppointment(appointment);
         }
+    }
+
+
+    @Override
+    public void visitResources(IResourceVisitor visitor, @NotNull Date dateTime)
+    {
+        visitor.visitResource(Bobby);
+        visitor.visitResource(Johnny);
+        visitor.visitResource(Sally);
     }
 }
