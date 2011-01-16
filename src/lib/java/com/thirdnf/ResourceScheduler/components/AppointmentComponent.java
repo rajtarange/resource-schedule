@@ -1,5 +1,7 @@
-package com.thirdnf.ResourceScheduler;
+package com.thirdnf.ResourceScheduler.components;
 
+import com.thirdnf.ResourceScheduler.IAppointment;
+import com.thirdnf.ResourceScheduler.ICategory;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

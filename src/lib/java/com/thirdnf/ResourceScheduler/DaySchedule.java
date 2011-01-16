@@ -1,5 +1,7 @@
 package com.thirdnf.ResourceScheduler;
 
+import com.thirdnf.ResourceScheduler.components.AppointmentComponent;
+import com.thirdnf.ResourceScheduler.components.ResourceComponent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -7,6 +9,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.util.*;
 
 
@@ -15,7 +20,7 @@ import java.util.*;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class DaySchedule extends JPanel
+public class DaySchedule extends JPanel implements Printable
 {
     private Map<AppointmentComponent, Time> _appointmentMap = new HashMap<AppointmentComponent, Time>();
 
@@ -25,6 +30,8 @@ public class DaySchedule extends JPanel
 
     // The inner panel holds the real days.
     private JPanel _innerPanel;
+
+    private Map<IResource, Integer> _columnMap = new HashMap<IResource, Integer>();
 
     private final JLabel _currentDateLabel;
 
@@ -65,17 +72,6 @@ public class DaySchedule extends JPanel
         _innerPanel = new InnerPanel(startTime, endTime);
         add(_innerPanel);
 
-        _model.visitAppointments(new IAppointmentVisitor()
-        {
-            @Override
-            public boolean visitAppointment(@NotNull IAppointment appointment)
-            {
-                addAppointment(appointment);
-                return true;
-            }
-        }, date);
-
-
         _model.visitResources(new IResourceVisitor()
         {
             @Override
@@ -85,15 +81,31 @@ public class DaySchedule extends JPanel
                 return true;
             }
         }, date);
+
+        _model.visitAppointments(new IAppointmentVisitor()
+        {
+            @Override
+            public boolean visitAppointment(@NotNull IAppointment appointment)
+            {
+                addAppointment(appointment);
+                return true;
+            }
+        }, date);
     }
 
 
 
     private void addResource(@NotNull IResource resource)
     {
+        // Get the next available column.
+        int column = _nextResource ++;
+
+        // Wrap the resource in a component
         ResourceComponent resourceComponent = new ResourceComponent(resource);
 
-        _innerPanel.add(resourceComponent, new Integer(_nextResource ++));
+        _columnMap.put(resource, column);
+
+        _innerPanel.add(resourceComponent, new Integer(column));
     }
 
 
@@ -109,10 +121,17 @@ public class DaySchedule extends JPanel
         });
 
         IResource resource = appointment.getResource();
+        Integer column = _columnMap.get(resource);
+        if (column == null) {
+            // This is an unassigned resource for this day
+            System.out.println("Deal wiht unassigned resource.");
+
+            column = new Integer(1);
+        }
 
         // TODO - determine which column corresponds to which resource.
 
-        _innerPanel.add(appointmentComponent, new Integer(1));
+        _innerPanel.add(appointmentComponent, column);
     }
 
 
@@ -126,6 +145,16 @@ public class DaySchedule extends JPanel
     public void setActionListener(@NotNull ActionListener actionListener)
     {
         _actionListener = actionListener;
+    }
+
+
+    @Override
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+            throws PrinterException
+    {
+        // TODO - Implement print
+        System.out.println("We should print");
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 

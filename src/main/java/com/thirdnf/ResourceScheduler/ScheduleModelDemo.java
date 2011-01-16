@@ -21,7 +21,9 @@ public class ScheduleModelDemo implements IScheduleModel
 
     private static final IAppointment[] Appointments = new IAppointment[] {
             DemoAppointment.create("Appointment1", Green, Bobby, new Time(10, 0, 0), new Duration(0, 45, 0)),
-            DemoAppointment.create("Appointment2", Blue, Johnny, new Time(13, 0, 0),  new Duration(1, 15, 0))
+            DemoAppointment.create("Appointment2", Blue, Johnny, new Time(13, 0, 0),  new Duration(1, 15, 0)),
+            DemoAppointment.create("Appointment3", Blue, Sally, new Time(8, 0, 0),  new Duration(1, 0, 0)),
+            DemoAppointment.create("Appointment4", Green, Sally, new Time(9, 0, 0),  new Duration(2, 0, 0))
     };
 
 
