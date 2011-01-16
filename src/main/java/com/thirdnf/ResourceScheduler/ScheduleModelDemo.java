@@ -15,9 +15,9 @@ public class ScheduleModelDemo implements IScheduleModel
     private static final ICategory Green = new DemoCategory("Green", new Color(9, 246, 76, 200));
     private static final ICategory Blue  = new DemoCategory("Blue", new Color(9, 171, 246, 200));
 
-    private static final IResource Bobby = new DemoResource("Bobby");
-    private static final IResource Johnny = new DemoResource("Johnny");
-    private static final IResource Sally = new DemoResource("Sally");
+    private static final IResource Bobby = new DemoResource("Bobby", new Color(251, 198, 12, 200));
+    private static final IResource Johnny = new DemoResource("Johnny", new Color(12, 251, 160, 200));
+    private static final IResource Sally = new DemoResource("Sally", new Color(166, 251, 12, 200));
 
     private static final IAppointment[] Appointments = new IAppointment[] {
             DemoAppointment.create("Appointment1", Green, Bobby, new Time(10, 0, 0), new Duration(0, 45, 0)),
@@ -28,10 +28,12 @@ public class ScheduleModelDemo implements IScheduleModel
     private static class DemoResource implements IResource
     {
         private final String _title;
+        private final Color _color;
 
-        public DemoResource(@NotNull String title)
+        public DemoResource(@NotNull String title, @NotNull Color color)
         {
             _title = title;
+            _color = color;
         }
 
 
@@ -47,7 +49,7 @@ public class ScheduleModelDemo implements IScheduleModel
         @NotNull
         public Color getColor()
         {
-            return Color.green;
+            return _color;
         }
     }
 
@@ -174,5 +176,18 @@ public class ScheduleModelDemo implements IScheduleModel
         visitor.visitResource(Bobby);
         visitor.visitResource(Johnny);
         visitor.visitResource(Sally);
+    }
+
+
+    @Override
+    public Time getEndTime(@NotNull Date dateTime)
+    {
+        return new Time(18, 0, 0); // 6 pm
+    }
+
+    @Override
+    public Time getStartTime(@NotNull Date dateTime)
+    {
+        return new Time(8, 0, 0); // 8 am
     }
 }

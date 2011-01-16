@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
 import java.util.*;
 
 
@@ -56,7 +57,12 @@ public class DaySchedule extends JPanel
         }
 
         _currentDateLabel.setText(date.toString());
-        _innerPanel = new InnerPanel();
+
+        // The model knows the begin and end times of the day for this date
+        Time startTime = _model.getStartTime(date);
+        Time endTime = _model.getEndTime(date);
+
+        _innerPanel = new InnerPanel(startTime, endTime);
         add(_innerPanel);
 
         _model.visitAppointments(new IAppointmentVisitor()
@@ -80,6 +86,7 @@ public class DaySchedule extends JPanel
             }
         }, date);
     }
+
 
 
     private void addResource(@NotNull IResource resource)
@@ -124,9 +131,16 @@ public class DaySchedule extends JPanel
 
     private static class InnerPanel extends JPanel
     {
-        InnerPanel()
+        private final Time _startTime;
+        private final Time _endTime;
+
+
+        InnerPanel(@NotNull Time startTime, @NotNull Time endTime)
         {
-            setLayout(new TimeLayout(new Duration(0, 15, 0)));
+            _startTime = startTime;
+            _endTime   = endTime;
+
+            setLayout(new TimeLayout(100, 25, startTime, endTime, new Duration(0, 15, 0)));
             setBackground(Color.white);
             setOpaque(true);
             setBorder(BorderFactory.createEtchedBorder());
@@ -167,7 +181,7 @@ public class DaySchedule extends JPanel
             }
 
 
-            Time time = new Time(8, 0, 0);
+            Time time = _startTime;
             for (int i=0; i< rows; ++i) {
                 Integer y = layout.getY(time);
                 if (y != null) {
@@ -184,7 +198,13 @@ public class DaySchedule extends JPanel
                     graphics.drawLine(x, y, insets.left + width, y);
 
                     if (onTheHour) {
-                        graphics.drawString(time.toString(), 10, y + fontHeight);
+                        // We want to draw hour markers and right justify them.
+                        String timeString = time.toString();
+
+                        Rectangle2D rect = fontMetrics.getStringBounds(timeString, graphics);
+                        int stringX = (int)(leftHeader - rect.getWidth() - 10);
+
+                        graphics.drawString(time.toString(), stringX, y + fontHeight);
                         graphics.setColor(Color.lightGray);
                     }
                 }

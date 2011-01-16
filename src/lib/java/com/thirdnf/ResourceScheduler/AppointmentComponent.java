@@ -137,12 +137,13 @@ public class AppointmentComponent extends JComponent implements MouseListener
         graphics.setColor(color);
         graphics.fillRoundRect(insets.left, insets.top, insets.left+width-1, insets.top+height-1, arc, arc);
 
-        graphics.setColor(Color.black);
+        graphics.setColor(Color.gray);
         graphics.drawRoundRect(insets.left, insets.top, insets.left+width-1, insets.top+height-1, arc, arc);
 
         FontMetrics fontMetrics = getFontMetrics(getFont());
         int fontHeight = fontMetrics.getHeight();
 
+        graphics.setColor(Color.black);
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics.drawString(_appointment.getTitle(), insets.left + 10, insets.top + fontHeight + 2);
 

@@ -20,27 +20,37 @@ public class TimeLayout implements LayoutManager2
 
     private Map<Time, Integer> _timeMap = new HashMap<Time, Integer>();
 
-    private int _columns;
-    private float _columnWidth = 0;
-    private int _topHeader = 50;
+    private final int _topHeader;
+    private final int _leftHeader;
 
     private final Duration _increments;
-    private int _hours = 10;
+    private final Time _startTime;
+    private final Time _endTime;
+
+    private int _columns;
+    private float _columnWidth = 0;
     private int _rows;
     private float _rowHeight = 0;
-    private int _leftHeader = 100;
 
 
     /**
      * Constructor.  So far the only thing that must be provided is the increments to use for the layout.
      * I think changing this would require a nearly full re-layout.
      *
+     * @param leftHeader Size to give the left hand header.
+     * @param topHeader Size to give the top header
      * @param increments (not null) Increments for the layout
      */
-    public TimeLayout(@NotNull Duration increments)
+    public TimeLayout(int leftHeader, int topHeader, @NotNull Time startTime, @NotNull Time endTime,
+                      @NotNull Duration increments)
     {
+        _startTime = startTime;
+        _endTime = endTime;
+
+        _leftHeader = leftHeader;
+        _topHeader = topHeader;
         _increments = increments;
-        _rows = _hours * 60 / _increments.getMinutes();
+        _rows = (endTime.toSeconds() - startTime.toSeconds()) / _increments.toSeconds();
     }
 
 

@@ -3,7 +3,9 @@ package com.thirdnf.ResourceScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 
 public class ResourceComponent extends JComponent
@@ -15,11 +17,10 @@ public class ResourceComponent extends JComponent
     {
         _resource = resource;
 
-
-        setOpaque(true);
+        setBackground(_resource.getColor());
         setPreferredSize(new Dimension(100, 100));
+        setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 //        addMouseListener(this);
-
     }
 
 
@@ -28,9 +29,9 @@ public class ResourceComponent extends JComponent
     {
         super.paintComponent(g);
 
-        Graphics2D graphics = (Graphics2D)g;
+        Color oldColor = g.getColor();
 
-        Color oldColor = graphics.getColor();
+        Graphics2D graphics = (Graphics2D)g;
 
         RenderingHints renderHints = graphics.getRenderingHints();
 
@@ -39,20 +40,23 @@ public class ResourceComponent extends JComponent
         int width = getWidth() - insets.left - insets.right;
         int height = getHeight() - insets.top - insets.bottom;
 
-        // Draw our border
-        int arc = 10;
-
-        graphics.setColor(Color.lightGray);
-        graphics.fillRect(insets.left, insets.top, insets.left+width-1, insets.top+height-1);
+        g.setColor(getBackground());
+        graphics.fillRect(insets.left, insets.top, insets.left + width - 1, insets.top + height - 1);
 
         graphics.setColor(Color.black);
-        graphics.drawRect(insets.left, insets.top, insets.left+width-1, insets.top+height-1);
+
+        // We want to locate the text in the center/center
 
         FontMetrics fontMetrics = getFontMetrics(getFont());
-        int fontHeight = fontMetrics.getHeight();
+
+        Rectangle2D rect = fontMetrics.getStringBounds(_resource.getTitle(), graphics);
+        double stringWidth  = rect.getWidth();
+        double stringHeight = rect.getHeight();
+        double stringX      = ((double)width - stringWidth)/2.0;
+        double stringY      = ((double)height - stringHeight)/2.0 + stringHeight;
 
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        graphics.drawString(_resource.getTitle(), insets.left + 10, insets.top + fontHeight + 2);
+        graphics.drawString(_resource.getTitle(), insets.left + (int)stringX, insets.top + (int)stringY);
 
         graphics.setRenderingHints(renderHints);
         graphics.setColor(oldColor);

@@ -1,5 +1,7 @@
 package com.thirdnf.ResourceScheduler;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * A simple simple class to hold hours, minutes and seconds.  This can either represent a point in time, or a
  * duration.
@@ -15,6 +17,11 @@ public class Time extends ATime implements Comparable<Time>
     public boolean isOnTheHour()
     {
         return _minutes == 0 && _seconds == 0;
+    }
+
+    public boolean isAM()
+    {
+        return _hours < 13;
     }
 
 
