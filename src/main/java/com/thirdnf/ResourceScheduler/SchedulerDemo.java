@@ -7,22 +7,32 @@ package com.thirdnf.ResourceScheduler;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.util.Date;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Just a demo application to show how to use the ResourceScheduler
  *
  * @author Joshua Gerth
  */
-public class MainWindow extends JFrame
+public class SchedulerDemo extends JFrame
 {
-    public MainWindow()
+
+    public static void main(@NotNull String[] args)
+    {
+        SchedulerDemo mw = new SchedulerDemo();
+        mw.pack();
+        mw.setVisible(true);
+    }
+
+    public SchedulerDemo()
     {
         initComponents();
 
@@ -42,6 +52,22 @@ public class MainWindow extends JFrame
                 _detailsPane.setText(stringBuilder.toString());
             }
         });
+    }
+
+
+    private void handlePrint()
+    {
+        PrinterJob printJob = PrinterJob.getPrinterJob();
+        printJob.setPrintable(_scheduler);
+        if (printJob.printDialog()) {
+            try {
+                System.out.println("Printing from main");
+                printJob.print();
+            }
+            catch(PrinterException pe) {
+                System.out.println("Error printing: " + pe);
+            }
+        }
     }
 
 
@@ -97,6 +123,14 @@ public class MainWindow extends JFrame
 
             //---- button1 ----
             button1.setText("Print");
+            button1.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    handlePrint();
+                }
+            });
             panel1.add(button1, CC.xywh(1, 7, 3, 1));
         }
         contentPane.add(panel1, new CellConstraints(1, 1, 1, 1, CC.DEFAULT, CC.FILL, new Insets(5, 5, 5, 5)));

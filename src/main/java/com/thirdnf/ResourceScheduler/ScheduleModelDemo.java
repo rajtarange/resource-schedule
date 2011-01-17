@@ -12,7 +12,7 @@ import java.util.Date;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class ScheduleModelDemo implements IScheduleModel
+public class ScheduleModelDemo extends AScheduleModel
 {
     // Our categories for our appointments
     private static final ICategory Green = new DemoCategory("Green", new Color(9, 246, 76, 200));

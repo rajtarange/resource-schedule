@@ -3,8 +3,22 @@ package com.thirdnf.ResourceScheduler;
 
 import org.jetbrains.annotations.NotNull;
 
+
+/**
+ * Instances of this class will represent a duration of time as hours, minutes and seconds.  All times are
+ *  normalized on construction so that the seconds and minutes will always be between 0 and 59.
+ *
+ * @author Joshua Gerth - jgerth@thirdnf.com
+ */
 public class Duration extends ATime implements Comparable<Duration>
 {
+    /**
+     * Constructor given hours, minutes and seconds to represent as a duration.
+     *
+     * @param hours The hours
+     * @param minutes The minutes
+     * @param seconds The seconds
+     */
     public Duration(int hours, int minutes, int seconds)
     {
         super(hours, minutes, seconds);
@@ -31,6 +45,7 @@ public class Duration extends ATime implements Comparable<Duration>
     }
 
 
+    @Override
     public String toString()
     {
         StringBuilder stringBuilder = new StringBuilder();

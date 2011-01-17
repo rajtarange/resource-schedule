@@ -123,13 +123,13 @@ public class DaySchedule extends JPanel implements Printable
         IResource resource = appointment.getResource();
         Integer column = _columnMap.get(resource);
         if (column == null) {
+            // TODO - deal with unassigned resource.
             // This is an unassigned resource for this day
-            System.out.println("Deal wiht unassigned resource.");
+            System.out.println("Deal with unassigned resource.");
 
             column = new Integer(1);
         }
 
-        // TODO - determine which column corresponds to which resource.
 
         _innerPanel.add(appointmentComponent, column);
     }
@@ -153,8 +153,21 @@ public class DaySchedule extends JPanel implements Printable
             throws PrinterException
     {
         // TODO - Implement print
-        System.out.println("We should print");
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+
+        if (pageIndex > 0) {
+            return NO_SUCH_PAGE;
+        }
+
+        // User (0,0) is typically outside the imageable area, so we must
+        // translate by the X and Y values in the PageFormat to avoid clipping
+        //
+        Graphics2D g2d = (Graphics2D)graphics;
+        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+
+        _innerPanel.paintComponents(g2d);
+
+        // tell the caller that this page is part of the printed document
+        return PAGE_EXISTS;
     }
 
 

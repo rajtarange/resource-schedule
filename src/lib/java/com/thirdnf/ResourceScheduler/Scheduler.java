@@ -11,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +24,7 @@ import java.util.Set;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class Scheduler extends JPanel 
+public class Scheduler extends JPanel implements Printable
 {
     private static final String DayView = "DayView";
 
@@ -65,5 +68,15 @@ public class Scheduler extends JPanel
     public void addActionListener(@NotNull ActionListener actionListener)
     {
         _actionListeners.add(actionListener);
+    }
+
+
+    @Override
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+            throws PrinterException
+    {
+        // Just pass it down to the current view.
+        System.out.println("Passing it down");
+        return _daySchedule.print(graphics, pageFormat, pageIndex);
     }
 }
