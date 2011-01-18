@@ -15,7 +15,7 @@ import javax.swing.border.*;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 /**
  * Just a demo application to show how to use the ResourceScheduler
@@ -37,7 +37,7 @@ public class SchedulerDemo extends JFrame
         initComponents();
 
         _scheduler.setModel(new ScheduleModelDemo());
-        _scheduler.showDate(new DateTime());
+        _scheduler.showDate(new LocalDate());
         _scheduler.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e)

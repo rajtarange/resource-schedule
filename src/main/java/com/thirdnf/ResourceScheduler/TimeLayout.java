@@ -3,6 +3,9 @@ package com.thirdnf.ResourceScheduler;
 import com.thirdnf.ResourceScheduler.components.AppointmentComponent;
 import com.thirdnf.ResourceScheduler.components.ResourceComponent;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
+import org.joda.time.Period;
 
 import java.awt.*;
 import java.util.Collection;
@@ -20,14 +23,14 @@ public class TimeLayout implements LayoutManager2
     // Location map telling us where everything is on the time grid
     private Map<Component, Integer> _columnMap = new HashMap<Component, Integer>();
 
-    private Map<Time, Integer> _timeMap = new HashMap<Time, Integer>();
+//    private Map<LocalTime, Integer> _timeMap = new HashMap<LocalTime, Integer>();
 
     private final int _topHeader;
     private final int _leftHeader;
 
     private final Duration _increments;
-    private final Time _startTime;
-    private final Time _endTime;
+    private final LocalTime _startTime;
+    private final LocalTime _endTime;
 
     private int _columns;
     private float _columnWidth = 0;
@@ -43,7 +46,7 @@ public class TimeLayout implements LayoutManager2
      * @param topHeader Size to give the top header
      * @param increments (not null) Increments for the layout
      */
-    public TimeLayout(int leftHeader, int topHeader, @NotNull Time startTime, @NotNull Time endTime,
+    public TimeLayout(int leftHeader, int topHeader, @NotNull LocalTime startTime, @NotNull LocalTime endTime,
                       @NotNull Duration increments)
     {
         _startTime = startTime;
@@ -52,7 +55,8 @@ public class TimeLayout implements LayoutManager2
         _leftHeader = leftHeader;
         _topHeader = topHeader;
         _increments = increments;
-        _rows = (endTime.toSeconds() - startTime.toSeconds()) / _increments.toSeconds();
+        long diff = Period.fieldDifference(startTime, endTime).toStandardDuration().getStandardSeconds();
+        _rows = (int) (diff / _increments.getStandardSeconds());
     }
 
 
@@ -118,18 +122,18 @@ public class TimeLayout implements LayoutManager2
                     AppointmentComponent appointmentComponent = (AppointmentComponent)component;
 
                     IAppointment appointment = appointmentComponent.getAppointment();
-                    Time time = appointment.getTime();
+                    LocalTime time = appointment.getTime();
                     Duration duration = appointment.getDuration();
 
                     int column = _columnMap.get(component);
 
-                    int y = _timeMap.get(time);
+                    int y = getY(time);
                     int x = _leftHeader + (int)(_columnWidth * column);
 
                     int width = (int) _columnWidth - 15;
 
                     // One rowHeight is one increment
-                    int height = (int) Math.ceil(_rowHeight * duration.divide(_increments));
+                    int height = (int) Math.ceil(_rowHeight * duration.getStandardSeconds() / _increments.getStandardSeconds());
 
                     component.setBounds(x, y, width, height);
                 }
@@ -159,22 +163,20 @@ public class TimeLayout implements LayoutManager2
 
         _rowHeight = (float)(height - _topHeader) / (float)_rows;
         _columnWidth = (float)(width - _leftHeader) / (float) _columns;
-
-        Time time = new Time(8, 0, 0);
-        _timeMap.clear();
-        for (int i=0; i< _rows; ++i) {
-            int y = _topHeader + (int) (i* _rowHeight);
-
-            _timeMap.put(time, y);
-
-            time = time.add(_increments);
-        }
     }
 
 
-    public int getY(@NotNull Time time)
+    public int getY(@NotNull LocalTime time)
     {
-        return _timeMap.get(time);
+        LocalTime startTime = new LocalTime(8, 0, 0);
+
+        // Get the seconds which have passed from the start time to the time they are asking about.
+        long seconds = Period.fieldDifference(startTime, time).toStandardDuration().getStandardSeconds();
+        int span = (int) (seconds / _increments.getStandardSeconds());
+
+        int y = _topHeader + (int)(span * _rowHeight);
+
+        return y;
     }
 
 

@@ -7,7 +7,7 @@ package com.thirdnf.ResourceScheduler;
 import javax.swing.*;
 
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -57,7 +57,7 @@ public class Scheduler extends JPanel implements Printable
     }
 
 
-    public void showDate(@NotNull DateTime date)
+    public void showDate(@NotNull LocalDate date)
     {
         // TODO - Make sure the day view is loaded
 

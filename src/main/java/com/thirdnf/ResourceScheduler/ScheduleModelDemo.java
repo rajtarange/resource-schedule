@@ -3,6 +3,9 @@ package com.thirdnf.ResourceScheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import java.awt.*;
 
@@ -24,10 +27,10 @@ public class ScheduleModelDemo extends AScheduleModel
 
     // The appointments
     private static final IAppointment[] Appointments = new IAppointment[] {
-            DemoAppointment.create("Appointment1", Green, Bobby, new Time(10, 0, 0), new Duration(0, 45, 0)),
-            DemoAppointment.create("Appointment2", Blue, Johnny, new Time(13, 0, 0),  new Duration(1, 15, 0)),
-            DemoAppointment.create("Appointment3", Blue, Sally, new Time(8, 0, 0),  new Duration(1, 0, 0)),
-            DemoAppointment.create("Appointment4", Green, Sally, new Time(8, 45, 0),  new Duration(2, 0, 0))
+            DemoAppointment.create("Appointment1", Green, Bobby, new LocalTime(10, 0, 0), Duration.standardMinutes(45)),
+            DemoAppointment.create("Appointment2", Blue, Johnny, new LocalTime(13, 0, 0),  Duration.standardMinutes(75)),
+            DemoAppointment.create("Appointment3", Blue, Sally, new LocalTime(8, 0, 0),  Duration.standardMinutes(60)),
+            DemoAppointment.create("Appointment4", Green, Sally, new LocalTime(8, 45, 0),  Duration.standardMinutes(120))
     };
 
 
@@ -102,7 +105,7 @@ public class ScheduleModelDemo extends AScheduleModel
         private final ICategory _catgegory;
         private final IResource _resource;
         private final String _title;
-        private Time _time;
+        private LocalTime _time;
         private Duration _length;
 
         public DemoAppointment(@NotNull String title, ICategory category, IResource resource)
@@ -121,7 +124,7 @@ public class ScheduleModelDemo extends AScheduleModel
 
         @NotNull
         @Override
-        public Time getTime()
+        public LocalTime getTime()
         {
             return _time;
         }
@@ -148,7 +151,7 @@ public class ScheduleModelDemo extends AScheduleModel
         }
 
 
-        public void setTime(@NotNull Time time)
+        public void setTime(@NotNull LocalTime time)
         {
             _time = time;
         }
@@ -162,7 +165,7 @@ public class ScheduleModelDemo extends AScheduleModel
 
         public static DemoAppointment create(@NotNull String title, @NotNull ICategory category,
                                              @Nullable IResource resource,
-                                             @NotNull Time time, @NotNull Duration duration)
+                                             @NotNull LocalTime time, @NotNull Duration duration)
         {
             DemoAppointment appointment = new DemoAppointment(title, category, resource);
             appointment.setTime(time);
@@ -174,7 +177,7 @@ public class ScheduleModelDemo extends AScheduleModel
 
 
     @Override
-    public void visitAppointments(IAppointmentVisitor visitor, @NotNull DateTime dateTime)
+    public void visitAppointments(IAppointmentVisitor visitor, @NotNull LocalDate dateTime)
     {
         // TODO - Actually break the appointments down by days.
 
@@ -185,7 +188,7 @@ public class ScheduleModelDemo extends AScheduleModel
 
 
     @Override
-    public void visitResources(IResourceVisitor visitor, @NotNull DateTime dateTime)
+    public void visitResources(IResourceVisitor visitor, @NotNull LocalDate dateTime)
     {
         visitor.visitResource(Bobby);
         visitor.visitResource(Johnny);
@@ -194,14 +197,15 @@ public class ScheduleModelDemo extends AScheduleModel
 
 
     @Override
-    public Time getEndTime(@NotNull DateTime dateTime)
+    public LocalTime getEndTime(@NotNull LocalDate dateTime)
     {
-        return new Time(18, 0, 0); // 6 pm
+        return new LocalTime(18, 0, 0); // 6 pm
     }
 
+
     @Override
-    public Time getStartTime(@NotNull DateTime dateTime)
+    public LocalTime getStartTime(@NotNull LocalDate dateTime)
     {
-        return new Time(8, 0, 0); // 8 am
+        return new LocalTime(8, 0, 0); // 8 am
     }
 }

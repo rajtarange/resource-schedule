@@ -1,10 +1,8 @@
 package com.thirdnf.ResourceScheduler;
 
-
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.DateTime;
-
-import java.util.Date;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 public interface IScheduleModel
 {
@@ -15,10 +13,10 @@ public interface IScheduleModel
      * @param visitor (not null) The visitor to visit with every appointment for the given day
      * @param dateTime (not null) The day to visit the appointments for.
      */
-    void visitAppointments(IAppointmentVisitor visitor, @NotNull DateTime dateTime);
+    void visitAppointments(IAppointmentVisitor visitor, @NotNull LocalDate dateTime);
 
 
-    void visitResources(IResourceVisitor visitor, @NotNull DateTime dateTime);
+    void visitResources(IResourceVisitor visitor, @NotNull LocalDate dateTime);
 
 
     /**
@@ -29,8 +27,8 @@ public interface IScheduleModel
      * @param dateTime (not null) The day to get the start time for.
      * @return (not null) The time the day starts for the given day.
      */
-    Time getStartTime(@NotNull DateTime dateTime);
+    LocalTime getStartTime(@NotNull LocalDate dateTime);
 
 
-    Time getEndTime(@NotNull DateTime dateTime);
+    LocalTime getEndTime(@NotNull LocalDate dateTime);
 }

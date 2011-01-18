@@ -3,7 +3,9 @@ package com.thirdnf.ResourceScheduler;
 import com.thirdnf.ResourceScheduler.components.AppointmentComponent;
 import com.thirdnf.ResourceScheduler.components.ResourceComponent;
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +25,7 @@ import java.util.*;
  */
 public class DaySchedule extends JPanel implements Printable
 {
-    private Map<AppointmentComponent, Time> _appointmentMap = new HashMap<AppointmentComponent, Time>();
+    private Map<AppointmentComponent, LocalTime> _appointmentMap = new HashMap<AppointmentComponent, LocalTime>();
 
     private ActionListener _actionListener = null;
 
@@ -57,18 +59,18 @@ public class DaySchedule extends JPanel implements Printable
     }
 
 
-    public void showDate(@NotNull DateTime date)
+    public void showDate(@NotNull LocalDate date)
     {
         // Check if we area already showing a date.  If so, remove it
         if (_innerPanel != null) {
             remove(_innerPanel);
         }
 
-        _currentDateLabel.setText(date.toString());
+        _currentDateLabel.setText(date.toString("EEEE - MMMM d, yyyy"));
 
         // The model knows the begin and end times of the day for this date
-        Time startTime = _model.getStartTime(date);
-        Time endTime = _model.getEndTime(date);
+        LocalTime startTime = _model.getStartTime(date);
+        LocalTime endTime = _model.getEndTime(date);
 
         _innerPanel = new InnerPanel(startTime, endTime);
         add(_innerPanel);
@@ -174,16 +176,16 @@ public class DaySchedule extends JPanel implements Printable
 
     private static class InnerPanel extends JPanel
     {
-        private final Time _startTime;
-        private final Time _endTime;
+        private final LocalTime _startTime;
+        private final LocalTime _endTime;
 
 
-        InnerPanel(@NotNull Time startTime, @NotNull Time endTime)
+        InnerPanel(@NotNull LocalTime startTime, @NotNull LocalTime endTime)
         {
             _startTime = startTime;
             _endTime   = endTime;
 
-            setLayout(new TimeLayout(100, 25, startTime, endTime, new Duration(0, 15, 0)));
+            setLayout(new TimeLayout(100, 25, startTime, endTime, Duration.standardMinutes(15)));
             setBackground(Color.white);
             setOpaque(true);
             setBorder(BorderFactory.createEtchedBorder());
@@ -224,11 +226,11 @@ public class DaySchedule extends JPanel implements Printable
             }
 
 
-            Time time = _startTime;
+            LocalTime time = _startTime;
             for (int i=0; i< rows; ++i) {
                 Integer y = layout.getY(time);
                 if (y != null) {
-                    boolean onTheHour = time.isOnTheHour();
+                    boolean onTheHour = time.getMinuteOfHour() == 0;
 
                     int x = insets.left;
                     if (onTheHour) {
@@ -242,16 +244,16 @@ public class DaySchedule extends JPanel implements Printable
 
                     if (onTheHour) {
                         // We want to draw hour markers and right justify them.
-                        String timeString = time.toString();
+                        String timeString = time.toString("h:mm a");
 
                         Rectangle2D rect = fontMetrics.getStringBounds(timeString, graphics);
                         int stringX = (int)(leftHeader - rect.getWidth() - 10);
 
-                        graphics.drawString(time.toString(), stringX, y + fontHeight);
+                        graphics.drawString(timeString, stringX, y + fontHeight);
                         graphics.setColor(Color.lightGray);
                     }
                 }
-                time = time.add(increments);
+                time = time.plus(increments.toPeriod());
             }
 
             graphics.setColor(oldColor);

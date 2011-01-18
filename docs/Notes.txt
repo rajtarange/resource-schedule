@@ -1,0 +1,27 @@
+This is an unorganized collection of random notes and comments as I develop this library.
+
+1. I'm still learning the maven structure so right now the SchedulerDemo is embedded in the library which I
+   would really prefer to pull out and into its own area.
+
+2. I've decided to use Joda as a replacement for the Java Date libraries as I find the java date stuff
+   unnecessarily complicated to use and I would rather spend my time understanding higher level concepts.
+
+3. For now, almost all changes sent to the Model trigger a complete redraw of the layout.  I need to first
+   get it all working before I start worrying about how I can optimize the drawing.
+
+
+
+Known Restrictions:
+-------------------
++ Appointments can not be schedule more fine than seconds.
+
++ Appointments can not span multiple days.
+
+
+Features To Add:
+----------------
++ Drag and Drop of appointments to move them around in a day, or across schedules.
+
++ Add week view.
+
++ Add month view.
