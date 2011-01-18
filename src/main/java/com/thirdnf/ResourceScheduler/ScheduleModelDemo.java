@@ -1,11 +1,10 @@
 package com.thirdnf.ResourceScheduler;
 
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joda.time.DateTime;
 
 import java.awt.*;
-import java.util.Date;
 
 /**
  * A demo model, has its database hard coded.
@@ -175,7 +174,7 @@ public class ScheduleModelDemo extends AScheduleModel
 
 
     @Override
-    public void visitAppointments(IAppointmentVisitor visitor, @NotNull Date dateTime)
+    public void visitAppointments(IAppointmentVisitor visitor, @NotNull DateTime dateTime)
     {
         // TODO - Actually break the appointments down by days.
 
@@ -186,7 +185,7 @@ public class ScheduleModelDemo extends AScheduleModel
 
 
     @Override
-    public void visitResources(IResourceVisitor visitor, @NotNull Date dateTime)
+    public void visitResources(IResourceVisitor visitor, @NotNull DateTime dateTime)
     {
         visitor.visitResource(Bobby);
         visitor.visitResource(Johnny);
@@ -195,13 +194,13 @@ public class ScheduleModelDemo extends AScheduleModel
 
 
     @Override
-    public Time getEndTime(@NotNull Date dateTime)
+    public Time getEndTime(@NotNull DateTime dateTime)
     {
         return new Time(18, 0, 0); // 6 pm
     }
 
     @Override
-    public Time getStartTime(@NotNull Date dateTime)
+    public Time getStartTime(@NotNull DateTime dateTime)
     {
         return new Time(8, 0, 0); // 8 am
     }

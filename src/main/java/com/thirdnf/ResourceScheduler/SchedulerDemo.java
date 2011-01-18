@@ -9,13 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.util.Date;
 import javax.swing.*;
 import javax.swing.border.*;
 
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
 
 /**
  * Just a demo application to show how to use the ResourceScheduler
@@ -37,7 +37,7 @@ public class SchedulerDemo extends JFrame
         initComponents();
 
         _scheduler.setModel(new ScheduleModelDemo());
-        _scheduler.showDate(new Date());
+        _scheduler.showDate(new DateTime());
         _scheduler.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e)

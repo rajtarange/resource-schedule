@@ -3,6 +3,7 @@ package com.thirdnf.ResourceScheduler;
 import com.thirdnf.ResourceScheduler.components.AppointmentComponent;
 import com.thirdnf.ResourceScheduler.components.ResourceComponent;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,7 +57,7 @@ public class DaySchedule extends JPanel implements Printable
     }
 
 
-    public void showDate(@NotNull Date date)
+    public void showDate(@NotNull DateTime date)
     {
         // Check if we area already showing a date.  If so, remove it
         if (_innerPanel != null) {
