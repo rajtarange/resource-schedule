@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Thu Jan 13 18:25:41 PST 2011
  */
 
-package com.thirdnf.ResourceScheduler;
+package com.thirdnf.ResourceScheduler.demo;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,8 +14,11 @@ import javax.swing.border.*;
 
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
+import com.thirdnf.ResourceScheduler.IAppointment;
+import com.thirdnf.ResourceScheduler.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
+
 
 /**
  * Just a demo application to show how to use the ResourceScheduler
@@ -24,7 +27,10 @@ import org.joda.time.LocalDate;
  */
 public class SchedulerDemo extends JFrame
 {
-
+    /**
+     * Main entry point.  This method is responsible for creating the main window and showing it.
+     * @param args (not null) Any args which are passed in.  This is currently ignored.
+     */
     public static void main(@NotNull String[] args)
     {
         SchedulerDemo mw = new SchedulerDemo();
@@ -32,6 +38,11 @@ public class SchedulerDemo extends JFrame
         mw.setVisible(true);
     }
 
+
+    /**
+     * Main scheduler demo.  This window just has some controls to show off some of the features of the
+     * Resource Scheduler and an instance of the Resource Scheduler itself.
+     */
     public SchedulerDemo()
     {
         initComponents();
@@ -55,6 +66,9 @@ public class SchedulerDemo extends JFrame
     }
 
 
+    /**
+     * Handle when the user clicks on the print button.
+     */
     private void handlePrint()
     {
         PrinterJob printJob = PrinterJob.getPrinterJob();
@@ -64,13 +78,16 @@ public class SchedulerDemo extends JFrame
                 System.out.println("Printing from main");
                 printJob.print();
             }
-            catch(PrinterException pe) {
+            catch (PrinterException pe) {
                 System.out.println("Error printing: " + pe);
             }
         }
     }
 
 
+    /**
+     * Initialize the components.
+     */
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         panel1 = new JPanel();
@@ -89,14 +106,14 @@ public class SchedulerDemo extends JFrame
         setTitle("Resource Scheduler Demo");
         Container contentPane = getContentPane();
         contentPane.setLayout(new FormLayout(
-                "default:grow",
-                "default:grow"));
+            "default:grow",
+            "default:grow"));
 
         //======== panel1 ========
         {
             panel1.setLayout(new FormLayout(
-                    "default, $lcgap, [40dlu,default], $lcgap, default:grow",
-                    "default, $lgap, default:grow, 2*($lgap, default)"));
+                "2*(default, $lcgap), default:grow",
+                "default, $lgap, default:grow, 2*($lgap, default)"));
 
             //---- label1 ----
             label1.setText("Date:");
@@ -106,6 +123,7 @@ public class SchedulerDemo extends JFrame
 
             //======== scrollPane1 ========
             {
+                scrollPane1.setMinimumSize(new Dimension(15, 23));
 
                 //---- _detailsPane ----
                 _detailsPane.setBorder(new TitledBorder("Appointment Details"));
@@ -123,11 +141,9 @@ public class SchedulerDemo extends JFrame
 
             //---- button1 ----
             button1.setText("Print");
-            button1.addActionListener(new ActionListener()
-            {
+            button1.addActionListener(new ActionListener() {
                 @Override
-                public void actionPerformed(ActionEvent e)
-                {
+                public void actionPerformed(ActionEvent e) {
                     handlePrint();
                 }
             });

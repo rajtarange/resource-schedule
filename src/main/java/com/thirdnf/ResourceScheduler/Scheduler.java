@@ -5,6 +5,7 @@
 package com.thirdnf.ResourceScheduler;
 
 import javax.swing.*;
+import javax.swing.event.EventListenerList;
 
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
@@ -15,8 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.util.HashSet;
-import java.util.Set;
+
 
 /**
  * This is the main entry point for the Scheduler.  This will have methods on it to determine which view is
@@ -28,10 +28,16 @@ public class Scheduler extends JPanel implements Printable
 {
     private static final String DayView = "DayView";
 
-    private final Set<ActionListener> _actionListeners = new HashSet<ActionListener>();
+    // We are going to use the EventListenerList which allows multiple events to share one list.
+    protected final EventListenerList _listenerList = new EventListenerList();
+
     private final DaySchedule _daySchedule;
 
-    public Scheduler() 
+    /**
+     * Constructor for the main scheduler panel.  This is responsible for deciding which view to show
+     *  (day, week, month) and handing requests to switch between the views.
+     */
+    public Scheduler()
     {
         CardLayout cardLayout = new CardLayout();
 
@@ -43,14 +49,28 @@ public class Scheduler extends JPanel implements Printable
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                for (ActionListener listener : _actionListeners) {
-                    listener.actionPerformed(e);
+                // Guaranteed to return a non-null array
+                Object[] listeners = _listenerList.getListenerList();
+                // Process the listeners last to first, notifying
+                // those that are interested in this event
+                for (int i = listeners.length-2; i>=0; i-=2) {
+                    if (listeners[i]==ActionListener.class) {
+                        ((ActionListener)listeners[i+1]).actionPerformed(e);
+                    }
                 }
             }
         });
+
+        setPreferredSize(new Dimension(500, 400));
     }
 
 
+    /**
+     * Set the model for the scheduler to use.  This will eventually proxy this request down to all panels, but for
+     * now we only have the one.
+     *
+     * @param model (not null) The model to use for the component.
+     */
     public void setModel(@NotNull IScheduleModel model)
     {
         _daySchedule.setModel(model);
@@ -67,7 +87,13 @@ public class Scheduler extends JPanel implements Printable
 
     public void addActionListener(@NotNull ActionListener actionListener)
     {
-        _actionListeners.add(actionListener);
+        _listenerList.add(ActionListener.class, actionListener);
+    }
+
+
+    public void removeActionListener(@NotNull ActionListener actionListener)
+    {
+        _listenerList.remove(ActionListener.class, actionListener);
     }
 
 

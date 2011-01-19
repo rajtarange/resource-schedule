@@ -42,7 +42,7 @@
          <class>com.jgoodies.forms.layout.FormLayout</class> 
          <void method="setProperty"> 
           <string>$columnSpecs</string> 
-          <string>default, labelcompgap, max(default;40dlu), labelcompgap, default:grow</string> 
+          <string>default, labelcompgap, default, labelcompgap, default:grow</string> 
          </void> 
          <void method="setProperty"> 
           <string>$rowSpecs</string> 
@@ -111,6 +111,13 @@
           <object class="com.jformdesigner.model.FormLayoutManager"> 
            <class>javax.swing.JScrollPane</class> 
           </object> 
+          <void method="setProperty"> 
+           <string>minimumSize</string> 
+           <object class="java.awt.Dimension"> 
+            <int>15</int> 
+            <int>23</int> 
+           </object> 
+          </void> 
           <void property="name"> 
            <string>scrollPane1</string> 
           </void> 

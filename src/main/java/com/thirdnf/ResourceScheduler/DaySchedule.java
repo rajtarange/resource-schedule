@@ -191,9 +191,11 @@ public class DaySchedule extends JPanel implements Printable
 
         /**
          * Create the inner panel with a start and end times as given.  These start and end times are the
-         * total span that should be shown for the day.  Eventually it w
-         * @param startTime
-         * @param endTime
+         * total span that should be shown for the day.  There is no way to specify a day which spans midnight,
+         * this library is simply not being designed to handle that.
+         *
+         * @param startTime (not null) Time of the day to start.
+         * @param endTime (not null) Time of the day to end.
          */
         InnerPanel(@NotNull LocalTime startTime, @NotNull LocalTime endTime)
         {

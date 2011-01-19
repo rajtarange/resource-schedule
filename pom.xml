@@ -52,7 +52,7 @@
 
                     <archive>
                         <manifest>
-                            <mainClass>com.thirdnf.ResourceScheduler.SchedulerDemo</mainClass>
+                            <mainClass>com.thirdnf.ResourceScheduler.demo.SchedulerDemo</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
