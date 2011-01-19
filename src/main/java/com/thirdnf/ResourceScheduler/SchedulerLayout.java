@@ -14,11 +14,11 @@ import java.util.Map;
 
 
 /**
- * TimeLayout is responsible for laying out the components on a time grid.
+ * SchedulerLayout is responsible for laying out the components on a time grid.
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class TimeLayout implements LayoutManager2
+public class SchedulerLayout implements LayoutManager2
 {
     // Location map telling us where everything is on the time grid
     private Map<Component, Integer> _columnMap = new HashMap<Component, Integer>();
@@ -46,8 +46,8 @@ public class TimeLayout implements LayoutManager2
      * @param topHeader Size to give the top header
      * @param increments (not null) Increments for the layout
      */
-    public TimeLayout(int leftHeader, int topHeader, @NotNull LocalTime startTime, @NotNull LocalTime endTime,
-                      @NotNull Duration increments)
+    public SchedulerLayout(int leftHeader, int topHeader, @NotNull LocalTime startTime, @NotNull LocalTime endTime,
+                           @NotNull Duration increments)
     {
         _startTime = startTime;
         _endTime = endTime;
@@ -78,7 +78,7 @@ public class TimeLayout implements LayoutManager2
     public Dimension preferredLayoutSize(Container parent)
     {
         // TODO - Calculate this for real
-        return new Dimension(300, 300);
+        return new Dimension(400, 300);
     }
 
 
@@ -166,6 +166,14 @@ public class TimeLayout implements LayoutManager2
     }
 
 
+    /**
+     * Public method to ask the layout where a given time location should be placed.  I'm not 100% sure if this
+     * breaks the abstraction of the layout by exposing this.  To access this the caller needs to get the
+     * layout and then cast it to a ScheduleLayout.  Doesn't seem ideal.
+     *
+     * @param time (not null) Time in question to ask for the y location of.
+     * @return The y location on the current panel for the given time.
+     */
     public int getY(@NotNull LocalTime time)
     {
         LocalTime startTime = new LocalTime(8, 0, 0);
@@ -174,9 +182,7 @@ public class TimeLayout implements LayoutManager2
         long seconds = Period.fieldDifference(startTime, time).toStandardDuration().getStandardSeconds();
         int span = (int) (seconds / _increments.getStandardSeconds());
 
-        int y = _topHeader + (int)(span * _rowHeight);
-
-        return y;
+        return _topHeader + (int)(span * _rowHeight);
     }
 
 

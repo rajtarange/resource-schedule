@@ -22,6 +22,11 @@ Features To Add:
 ----------------
 + Drag and Drop of appointments to move them around in a day, or across schedules.
 
-+ Add week view.
++ Add week view.  This would allow dragging appointments around and resources around on given days.
 
-+ Add month view.
++ Add month view.  This would convey information about what resources where scheduled to be available on which
+  days.  For each resource it might be nice to show percentage of availability.  Like resource 1 is 50% booked
+  on the 5th of November.
+
++ Allow per-resource scheduling in the day.  In other words, resource 1 could be available
+  from 8am - 1pm and resource 2 from 12pm - 5pm.

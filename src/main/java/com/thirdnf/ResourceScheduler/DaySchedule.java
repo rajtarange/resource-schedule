@@ -21,6 +21,11 @@ import java.util.*;
 /**
  * Panel to show a given day.
  *
+ * I'm still working on exactly where the api line here should be drawn between the panel and the layout, but
+ * my thinking is that the panel knows of the model but the layout does not.  The layout only knows of its
+ * size and the components it has been asked to draw.  I realize that seems sort of obvious, but hindsight is
+ * 20/20.
+ *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
 public class DaySchedule extends JPanel implements Printable
@@ -130,7 +135,7 @@ public class DaySchedule extends JPanel implements Printable
             // This is an unassigned resource for this day
             System.out.println("Deal with unassigned resource.");
 
-            column = new Integer(1);
+            column = 1;
         }
 
 
@@ -174,18 +179,28 @@ public class DaySchedule extends JPanel implements Printable
     }
 
 
+    /**
+     * This is the inner panel that actually holds the components.  This panel can be removed and replaced
+     * as the date changes or as otherwise needed.
+     */
     private static class InnerPanel extends JPanel
     {
         private final LocalTime _startTime;
         private final LocalTime _endTime;
 
 
+        /**
+         * Create the inner panel with a start and end times as given.  These start and end times are the
+         * total span that should be shown for the day.  Eventually it w
+         * @param startTime
+         * @param endTime
+         */
         InnerPanel(@NotNull LocalTime startTime, @NotNull LocalTime endTime)
         {
             _startTime = startTime;
             _endTime   = endTime;
 
-            setLayout(new TimeLayout(100, 25, startTime, endTime, Duration.standardMinutes(15)));
+            setLayout(new SchedulerLayout(100, 25, startTime, endTime, Duration.standardMinutes(15)));
             setBackground(Color.white);
             setOpaque(true);
             setBorder(BorderFactory.createEtchedBorder());
@@ -197,7 +212,7 @@ public class DaySchedule extends JPanel implements Printable
         {
             super.paintComponent(g);
 
-            TimeLayout layout = (TimeLayout)getLayout();
+            SchedulerLayout layout = (SchedulerLayout)getLayout();
 
             Graphics2D graphics = (Graphics2D)g;
 
