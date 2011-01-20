@@ -8,9 +8,8 @@ import org.joda.time.LocalTime;
 import org.joda.time.Period;
 
 import java.awt.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 
 /**
@@ -127,8 +126,13 @@ public class SchedulerLayout implements LayoutManager2
         synchronized (target.getTreeLock()) {
             recomputeLayout(target);
 
-            int componentCount = target.getComponentCount();
+            // In order to do intersection checking in the column we need to sort the appointments by their
+            //  column first.  The suppress warnings is here due to a bug/feature in java that can't deal
+            //  with generic array creation.
+            @SuppressWarnings({"unchecked"})
+            List<AppointmentComponent>[] columns = (List<AppointmentComponent>[])new List[_columns+1];
 
+            int componentCount = target.getComponentCount();
             for (int i = 0 ; i < componentCount ; ++i) {
                 Component component = target.getComponent(i);
                 if (! component.isVisible()) { continue; }
@@ -159,17 +163,115 @@ public class SchedulerLayout implements LayoutManager2
                     int y = getY(time);
                     int x = getX(column);
 
-                    int width = (int) _columnWidth - 15;
+                    int width = (int) _columnWidth;
 
-                    // One rowHeight is one increment
+                    // Scale the height
                     int height = (int) Math.ceil(_scale * (float)duration.getStandardSeconds());
 
-                    component.setBounds(x, y, width, height);
+                    appointmentComponent.setBounds(x, y, width, height);
+
+                    if (columns[column] == null) {
+                        columns[column] = new ArrayList<AppointmentComponent>();
+                    }
+                    columns[column].add(appointmentComponent);
                 }
                 else {
                     System.out.println("Don't know how to layout component: " + component);
                 }
             }
+
+            // Now, fix up the appointments in each column
+            for (List<AppointmentComponent> list : columns) {
+                if (list != null) {
+                    fixOverlaps(list);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * This is an internal method to go through and fix up any appointments so they don't draw on top of
+     * each other.
+     * <p>
+     * This method is not complete, right now it doesn't do a good job if the overlap gets complicated.  It
+     * won't draw them on top of each other, but it doesn't make optimal use of space and the algorithm seems
+     * overly complicated.
+     *
+     * @param appointments (not null) List of appointments to fix.
+     */
+    private void fixOverlaps(@NotNull List<AppointmentComponent> appointments)
+    {
+        // Run through each shape and create a list of all other shapes which intersect it, this can also
+        //  be used later.
+        Map<AppointmentComponent, List<AppointmentComponent>> hitMap =  new HashMap<AppointmentComponent, List<AppointmentComponent>>();
+        Map<AppointmentComponent, Integer> columnMap = new HashMap<AppointmentComponent, Integer>();
+
+        for (AppointmentComponent appointment : appointments) {
+            Rectangle rectangle = appointment.getBounds();
+            List<AppointmentComponent> list = null;
+
+            // Check if this guy intersects any other one in this list
+            for (AppointmentComponent checkComponent : appointments) {
+                if (appointment == checkComponent) {
+                    // Skip the self check
+                    continue;
+                }
+
+                Rectangle checkRectangle = checkComponent.getBounds();
+
+                if (rectangle.intersects(checkRectangle)) {
+                    if (list == null) { list = new ArrayList<AppointmentComponent>(); }
+                    list.add(checkComponent);
+                }
+            }
+
+            if (list != null) {
+                hitMap.put(appointment, list);
+            }
+        }
+
+        int maxColumn = 0;
+        for (AppointmentComponent appointment : appointments) {
+            List<AppointmentComponent> list = hitMap.get(appointment);
+
+            if (list == null) {
+                // No conflicts, it can keep its full size
+                continue;
+            }
+
+            // Find a free column
+            int column = 0;
+            boolean done = false;
+            while (!done) {
+                done = true;
+
+                for (AppointmentComponent checkComponent : list) {
+                    Integer testColumn = columnMap.get(checkComponent);
+
+                    if (testColumn != null && testColumn == column) {
+                        // This column is taken
+                        column += 1;
+                        done = false;
+
+                        maxColumn = Math.max(maxColumn, column);
+                    }
+                }
+            }
+            columnMap.put(appointment, column);
+        }
+
+        if (maxColumn == 0) { return; }
+
+        // Now adjust the sizes
+        System.out.println("Max column: " + maxColumn);
+        for (AppointmentComponent appointment : appointments) {
+            Integer column = columnMap.get(appointment);
+            if (column == null) { continue; }
+            Rectangle rectangle = appointment.getBounds();
+            float width = ((float)(rectangle.width))/(float)(maxColumn+1);
+            int x = rectangle.x + (int)(column*width);
+            appointment.setBounds(x, rectangle.y, (int)width, rectangle.height);
         }
     }
 
