@@ -50,9 +50,10 @@
         </module>
 
         <!-- Member variables need to start with an underscore '_'  -->
-        <module name="MemberName">
-            <property name="format" value="^_[a-zA-Z0-9_]*$"/>
-        </module>
+        <!-- I'm removing this as JFormDesigner does this and I don't really want to fix it.  -->
+        <!--<module name="MemberName">-->
+            <!--<property name="format" value="^_[a-zA-Z0-9_]*$"/>-->
+        <!--</module>-->
 
         <!-- Static variables need to start with a capital letter -->
         <module name="StaticVariableName">

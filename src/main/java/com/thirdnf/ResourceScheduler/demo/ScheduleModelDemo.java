@@ -27,10 +27,12 @@ public class ScheduleModelDemo extends AScheduleModel
 
     // The appointments
     private static final IAppointment[] Appointments = new IAppointment[] {
-            DemoAppointment.create("Appointment1", Green, Bobby, new LocalTime(10, 5, 0), Duration.standardMinutes(45)),
-            DemoAppointment.create("Appointment2", Blue, Johnny, new LocalTime(13, 0, 0),  Duration.standardMinutes(75)),
-            DemoAppointment.create("Appointment3", Blue, Sally, new LocalTime(8, 0, 0),  Duration.standardMinutes(60)),
-            DemoAppointment.create("Appointment4", Green, Sally, new LocalTime(8, 45, 0),  Duration.standardMinutes(120))
+            DemoAppointment.create("Appointment1", Green, Bobby, new LocalTime(10, 5, 0),  45),
+            DemoAppointment.create("Appointment2", Blue, Johnny, new LocalTime(13, 0, 0),  75),
+            DemoAppointment.create("Appointment3", Blue, Sally,  new LocalTime(8, 0, 0),   60),
+            DemoAppointment.create("Appointment4", Green, Sally, new LocalTime(8, 45, 0),  120),
+            DemoAppointment.create("Appointment5", Blue, Sally, new LocalTime(10, 45, 0),  30),
+            DemoAppointment.create("Appointment7", Green, Sally, new LocalTime(12, 30, 0), 40)
     };
 
 
@@ -39,6 +41,12 @@ public class ScheduleModelDemo extends AScheduleModel
         private final String _title;
         private final Color _color;
 
+
+        /**
+         * Create the demo resource.
+         * @param title Title for the resource.
+         * @param color Color to assign the resource.
+         */
         public DemoResource(@NotNull String title, @NotNull Color color)
         {
             _title = title;
@@ -76,6 +84,11 @@ public class ScheduleModelDemo extends AScheduleModel
         private final Color _color;
         private final String _title;
 
+        /**
+         * Create the category.
+         * @param title (not null) Title of the category
+         * @param color (not null) Color for the category
+         */
         public DemoCategory(@NotNull String title, @NotNull Color color)
         {
             _title = title;
@@ -102,16 +115,17 @@ public class ScheduleModelDemo extends AScheduleModel
 
     private static class DemoAppointment implements IAppointment
     {
-        private final ICategory _catgegory;
+        private final ICategory _category;
         private final IResource _resource;
         private final String _title;
         private LocalTime _time;
         private Duration _length;
 
+
         public DemoAppointment(@NotNull String title, ICategory category, IResource resource)
         {
             _title = title;
-            _catgegory = category;
+            _category = category;
             _resource = resource;
         }
 
@@ -119,7 +133,7 @@ public class ScheduleModelDemo extends AScheduleModel
         @Override
         public ICategory getCategory()
         {
-            return _catgegory;
+            return _category;
         }
 
         @NotNull
@@ -165,11 +179,11 @@ public class ScheduleModelDemo extends AScheduleModel
 
         public static DemoAppointment create(@NotNull String title, @NotNull ICategory category,
                                              @Nullable IResource resource,
-                                             @NotNull LocalTime time, @NotNull Duration duration)
+                                             @NotNull LocalTime time, int minutes)
         {
             DemoAppointment appointment = new DemoAppointment(title, category, resource);
             appointment.setTime(time);
-            appointment.setLength(duration);
+            appointment.setLength(Duration.standardMinutes(minutes));
 
             return appointment;
         }

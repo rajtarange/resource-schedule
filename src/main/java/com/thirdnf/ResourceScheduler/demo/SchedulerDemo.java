@@ -18,6 +18,9 @@ import com.thirdnf.ResourceScheduler.IAppointment;
 import com.thirdnf.ResourceScheduler.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormat;
 
 
 /**
@@ -55,8 +58,12 @@ public class SchedulerDemo extends JFrame
             {
                 IAppointment appointment = (IAppointment)e.getSource();
                 StringBuilder stringBuilder = new StringBuilder();
+                LocalTime time = appointment.getTime();
+                Period period = appointment.getDuration().toPeriod();
+
                 stringBuilder.append("Info About: ").append(appointment.getTitle()).append('\n')
-                        .append("Start time: ").append(appointment.getTime()).append('\n')
+                        .append("Start time: ").append(time.toString("h:mm a")).append('\n')
+                        .append("Duration: ").append(period.toString(PeriodFormat.getDefault())).append('\n')
                         .append("For Resource: ").append(appointment.getResource());
 
 
