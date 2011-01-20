@@ -9,6 +9,14 @@ This is an unorganized collection of random notes and comments as I develop this
 3. For now, almost all changes sent to the Model trigger a complete redraw of the layout.  I need to first
    get it all working before I start worrying about how I can optimize the drawing.
 
+4. If at all possible I'm trying to not use temporary lists in the API.  In other words, rather than asking for
+   a list of appointments on a given day, the API instead asks the called method to visit a visitor with
+   each appointment for a given day.  The implementations may have temporary lists, but this can possibly be
+   later optimized out.
+
+5. I'm going to make a sincere attempt to not use abbreviations in any API names.  ID is okay, but just about
+   everything else ends up only making things more confusing.
+
 
 
 Known Restrictions:

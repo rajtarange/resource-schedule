@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.joda.time.Period;
 
 import javax.swing.*;
 import java.awt.*;
@@ -187,6 +188,7 @@ public class DaySchedule extends JPanel implements Printable
     {
         private final LocalTime _startTime;
         private final LocalTime _endTime;
+        private final Duration  _increments;
 
 
         /**
@@ -199,10 +201,11 @@ public class DaySchedule extends JPanel implements Printable
          */
         InnerPanel(@NotNull LocalTime startTime, @NotNull LocalTime endTime)
         {
-            _startTime = startTime;
-            _endTime   = endTime;
+            _startTime  = startTime;
+            _endTime    = endTime;
+            _increments = Duration.standardMinutes(15);
 
-            setLayout(new SchedulerLayout(100, 25, startTime, endTime, Duration.standardMinutes(15)));
+            setLayout(new SchedulerLayout(startTime, endTime));
             setBackground(Color.white);
             setOpaque(true);
             setBorder(BorderFactory.createEtchedBorder());
@@ -231,20 +234,18 @@ public class DaySchedule extends JPanel implements Printable
             graphics.setColor(Color.lightGray);
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            int columns = layout.getColumns();
-            int rows = layout.getRows();
-            int leftHeader = layout.getLeftHeader();
-            float columnWidth = layout.getColumnWidth();
-            Duration increments = layout.getIncrements();
+            int columns    = layout.getColumnCount();
+            int leftHeader = layout.getX(0);
 
             for (int i=0; i<columns; ++i) {
-                int x = leftHeader + (int)(i*columnWidth);
+                int x = layout.getX(i);
                 graphics.drawLine(x, insets.top, x, insets.top+height);
             }
 
+            Period period = _increments.toPeriod();
 
-            LocalTime time = _startTime;
-            for (int i=0; i< rows; ++i) {
+
+            for (LocalTime time = _startTime; time.compareTo(_endTime) < 0; time = time.plus(period)) {
                 Integer y = layout.getY(time);
                 if (y != null) {
                     boolean onTheHour = time.getMinuteOfHour() == 0;
@@ -270,7 +271,6 @@ public class DaySchedule extends JPanel implements Printable
                         graphics.setColor(Color.lightGray);
                     }
                 }
-                time = time.plus(increments.toPeriod());
             }
 
             graphics.setColor(oldColor);

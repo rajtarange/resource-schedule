@@ -18,45 +18,76 @@ import java.util.Map;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public class SchedulerLayout implements LayoutManager2
 {
-    // Location map telling us where everything is on the time grid
+    // Location map telling us which column each appointment belongs to.
     private Map<Component, Integer> _columnMap = new HashMap<Component, Integer>();
 
-//    private Map<LocalTime, Integer> _timeMap = new HashMap<LocalTime, Integer>();
+    // Space to give to the top header.
+    private int _topHeader = 25;
+    private int _leftHeader = 100;
 
-    private final int _topHeader;
-    private final int _leftHeader;
-
-    private final Duration _increments;
     private final LocalTime _startTime;
-    private final LocalTime _endTime;
 
+    private final long _totalSeconds;
+
+    // X offset location, equal to the inset.left
+    private int  _x;
+
+    // Y offset location, equal to the inset.top
+    private int  _y;
+
+    // Total number of columns, equal to number of resources + unassigned optional
     private int _columns;
+
+    // Our scaling factor assuming 1:1 means one pixel == one second
+    private float _scale;
+
     private float _columnWidth = 0;
-    private int _rows;
-    private float _rowHeight = 0;
 
 
     /**
      * Constructor.  So far the only thing that must be provided is the increments to use for the layout.
      * I think changing this would require a nearly full re-layout.
      *
-     * @param leftHeader Size to give the left hand header.
-     * @param topHeader Size to give the top header
-     * @param increments (not null) Increments for the layout
+     * @param startTime (not null) Time of the day to start.
+     * @param endTime (not null) Time of the day to end.
      */
-    public SchedulerLayout(int leftHeader, int topHeader, @NotNull LocalTime startTime, @NotNull LocalTime endTime,
-                           @NotNull Duration increments)
+    public SchedulerLayout(@NotNull LocalTime startTime, @NotNull LocalTime endTime)
     {
         _startTime = startTime;
-        _endTime = endTime;
 
-        _leftHeader = leftHeader;
-        _topHeader = topHeader;
-        _increments = increments;
-        long diff = Period.fieldDifference(startTime, endTime).toStandardDuration().getStandardSeconds();
-        _rows = (int) (diff / _increments.getStandardSeconds());
+        // Total number of seconds we are representing
+        _totalSeconds = Period.fieldDifference(startTime, endTime).toStandardDuration().getStandardSeconds();
+
+        // Start with a 1:1 scale
+        _scale = 1.0f;
+    }
+
+
+    /**
+     * Set the top header size to the given number of pixels.
+     * @param pixels Number of pixels for the top header
+     */
+    public void setTopHeader(int pixels)
+    {
+        _topHeader = pixels;
+
+        // TODO - force a recalculate or re-layout
+    }
+
+
+    /**
+     * Set the left header size to the given number of pixels.
+     *
+     * @param pixels Number of pixels for the left header
+     */
+    public void setLeftHeader(int pixels)
+    {
+        _leftHeader = pixels;
+
+        // TODO - force a recalculate or re-layout
     }
 
 
@@ -104,19 +135,17 @@ public class SchedulerLayout implements LayoutManager2
 
                 if (component instanceof ResourceComponent) {
                     // These are placed at the top of their row
-                    ResourceComponent resourceComponent = (ResourceComponent)component;
 
                     int column = _columnMap.get(component);
 
-                    int y = 0;
-                    int x = _leftHeader + (int)(_columnWidth * column);
+                    int x = _x + _leftHeader + (int)(_columnWidth * column);
 
                     int width = (int) _columnWidth;
 
                     // One rowHeight is one increment
                     int height = _topHeader;
 
-                    component.setBounds(x, y, width, height);
+                    component.setBounds(x, _y, width, height);
                 }
                 else if (component instanceof AppointmentComponent) {
                     AppointmentComponent appointmentComponent = (AppointmentComponent)component;
@@ -128,12 +157,12 @@ public class SchedulerLayout implements LayoutManager2
                     int column = _columnMap.get(component);
 
                     int y = getY(time);
-                    int x = _leftHeader + (int)(_columnWidth * column);
+                    int x = getX(column);
 
                     int width = (int) _columnWidth - 15;
 
                     // One rowHeight is one increment
-                    int height = (int) Math.ceil(_rowHeight * duration.getStandardSeconds() / _increments.getStandardSeconds());
+                    int height = (int) Math.ceil(_scale * (float)duration.getStandardSeconds());
 
                     component.setBounds(x, y, width, height);
                 }
@@ -145,7 +174,13 @@ public class SchedulerLayout implements LayoutManager2
     }
 
 
-    private void recomputeLayout(Container target)
+    /**
+     * Internal method to recompute how wide the columns and rows should be.  This is usually only called after
+     * a panel resize or on startup.
+     *
+     * @param target (not null) the containing panel.
+     */
+    private void recomputeLayout(@NotNull Container target)
     {
         // Dynamically determine how many columns we are going to need.
         _columns = 0;
@@ -157,11 +192,13 @@ public class SchedulerLayout implements LayoutManager2
         _columns +=1;
 
         Insets insets = target.getInsets();
+        _x = insets.left;
+        _y = insets.top;
 
         int width = target.getWidth() - insets.left - insets.right;
         int height = target.getHeight() - insets.top - insets.bottom;
 
-        _rowHeight = (float)(height - _topHeader) / (float)_rows;
+        _scale       = (float)(height - _topHeader) / (float)_totalSeconds;
         _columnWidth = (float)(width - _leftHeader) / (float) _columns;
     }
 
@@ -176,47 +213,36 @@ public class SchedulerLayout implements LayoutManager2
      */
     public int getY(@NotNull LocalTime time)
     {
-        LocalTime startTime = new LocalTime(8, 0, 0);
-
         // Get the seconds which have passed from the start time to the time they are asking about.
-        long seconds = Period.fieldDifference(startTime, time).toStandardDuration().getStandardSeconds();
-        int span = (int) (seconds / _increments.getStandardSeconds());
+        long seconds = Period.fieldDifference(_startTime, time).toStandardDuration().getStandardSeconds();
 
-        return _topHeader + (int)(span * _rowHeight);
+        return _y + _topHeader + (int)(_scale * (float)seconds);
     }
 
 
-    public int getColumns()
+    /**
+     * Get the x location in the current panel for the given column id.  This gives the x location of the
+     * columns left hand side.  Use (column + 1) to find the right hand location.
+     *
+     * @param column The column to get the x value for.
+     * @return The x location of the column start position.
+     */
+    public int getX(int column)
+    {
+        return _x + _leftHeader + (int)(column*_columnWidth);
+    }
+
+
+    /**
+     * Get the number of columns that the layout has determined it needs to draw.  This will be equal to the
+     * number of resources available on a given day plus a possible extra column for unassigned appointments,
+     * or appointments which are assigned to resources which are not available on that day.
+     *
+     * @return Number of columns in the layout.
+     */
+    public int getColumnCount()
     {
         return _columns;
-    }
-
-
-    public int getRows()
-    {
-        return _rows;
-    }
-
-    public int getTopHeader()
-    {
-        return _topHeader;
-    }
-
-    public float getColumnWidth()
-    {
-        return _columnWidth;
-    }
-
-    public int getLeftHeader()
-    {
-        return _leftHeader;
-    }
-
-
-    @NotNull
-    public Duration getIncrements()
-    {
-        return _increments;
     }
 
 

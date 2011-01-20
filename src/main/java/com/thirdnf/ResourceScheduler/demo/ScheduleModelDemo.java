@@ -3,7 +3,6 @@ package com.thirdnf.ResourceScheduler.demo;
 import com.thirdnf.ResourceScheduler.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -28,7 +27,7 @@ public class ScheduleModelDemo extends AScheduleModel
 
     // The appointments
     private static final IAppointment[] Appointments = new IAppointment[] {
-            DemoAppointment.create("Appointment1", Green, Bobby, new LocalTime(10, 0, 0), Duration.standardMinutes(45)),
+            DemoAppointment.create("Appointment1", Green, Bobby, new LocalTime(10, 5, 0), Duration.standardMinutes(45)),
             DemoAppointment.create("Appointment2", Blue, Johnny, new LocalTime(13, 0, 0),  Duration.standardMinutes(75)),
             DemoAppointment.create("Appointment3", Blue, Sally, new LocalTime(8, 0, 0),  Duration.standardMinutes(60)),
             DemoAppointment.create("Appointment4", Green, Sally, new LocalTime(8, 45, 0),  Duration.standardMinutes(120))
