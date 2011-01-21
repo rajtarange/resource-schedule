@@ -1,7 +1,6 @@
 package com.thirdnf.ResourceScheduler.demo;
 
 import com.thirdnf.ResourceScheduler.IResource;
-import com.thirdnf.ResourceScheduler.components.AbstractResourceComponent;
 import com.thirdnf.ResourceScheduler.components.BasicResourceComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +13,8 @@ public class DemoResourceComponent extends BasicResourceComponent implements Mou
     public DemoResourceComponent(@NotNull IResource resource)
     {
         super(resource);
+
+        addMouseListener(this);
     }
 
     @Override

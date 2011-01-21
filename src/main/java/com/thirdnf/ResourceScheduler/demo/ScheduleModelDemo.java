@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class ScheduleModelDemo extends AScheduleModel
+public class ScheduleModelDemo extends AbstractScheduleModel
 {
     // Our categories for our appointments
     private static final DemoCategory Green = new DemoCategory("Green", new Color(9, 246, 76, 200));
@@ -91,7 +91,7 @@ public class ScheduleModelDemo extends AScheduleModel
 
 
 
-    private static class DemoResource implements IResource
+    public static class DemoResource implements IResource
     {
         private final String _title;
         private final Color _color;

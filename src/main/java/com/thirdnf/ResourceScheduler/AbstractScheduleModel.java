@@ -13,7 +13,7 @@ import javax.swing.event.EventListenerList;
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public abstract class AScheduleModel implements IScheduleModel
+public abstract class AbstractScheduleModel implements IScheduleModel
 {
     // We are going to use the EventListenerList which allows multiple events to share one list.
     protected final EventListenerList _listenerList = new EventListenerList();

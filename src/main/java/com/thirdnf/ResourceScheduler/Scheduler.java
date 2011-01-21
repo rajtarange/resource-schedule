@@ -88,7 +88,7 @@ public class Scheduler extends JPanel implements Printable
     {
         // TODO - Make sure the day view is loaded
 
-        _daySchedule.showDate(date);
+        _daySchedule.setDate(date);
     }
 
 

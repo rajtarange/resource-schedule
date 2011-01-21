@@ -15,9 +15,9 @@ public class BasicResourceComponent extends AbstractResourceComponent
     {
         super(resource);
 
-        setBackground(_resource.getColor());
         setPreferredSize(new Dimension(100, 100));
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+        setBackground(resource.getColor());
     }
 
 

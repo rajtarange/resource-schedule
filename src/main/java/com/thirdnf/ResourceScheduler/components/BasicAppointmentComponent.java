@@ -7,9 +7,12 @@ import java.awt.*;
 
 
 /**
- * Instances of this class will be the appointment components which are actually drawn on the panel.
- * The eventual goal is to have these drawn similar to the Google calendar appointments and allow them
- * to expand and move by drag and drop.
+ * This is a very basic implementation of the abstract appointment component.  This one is ready to
+ * go but does not support mouse listening for when a user clicks on a component.  This class
+ * could easily be extended with a class that did add that functionality.
+ * <p>
+ * It would be nice if this component rendered itself similar to how the Google appointments
+ * are drawn in their calendar.
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */

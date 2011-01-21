@@ -16,10 +16,10 @@ Notes:
 + I'm going to make a sincere attempt to not use abbreviations in any API names or really any abbreviations in
   the code at all.  'ID' is okay, but just about everything else ends up only making things more confusing.
 
-+ I'm currently sticking with the 'I' prefix for interfaces and 'A' prefix for abstractions ... but I'm not
-  entirely convinced it is the right thing to do.  I'm worried that, among other things, it removes the ability
-  to later change an interface to a concrete class or an abstract without a name change.  And, if you do
-  have to do a name change then that requires client code to be reworked.
++ I'm currently sticking with the 'I' prefix for interfaces and 'Abstract' prefix for abstractions ...
+  but I'm not entirely convinced it is the right thing to do.  I'm worried that, among other things,
+  it removes the ability to later change an interface to a concrete class or an abstract without a name
+  change.  And, if you do have to do a name change then that requires client code to be reworked.
   However, Java treats Interfaces and Abstract classes differently enough that I'm not sure if it would
   actually be possible to easily change these anyhow.  Plus, I sort of do like the prefix to help
   remind me if I am programming to the interface or to the implementation.  The jury is currently out on this.
@@ -43,8 +43,7 @@ To-do Before Release:
 ---------------------
 + Need to automatically detect unassigned appointments and add an unassigned column.
 
-+ Pass down mouse click, context click and double click.  I'm a little unclear at this point how to
-  distinguish these.
++ Add click, double click, and context click to the demo for appointments and resources.
 
 
 Version 2.0 Features:

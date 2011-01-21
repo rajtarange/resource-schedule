@@ -58,24 +58,40 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
     }
 
 
+    /**
+     * Set the model that this panel should use.
+     *
+     * @param model (not null) The model that should be used.
+     */
     public void setModel(@NotNull IScheduleModel model)
     {
         _model = model;
 
-        // Tie into the model's notification about new resources
+        // Tie into the model's notification about resource and appointment changes
         _model.addResourceChangeListener(this);
-
-        // TODO - Tie into the models notifications about changes to appointments.
+        _model.addAppointmentChangeListener(this);
     }
 
 
+    /**
+     * Set the component factory for drawing the components.  By default it draws basic
+     * components.
+     *
+     * @param componentFactory (not null) New component factory to use when drawing appointments
+     * and resources.
+     */
     public void setComponentFactory(@NotNull ComponentFactory componentFactory)
     {
         _componentFactory = componentFactory;
     }
 
 
-    public void showDate(@NotNull LocalDate date)
+    /**
+     * Set the date which is shown.  This will trigger a complete redraw of the panel.
+     *
+     * @param date (not null) Date to show.
+     */
+    public void setDate(@NotNull LocalDate date)
     {
         // Check if we area already showing a date.  If so, remove it
         if (_innerPanel != null) {
@@ -83,7 +99,6 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
         }
         _columnMap.clear();
         _nextResource = 0;
-
 
         _currentDate = date;
         _currentDateLabel.setText(date.toString("EEEE - MMMM d, yyyy"));
@@ -157,6 +172,12 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
     }
 
 
+    /**
+     * Private method to add an appointment to the panel.  This takes the appointment given and wraps it
+     * in a component and adds the component to the inner panel.
+     *
+     * @param appointment (not null) Appointment to add.
+     */
     private void addAppointment(@NotNull IAppointment appointment)
     {
         AbstractAppointmentComponent appointmentComponent = _componentFactory.makeAppointmentComponent(appointment);
@@ -176,9 +197,10 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
 
 
     /**
-     * Add an action listener to be notified when a user clicks on a an appointment.
-     * The source of the actionListener will be the appointment which was clicked on and not
-     * this panel.
+     * Add an action listener to be notified when a user clicks anywhere in the panel which is not
+     * on an appointment or resource.  The values sent are the "time" location of the event and
+     * the resource column.  From this the listener could pull up a dialog box and ask to add
+     * an appointment if they wanted to.
      *
      * @param actionListener (not null) the action listener to be notified on an appointment click.
      */
@@ -264,7 +286,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
         // TODO - Handle this in the existing frame without forcing a redraw of everything
 
         // For now we are going to cheat and just reload the date
-        showDate(_currentDate);
+        setDate(_currentDate);
     }
 
 
@@ -279,7 +301,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
         // TODO - Handle this in the existing frame without forcing a redraw of everything
 
         // For now we are going to cheat and just reload the date
-        showDate(_currentDate);
+        setDate(_currentDate);
     }
 
 

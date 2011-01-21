@@ -4,6 +4,7 @@ import com.thirdnf.ResourceScheduler.IAppointment;
 import com.thirdnf.ResourceScheduler.components.BasicAppointmentComponent;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +19,7 @@ public class DemoAppointmentComponent extends BasicAppointmentComponent implemen
     //  could make this a list if there was a need for it.
     private ActionListener _actionListener = null;
 
+    private final JPopupMenu _popupMenu;
 
     /**
      * Constructor given an appointment to wrap.
@@ -31,13 +33,45 @@ public class DemoAppointmentComponent extends BasicAppointmentComponent implemen
         // Is this the right place for this?
         if (appointment instanceof ScheduleModelDemo.DemoAppointment) {
             Color c = ((ScheduleModelDemo.DemoAppointment)appointment).getCategory().getColor();
-            System.out.println("Setting background");
             setBackground(c);
         }
 
         // Allow this instance to respond to mouse clicks.  I'm a bit uncomfortable with accessing 'this' at
         //  this point, but I think that is just an old C++ fear.
         addMouseListener(this);
+
+        _popupMenu = new JPopupMenu();
+        JMenuItem editItem = new JMenuItem("Edit");
+        editItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                handleEdit();
+            }
+        });
+        _popupMenu.add(editItem);
+
+        JMenuItem deleteItem = new JMenuItem("Delete");
+        deleteItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                handleDelete();
+            }
+        });
+        _popupMenu.add(deleteItem);
+    }
+
+
+    private void handleEdit()
+    {
+        System.out.println("Need to edit");
+    }
+
+
+    private void handleDelete()
+    {
+        System.out.println("Need to delete");
     }
 
 
@@ -65,14 +99,14 @@ public class DemoAppointmentComponent extends BasicAppointmentComponent implemen
     @Override
     public void mousePressed(MouseEvent e)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        maybeShowPopup(e);
     }
 
 
     @Override
     public void mouseReleased(MouseEvent e)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        maybeShowPopup(e);
     }
 
 
@@ -87,5 +121,14 @@ public class DemoAppointmentComponent extends BasicAppointmentComponent implemen
     public void mouseExited(MouseEvent e)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    private void maybeShowPopup(MouseEvent e)
+    {
+        if (e.isPopupTrigger()) {
+            _popupMenu.show(e.getComponent(),
+                    e.getX(), e.getY());
+        }
     }
 }
