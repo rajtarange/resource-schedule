@@ -7,6 +7,7 @@ package com.thirdnf.ResourceScheduler;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 
+import com.thirdnf.ResourceScheduler.components.ComponentFactory;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 
@@ -74,6 +75,12 @@ public class Scheduler extends JPanel implements Printable
     public void setModel(@NotNull IScheduleModel model)
     {
         _daySchedule.setModel(model);
+    }
+
+
+    public void setComponentFactory(@NotNull ComponentFactory componentFactory)
+    {
+        _daySchedule.setComponentFactory(componentFactory);
     }
 
 

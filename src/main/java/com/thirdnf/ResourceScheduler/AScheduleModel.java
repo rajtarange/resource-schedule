@@ -12,32 +12,38 @@ import javax.swing.event.EventListenerList;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public abstract class AScheduleModel implements IScheduleModel
 {
     // We are going to use the EventListenerList which allows multiple events to share one list.
     protected final EventListenerList _listenerList = new EventListenerList();
 
 
-    /**
-     * Method to request that the given listener be notified when a resource is added to the model.
-     *
-     * @param listener (not null) Listener to notify when a resource is added to the model.
-     */
-    public void addResourceAddedListener(@NotNull IResourceAddedListener listener)
+    @Override
+    public void addResourceChangeListener(@NotNull IResourceChangeListener listener)
     {
-        _listenerList.add(IResourceAddedListener.class, listener);
+        _listenerList.add(IResourceChangeListener.class, listener);
     }
 
 
-    /**
-     * Removes a listener from the list that's notified each time a
-     * resource is added.
-     *
-     * @param listener (not null) The resource added listener
-     */
-    public void removeTableModelListener(IResourceAddedListener listener)
+    @Override
+    public void removeResourceChangeListener(@NotNull IResourceChangeListener listener)
     {
-        _listenerList.remove(IResourceAddedListener.class, listener);
+        _listenerList.remove(IResourceChangeListener.class, listener);
+    }
+
+
+    @Override
+    public void addAppointmentChangeListener(@NotNull IAppointmentChangeListener listener)
+    {
+        _listenerList.add(IAppointmentChangeListener.class, listener);
+    }
+
+
+    @Override
+    public void removeAppointmentChangeListener(@NotNull IAppointmentChangeListener listener)
+    {
+        _listenerList.remove(IAppointmentChangeListener.class, listener);
     }
 
 
@@ -55,8 +61,107 @@ public abstract class AScheduleModel implements IScheduleModel
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==IResourceAddedListener.class) {
-                ((IResourceAddedListener)listeners[i+1]).resourceAdded(resource);
+            if (listeners[i]==IResourceChangeListener.class) {
+                ((IResourceChangeListener)listeners[i+1]).resourceAdded(resource, dateTime);
+            }
+        }
+    }
+
+
+    /**
+     * Protected method which an implementation of the Schedule Model should call every time a
+     * resource should be removed from the model.
+     *
+     * @param resource (not null) Resource being removed
+     * @param dateTime (not null) Date the resource is being removed
+     */
+    protected void fireResourceRemoved(@NotNull IResource resource, @NotNull LocalDate dateTime)
+    {
+        // Guaranteed to return a non-null array
+        Object[] listeners = _listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==IResourceChangeListener.class) {
+                ((IResourceChangeListener)listeners[i+1]).resourceRemoved(resource, dateTime);
+            }
+        }
+    }
+
+
+    /**
+     * Protected method which an implementation of the Schedule Model should call every time a
+     * resource should be updated.  Like the title or color has changed.
+     *
+     * @param resource (not null) Resource being updated
+     */
+    protected void fireResourceUpdated(@NotNull IResource resource)
+    {
+        // Guaranteed to return a non-null array
+        Object[] listeners = _listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==IResourceChangeListener.class) {
+                ((IResourceChangeListener)listeners[i+1]).resourceUpdated(resource);
+            }
+        }
+    }
+
+
+    /**
+     * Protected method called whenever the model has added an appointment.
+     *
+     * @param appointment (not null) The appointment being added.
+     */
+    protected void fireAppointmentAdded(@NotNull IAppointment appointment)
+    {
+        // Guaranteed to return a non-null array
+        Object[] listeners = _listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==IAppointmentChangeListener.class) {
+                ((IAppointmentChangeListener)listeners[i+1]).appointmentAdded(appointment);
+            }
+        }
+    }
+
+
+    /**
+     * Protected method called whenever the model has removed an appointment from a day.
+     *
+     * @param appointment (not null) The appointment being removed.
+     */
+    protected void fireAppointmentRemoved(@NotNull IAppointment appointment)
+    {
+        // Guaranteed to return a non-null array
+        Object[] listeners = _listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==IAppointmentChangeListener.class) {
+                ((IAppointmentChangeListener)listeners[i+1]).appointmentRemoved(appointment);
+            }
+        }
+    }
+
+
+    /**
+     * Protected method called whenever the model has updated some details about an appointment, like the
+     *  title, time or resource it is assigned to.
+     *
+     * @param appointment (not null) The appointment.
+     */
+    protected void fireAppointmentUpdated(@NotNull IAppointment appointment)
+    {
+        // Guaranteed to return a non-null array
+        Object[] listeners = _listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==IAppointmentChangeListener.class) {
+                ((IAppointmentChangeListener)listeners[i+1]).appointmentUpdated(appointment);
             }
         }
     }

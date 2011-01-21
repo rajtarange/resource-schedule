@@ -9,19 +9,15 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 
-public class ResourceComponent extends JComponent
+public class BasicResourceComponent extends AbstractResourceComponent
 {
-    private final IResource _resource;
-
-
-    public ResourceComponent(@NotNull IResource resource)
+    public BasicResourceComponent(@NotNull IResource resource)
     {
-        _resource = resource;
+        super(resource);
 
         setBackground(_resource.getColor());
         setPreferredSize(new Dimension(100, 100));
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-//        addMouseListener(this);
     }
 
 

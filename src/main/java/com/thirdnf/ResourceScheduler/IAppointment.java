@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 
@@ -21,16 +22,12 @@ public interface IAppointment
     String getTitle();
 
 
-    @Nullable
-    ICategory getCategory();
-
-
     /**
-     * Get the time of the appointment
-     * @return
+     * Get the date/time of the appointment
+     * @return The date/time for the appointment.
      */
     @NotNull
-    LocalTime getTime();
+    DateTime getDateTime();
 
 
     /**

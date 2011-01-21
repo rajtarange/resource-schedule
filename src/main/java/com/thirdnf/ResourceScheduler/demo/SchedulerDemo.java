@@ -28,8 +28,11 @@ import org.joda.time.format.PeriodFormat;
  *
  * @author Joshua Gerth
  */
+@SuppressWarnings({"FieldCanBeLocal"})
 public class SchedulerDemo extends JFrame
 {
+    private final ScheduleModelDemo _model;
+
     /**
      * Main entry point.  This method is responsible for creating the main window and showing it.
      * @param args (not null) Any args which are passed in.  This is currently ignored.
@@ -50,26 +53,41 @@ public class SchedulerDemo extends JFrame
     {
         initComponents();
 
-        _scheduler.setModel(new ScheduleModelDemo());
-        _scheduler.showDate(new LocalDate());
-        _scheduler.addActionListener(new ActionListener() {
+        DemoComponentFactory componentFactory = new DemoComponentFactory();
+        componentFactory.setAppointmentListener(new AppointmentListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void handleClick(@NotNull IAppointment appointment)
             {
-                IAppointment appointment = (IAppointment)e.getSource();
-                StringBuilder stringBuilder = new StringBuilder();
-                LocalTime time = appointment.getTime();
-                Period period = appointment.getDuration().toPeriod();
-
-                stringBuilder.append("Info About: ").append(appointment.getTitle()).append('\n')
-                        .append("Start time: ").append(time.toString("h:mm a")).append('\n')
-                        .append("Duration: ").append(period.toString(PeriodFormat.getDefault())).append('\n')
-                        .append("For Resource: ").append(appointment.getResource());
-
-
-                _detailsPane.setText(stringBuilder.toString());
+                handleAppointmentClick(appointment);
             }
         });
+
+        _scheduler.setComponentFactory(componentFactory);
+
+        _model = new ScheduleModelDemo();
+        _scheduler.setModel(_model);
+        _scheduler.showDate(new LocalDate());
+    }
+
+
+    private void handleAppointmentClick(IAppointment appointment)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        LocalTime time = appointment.getDateTime().toLocalTime();
+        Period period = appointment.getDuration().toPeriod();
+//        ICategory category = appointment.getCategory();
+
+        stringBuilder.append("Info About: ").append(appointment.getTitle()).append('\n')
+                .append("Start time: ").append(time.toString("h:mm a")).append('\n')
+                .append("Duration: ").append(period.toString(PeriodFormat.getDefault())).append('\n');
+//        if (category != null) {
+//            stringBuilder.append("Category: ").append(category.getTitle()).append('\n');
+//        }
+
+        stringBuilder.append("For Resource: ").append(appointment.getResource());
+
+
+        _detailsPane.setText(stringBuilder.toString());
     }
 
 
@@ -89,6 +107,25 @@ public class SchedulerDemo extends JFrame
                 System.out.println("Error printing: " + pe);
             }
         }
+    }
+
+
+    /**
+     * Method called when the user has clicked the add resource button and wants to add a resource on the
+     *   given day.
+     */
+    private void handleAddResource()
+    {
+        ResourceDialog dialog = new ResourceDialog(this);
+        dialog.setOkayListener(new ResourceDialog.IOkayListener() {
+            @Override
+            public void handleOkay(@NotNull String title, @NotNull Color color)
+            {
+                _model.addResource(title, color);
+            }
+        });
+        dialog.pack();
+        dialog.setVisible(true);
     }
 
 
@@ -140,6 +177,14 @@ public class SchedulerDemo extends JFrame
 
             //---- button2 ----
             button2.setText("Add Resource");
+            button2.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    handleAddResource();
+                }
+            });
             panel1.add(button2, CC.xy(1, 5));
 
             //---- button3 ----

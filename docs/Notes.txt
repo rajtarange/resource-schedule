@@ -2,22 +2,31 @@ This is an unorganized collection of random notes and comments as I develop this
 
 Notes:
 ------
-1. I'm still learning the maven structure so right now the SchedulerDemo is embedded in the library
-   which I would really prefer to pull out and into its own area.
++ I'm still learning the maven structure so right now the SchedulerDemo is embedded in the library
+  which I would really prefer to pull out and into its own area.
 
-2. I've decided to use Joda as a replacement for the Java Date libraries as I find the java date stuff
-   unnecessarily complicated to use and I would rather spend my time understanding higher level concepts.
++ I've decided to use Joda as a replacement for the Java Date libraries as I find the java date stuff
+  unnecessarily complicated to use and I would rather spend my time understanding higher level concepts.
 
-3. For now, almost all changes sent to the Model trigger a complete redraw of the layout.  I need to first
-   get it all working before I start worrying about how I can optimize the drawing.
++ If at all possible I'm trying to not use temporary lists in the API.  In other words, rather
+  than asking for a list of appointments on a given day, the API instead asks the called method
+  to visit a visitor with each appointment for a given day.  The implementations may have temporary
+  lists, but this can possibly be later optimized out.
 
-4. If at all possible I'm trying to not use temporary lists in the API.  In other words, rather
-   than asking for a list of appointments on a given day, the API instead asks the called method
-   to visit a visitor with each appointment for a given day.  The implementations may have temporary
-   lists, but this can possibly be later optimized out.
++ I'm going to make a sincere attempt to not use abbreviations in any API names or really any abbreviations in
+  the code at all.  'ID' is okay, but just about everything else ends up only making things more confusing.
 
-5. I'm going to make a sincere attempt to not use abbreviations in any API names.  'ID' is okay, but
-   just about everything else ends up only making things more confusing.
++ I'm currently sticking with the 'I' prefix for interfaces and 'A' prefix for abstractions ... but I'm not
+  entirely convinced it is the right thing to do.  I'm worried that, among other things, it removes the ability
+  to later change an interface to a concrete class or an abstract without a name change.  And, if you do
+  have to do a name change then that requires client code to be reworked.
+  However, Java treats Interfaces and Abstract classes differently enough that I'm not sure if it would
+  actually be possible to easily change these anyhow.  Plus, I sort of do like the prefix to help
+  remind me if I am programming to the interface or to the implementation.  The jury is currently out on this.
+
++ I am not going to spend a lot of time polishing the demo.  For example, I think having a dialog box pull up a
+  dialog box for a color picker seems silly.  But the JColorChooser is too large to try to embed directly so
+  for now it stays a pop-up dialog, which I don't like.
 
 
 Known Restrictions:
@@ -32,9 +41,10 @@ Known Restrictions:
 
 To-do Before Release:
 ---------------------
-+ Need to have the panel redraw on an update to the model.
-
 + Need to automatically detect unassigned appointments and add an unassigned column.
+
++ Pass down mouse click, context click and double click.  I'm a little unclear at this point how to
+  distinguish these.
 
 
 Version 2.0 Features:
@@ -52,3 +62,11 @@ Version 2.0 Features:
 
 + Related to the last feature, it might be nice to be able to block out portions of the day.
   Like simply say lunch is from 12-1 ... always, so block it out.
+
++ Optimizes changes triggered from the model.  Right now nearly every update simply triggers a complete
+  redraw of the layout.
+
++ Make the appointments and resources look better.  I would sort of like the appointments to look like
+  the ones in Google Calendar.  Another goal is for the header color to actual color the entire background
+  for that column, but very lightly.  The reason for this is so when you are in a calendar or week view
+  you can easily tell which resources have been assigned for which days.

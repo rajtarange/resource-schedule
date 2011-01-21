@@ -1,16 +1,11 @@
 package com.thirdnf.ResourceScheduler;
 
-import com.thirdnf.ResourceScheduler.components.AppointmentComponent;
-import com.thirdnf.ResourceScheduler.components.ResourceComponent;
+import com.thirdnf.ResourceScheduler.components.*;
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.joda.time.Period;
+import org.joda.time.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
@@ -29,10 +24,8 @@ import java.util.*;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class DaySchedule extends JPanel implements Printable
+public class DaySchedule extends JPanel implements Printable, IResourceChangeListener, IAppointmentChangeListener
 {
-    private Map<AppointmentComponent, LocalTime> _appointmentMap = new HashMap<AppointmentComponent, LocalTime>();
-
     private ActionListener _actionListener = null;
 
     private IScheduleModel _model = null;
@@ -42,9 +35,15 @@ public class DaySchedule extends JPanel implements Printable
 
     private Map<IResource, Integer> _columnMap = new HashMap<IResource, Integer>();
 
+    // The date which is currently being shown
+    private LocalDate _currentDate;
+
+    // The Label which we can update
     private final JLabel _currentDateLabel;
 
     private int _nextResource = 0;
+
+    private ComponentFactory _componentFactory;
 
 
     public DaySchedule()
@@ -54,6 +53,8 @@ public class DaySchedule extends JPanel implements Printable
         add(_currentDateLabel);
         setBackground(Color.white);
         setOpaque(true);
+
+        _componentFactory = new ComponentFactory();
     }
 
 
@@ -61,7 +62,16 @@ public class DaySchedule extends JPanel implements Printable
     {
         _model = model;
 
+        // Tie into the model's notification about new resources
+        _model.addResourceChangeListener(this);
+
         // TODO - Tie into the models notifications about changes to appointments.
+    }
+
+
+    public void setComponentFactory(@NotNull ComponentFactory componentFactory)
+    {
+        _componentFactory = componentFactory;
     }
 
 
@@ -71,7 +81,11 @@ public class DaySchedule extends JPanel implements Printable
         if (_innerPanel != null) {
             remove(_innerPanel);
         }
+        _columnMap.clear();
+        _nextResource = 0;
 
+
+        _currentDate = date;
         _currentDateLabel.setText(date.toString("EEEE - MMMM d, yyyy"));
 
         // The model knows the begin and end times of the day for this date
@@ -100,6 +114,11 @@ public class DaySchedule extends JPanel implements Printable
                 return true;
             }
         }, date);
+
+
+        // Trigger a repaint to show the new information.
+        revalidate();
+        repaint();
     }
 
 
@@ -110,7 +129,7 @@ public class DaySchedule extends JPanel implements Printable
         int column = _nextResource ++;
 
         // Wrap the resource in a component
-        ResourceComponent resourceComponent = new ResourceComponent(resource);
+        AbstractResourceComponent resourceComponent = _componentFactory.makeResourceComponent(resource);
 
         _columnMap.put(resource, column);
 
@@ -118,16 +137,29 @@ public class DaySchedule extends JPanel implements Printable
     }
 
 
+    private void removeResource(@NotNull IResource resource)
+    {
+        // We have to find the one to remove ... we could use a map but I don't think there are going to be a
+        //  lot so this is more straight forward
+        int count = _innerPanel.getComponentCount();
+
+        for (int index=0; index<count; ++index) {
+            Component component = _innerPanel.getComponent(count);
+            if (component instanceof AbstractResourceComponent) {
+                AbstractResourceComponent resourceComponent = (AbstractResourceComponent) component;
+                if (resourceComponent.getResource().equals(resource)) {
+                    // This is the guy to remove
+                    _innerPanel.remove(resourceComponent);
+                    return;
+                }
+            }
+        }
+    }
+
+
     private void addAppointment(@NotNull IAppointment appointment)
     {
-        AppointmentComponent appointmentComponent = new AppointmentComponent(appointment);
-        appointmentComponent.setActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if (_actionListener != null) { _actionListener.actionPerformed(e); }
-            }
-        });
+        AbstractAppointmentComponent appointmentComponent = _componentFactory.makeAppointmentComponent(appointment);
 
         IResource resource = appointment.getResource();
         Integer column = _columnMap.get(resource);
@@ -138,7 +170,6 @@ public class DaySchedule extends JPanel implements Printable
 
             column = 1;
         }
-
 
         _innerPanel.add(appointmentComponent, column);
     }
@@ -177,6 +208,88 @@ public class DaySchedule extends JPanel implements Printable
 
         // tell the caller that this page is part of the printed document
         return PAGE_EXISTS;
+    }
+
+
+    @Override
+    public void resourceAdded(@NotNull IResource resource, @NotNull LocalDate date)
+    {
+        // This is a day view so we only care if the day matches
+        if (! date.equals(_currentDate)) { return; }
+
+        // Add it to the panel
+        addResource(resource);
+
+        // Force the layout to redraw
+        revalidate();
+
+        // We have added a column so we need to repaint our background as well
+        repaint();
+    }
+
+
+    @Override
+    public void resourceRemoved(@NotNull IResource resource, @NotNull LocalDate date)
+    {
+        // This is a day view so we only care if the day matches
+        if (! date.equals(_currentDate)) { return; }
+
+        // First remove the component
+        removeResource(resource);
+
+        // Force the layout to redraw
+        revalidate();
+
+        // We have removed a column so we need to repaint our background as well
+        repaint();
+    }
+
+
+    @Override
+    public void resourceUpdated(@NotNull IResource resource)
+    {
+        // I think this is just a repaint
+        repaint();
+    }
+
+
+    @Override
+    public void appointmentAdded(@NotNull IAppointment appointment)
+    {
+        LocalDate date = appointment.getDateTime().toLocalDate();
+
+        // This is a day view so we only care if the day matches
+        if (! date.equals(_currentDate)) { return; }
+
+        // TODO - Handle this in the existing frame without forcing a redraw of everything
+
+        // For now we are going to cheat and just reload the date
+        showDate(_currentDate);
+    }
+
+
+    @Override
+    public void appointmentRemoved(@NotNull IAppointment appointment)
+    {
+        LocalDate date = appointment.getDateTime().toLocalDate();
+
+        // This is a day view so we only care if the day matches
+        if (! date.equals(_currentDate)) { return; }
+
+        // TODO - Handle this in the existing frame without forcing a redraw of everything
+
+        // For now we are going to cheat and just reload the date
+        showDate(_currentDate);
+    }
+
+
+    @Override
+    public void appointmentUpdated(@NotNull IAppointment appointment)
+    {
+        // The appointment may have moved so re-layout
+        revalidate();
+
+        // I don't think we need a repaint.
     }
 
 

@@ -1,7 +1,7 @@
 package com.thirdnf.ResourceScheduler;
 
-import com.thirdnf.ResourceScheduler.components.AppointmentComponent;
-import com.thirdnf.ResourceScheduler.components.ResourceComponent;
+import com.thirdnf.ResourceScheduler.components.AbstractAppointmentComponent;
+import com.thirdnf.ResourceScheduler.components.AbstractResourceComponent;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
@@ -130,14 +130,14 @@ public class SchedulerLayout implements LayoutManager2
             //  column first.  The suppress warnings is here due to a bug/feature in java that can't deal
             //  with generic array creation.
             @SuppressWarnings({"unchecked"})
-            List<AppointmentComponent>[] columns = (List<AppointmentComponent>[])new List[_columns+1];
+            List<AbstractAppointmentComponent>[] columns = (List<AbstractAppointmentComponent>[])new List[_columns+1];
 
             int componentCount = target.getComponentCount();
             for (int i = 0 ; i < componentCount ; ++i) {
                 Component component = target.getComponent(i);
                 if (! component.isVisible()) { continue; }
 
-                if (component instanceof ResourceComponent) {
+                if (component instanceof AbstractResourceComponent) {
                     // These are placed at the top of their row
 
                     int column = _columnMap.get(component);
@@ -151,11 +151,11 @@ public class SchedulerLayout implements LayoutManager2
 
                     component.setBounds(x, _y, width, height);
                 }
-                else if (component instanceof AppointmentComponent) {
-                    AppointmentComponent appointmentComponent = (AppointmentComponent)component;
+                else if (component instanceof AbstractAppointmentComponent) {
+                    AbstractAppointmentComponent appointmentComponent = (AbstractAppointmentComponent)component;
 
                     IAppointment appointment = appointmentComponent.getAppointment();
-                    LocalTime time = appointment.getTime();
+                    LocalTime time = appointment.getDateTime().toLocalTime();
                     Duration duration = appointment.getDuration();
 
                     int column = _columnMap.get(component);
@@ -171,7 +171,7 @@ public class SchedulerLayout implements LayoutManager2
                     appointmentComponent.setBounds(x, y, width, height);
 
                     if (columns[column] == null) {
-                        columns[column] = new ArrayList<AppointmentComponent>();
+                        columns[column] = new ArrayList<AbstractAppointmentComponent>();
                     }
                     columns[column].add(appointmentComponent);
                 }
@@ -181,7 +181,7 @@ public class SchedulerLayout implements LayoutManager2
             }
 
             // Now, fix up the appointments in each column
-            for (List<AppointmentComponent> list : columns) {
+            for (List<AbstractAppointmentComponent> list : columns) {
                 if (list != null) {
                     fixOverlaps(list);
                 }
@@ -200,19 +200,19 @@ public class SchedulerLayout implements LayoutManager2
      *
      * @param appointments (not null) List of appointments to fix.
      */
-    private void fixOverlaps(@NotNull List<AppointmentComponent> appointments)
+    private void fixOverlaps(@NotNull List<AbstractAppointmentComponent> appointments)
     {
         // Run through each shape and create a list of all other shapes which intersect it, this can also
         //  be used later.
-        Map<AppointmentComponent, List<AppointmentComponent>> hitMap =  new HashMap<AppointmentComponent, List<AppointmentComponent>>();
-        Map<AppointmentComponent, Integer> columnMap = new HashMap<AppointmentComponent, Integer>();
+        Map<AbstractAppointmentComponent, List<AbstractAppointmentComponent>> hitMap =  new HashMap<AbstractAppointmentComponent, List<AbstractAppointmentComponent>>();
+        Map<AbstractAppointmentComponent, Integer> columnMap = new HashMap<AbstractAppointmentComponent, Integer>();
 
-        for (AppointmentComponent appointment : appointments) {
+        for (AbstractAppointmentComponent appointment : appointments) {
             Rectangle rectangle = appointment.getBounds();
-            List<AppointmentComponent> list = null;
+            List<AbstractAppointmentComponent> list = null;
 
             // Check if this guy intersects any other one in this list
-            for (AppointmentComponent checkComponent : appointments) {
+            for (AbstractAppointmentComponent checkComponent : appointments) {
                 if (appointment == checkComponent) {
                     // Skip the self check
                     continue;
@@ -221,7 +221,7 @@ public class SchedulerLayout implements LayoutManager2
                 Rectangle checkRectangle = checkComponent.getBounds();
 
                 if (rectangle.intersects(checkRectangle)) {
-                    if (list == null) { list = new ArrayList<AppointmentComponent>(); }
+                    if (list == null) { list = new ArrayList<AbstractAppointmentComponent>(); }
                     list.add(checkComponent);
                 }
             }
@@ -232,8 +232,8 @@ public class SchedulerLayout implements LayoutManager2
         }
 
         int maxColumn = 0;
-        for (AppointmentComponent appointment : appointments) {
-            List<AppointmentComponent> list = hitMap.get(appointment);
+        for (AbstractAppointmentComponent appointment : appointments) {
+            List<AbstractAppointmentComponent> list = hitMap.get(appointment);
 
             if (list == null) {
                 // No conflicts, it can keep its full size
@@ -246,7 +246,7 @@ public class SchedulerLayout implements LayoutManager2
             while (!done) {
                 done = true;
 
-                for (AppointmentComponent checkComponent : list) {
+                for (AbstractAppointmentComponent checkComponent : list) {
                     Integer testColumn = columnMap.get(checkComponent);
 
                     if (testColumn != null && testColumn == column) {
@@ -264,8 +264,7 @@ public class SchedulerLayout implements LayoutManager2
         if (maxColumn == 0) { return; }
 
         // Now adjust the sizes
-        System.out.println("Max column: " + maxColumn);
-        for (AppointmentComponent appointment : appointments) {
+        for (AbstractAppointmentComponent appointment : appointments) {
             Integer column = columnMap.get(appointment);
             if (column == null) { continue; }
             Rectangle rectangle = appointment.getBounds();

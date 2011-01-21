@@ -31,4 +31,28 @@ public interface IScheduleModel
 
 
     LocalTime getEndTime(@NotNull LocalDate dateTime);
+
+
+    /**
+     * Method to request that the given listener be notified when a resource has been either added or
+     * removed from the model.
+     *
+     * @param listener (not null) Listener to notify when a resource has been added or removed.
+     */
+    void addResourceChangeListener(IResourceChangeListener listener);
+
+
+    /**
+     * Method to request that the given listener be removed from notification when a resource has
+     * been either added or removed from the model.
+     *
+     * @param listener (not null) Listener to notify when a resource has been added or removed.
+     */
+    void removeResourceChangeListener(IResourceChangeListener listener);
+
+
+    void addAppointmentChangeListener(@NotNull IAppointmentChangeListener listener);
+
+
+    void removeAppointmentChangeListener(@NotNull IAppointmentChangeListener listener);
 }
