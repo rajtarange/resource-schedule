@@ -13,37 +13,37 @@ import javax.swing.event.EventListenerList;
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public abstract class AbstractScheduleModel implements IScheduleModel
+public abstract class AbstractScheduleModel implements ScheduleModel
 {
     // We are going to use the EventListenerList which allows multiple events to share one list.
     protected final EventListenerList _listenerList = new EventListenerList();
 
 
     @Override
-    public void addResourceChangeListener(@NotNull IResourceChangeListener listener)
+    public void addResourceChangeListener(@NotNull ResourceChangeListener listener)
     {
-        _listenerList.add(IResourceChangeListener.class, listener);
+        _listenerList.add(ResourceChangeListener.class, listener);
     }
 
 
     @Override
-    public void removeResourceChangeListener(@NotNull IResourceChangeListener listener)
+    public void removeResourceChangeListener(@NotNull ResourceChangeListener listener)
     {
-        _listenerList.remove(IResourceChangeListener.class, listener);
+        _listenerList.remove(ResourceChangeListener.class, listener);
     }
 
 
     @Override
-    public void addAppointmentChangeListener(@NotNull IAppointmentChangeListener listener)
+    public void addAppointmentChangeListener(@NotNull AppointmentChangeListener listener)
     {
-        _listenerList.add(IAppointmentChangeListener.class, listener);
+        _listenerList.add(AppointmentChangeListener.class, listener);
     }
 
 
     @Override
-    public void removeAppointmentChangeListener(@NotNull IAppointmentChangeListener listener)
+    public void removeAppointmentChangeListener(@NotNull AppointmentChangeListener listener)
     {
-        _listenerList.remove(IAppointmentChangeListener.class, listener);
+        _listenerList.remove(AppointmentChangeListener.class, listener);
     }
 
 
@@ -54,15 +54,15 @@ public abstract class AbstractScheduleModel implements IScheduleModel
      * @param resource (not null) Resource which has been added to the model.
      * @param dateTime (not null) Date the resource was added.
      */
-    protected void fireResourceAdded(@NotNull IResource resource, @NotNull LocalDate dateTime)
+    protected void fireResourceAdded(@NotNull Resource resource, @NotNull LocalDate dateTime)
     {
         // Guaranteed to return a non-null array
         Object[] listeners = _listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==IResourceChangeListener.class) {
-                ((IResourceChangeListener)listeners[i+1]).resourceAdded(resource, dateTime);
+            if (listeners[i]==ResourceChangeListener.class) {
+                ((ResourceChangeListener)listeners[i+1]).resourceAdded(resource, dateTime);
             }
         }
     }
@@ -75,15 +75,15 @@ public abstract class AbstractScheduleModel implements IScheduleModel
      * @param resource (not null) Resource being removed
      * @param dateTime (not null) Date the resource is being removed
      */
-    protected void fireResourceRemoved(@NotNull IResource resource, @NotNull LocalDate dateTime)
+    protected void fireResourceRemoved(@NotNull Resource resource, @NotNull LocalDate dateTime)
     {
         // Guaranteed to return a non-null array
         Object[] listeners = _listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==IResourceChangeListener.class) {
-                ((IResourceChangeListener)listeners[i+1]).resourceRemoved(resource, dateTime);
+            if (listeners[i]==ResourceChangeListener.class) {
+                ((ResourceChangeListener)listeners[i+1]).resourceRemoved(resource, dateTime);
             }
         }
     }
@@ -95,15 +95,15 @@ public abstract class AbstractScheduleModel implements IScheduleModel
      *
      * @param resource (not null) Resource being updated
      */
-    protected void fireResourceUpdated(@NotNull IResource resource)
+    protected void fireResourceUpdated(@NotNull Resource resource)
     {
         // Guaranteed to return a non-null array
         Object[] listeners = _listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==IResourceChangeListener.class) {
-                ((IResourceChangeListener)listeners[i+1]).resourceUpdated(resource);
+            if (listeners[i]==ResourceChangeListener.class) {
+                ((ResourceChangeListener)listeners[i+1]).resourceUpdated(resource);
             }
         }
     }
@@ -114,15 +114,15 @@ public abstract class AbstractScheduleModel implements IScheduleModel
      *
      * @param appointment (not null) The appointment being added.
      */
-    protected void fireAppointmentAdded(@NotNull IAppointment appointment)
+    protected void fireAppointmentAdded(@NotNull Appointment appointment)
     {
         // Guaranteed to return a non-null array
         Object[] listeners = _listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==IAppointmentChangeListener.class) {
-                ((IAppointmentChangeListener)listeners[i+1]).appointmentAdded(appointment);
+            if (listeners[i]==AppointmentChangeListener.class) {
+                ((AppointmentChangeListener)listeners[i+1]).appointmentAdded(appointment);
             }
         }
     }
@@ -133,15 +133,15 @@ public abstract class AbstractScheduleModel implements IScheduleModel
      *
      * @param appointment (not null) The appointment being removed.
      */
-    protected void fireAppointmentRemoved(@NotNull IAppointment appointment)
+    protected void fireAppointmentRemoved(@NotNull Appointment appointment)
     {
         // Guaranteed to return a non-null array
         Object[] listeners = _listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==IAppointmentChangeListener.class) {
-                ((IAppointmentChangeListener)listeners[i+1]).appointmentRemoved(appointment);
+            if (listeners[i]==AppointmentChangeListener.class) {
+                ((AppointmentChangeListener)listeners[i+1]).appointmentRemoved(appointment);
             }
         }
     }
@@ -153,15 +153,15 @@ public abstract class AbstractScheduleModel implements IScheduleModel
      *
      * @param appointment (not null) The appointment.
      */
-    protected void fireAppointmentUpdated(@NotNull IAppointment appointment)
+    protected void fireAppointmentUpdated(@NotNull Appointment appointment)
     {
         // Guaranteed to return a non-null array
         Object[] listeners = _listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==IAppointmentChangeListener.class) {
-                ((IAppointmentChangeListener)listeners[i+1]).appointmentUpdated(appointment);
+            if (listeners[i]==AppointmentChangeListener.class) {
+                ((AppointmentChangeListener)listeners[i+1]).appointmentUpdated(appointment);
             }
         }
     }

@@ -1,21 +1,43 @@
 package com.thirdnf.ResourceScheduler.demo;
 
-import com.thirdnf.ResourceScheduler.IResource;
+import com.thirdnf.ResourceScheduler.Resource;
 import com.thirdnf.ResourceScheduler.components.BasicResourceComponent;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 
 public class DemoResourceComponent extends BasicResourceComponent implements MouseListener
 {
-    public DemoResourceComponent(@NotNull IResource resource)
+    private ResourceListener _resourceListener;
+
+
+    public DemoResourceComponent(@NotNull Resource resource)
     {
         super(resource);
 
+        // Is this the right place for this?
+        if (resource instanceof ScheduleModelDemo.DemoResource) {
+            Color c = ((ScheduleModelDemo.DemoResource)resource).getColor();
+            setBackground(c);
+        }
+
         addMouseListener(this);
     }
+
+
+    /**
+     * Set the one and only resource listener which will get called on mouse clicks.
+     *
+     * @param resourceListener (not null) The resource listener who cares about mouse clicks.
+     */
+    public void setResourceListener(@NotNull ResourceListener resourceListener)
+    {
+        _resourceListener = resourceListener;
+    }
+
 
     @Override
     public void mouseClicked(MouseEvent e)

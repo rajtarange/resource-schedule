@@ -24,16 +24,16 @@ import java.util.*;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class DaySchedule extends JPanel implements Printable, IResourceChangeListener, IAppointmentChangeListener
+public class DaySchedule extends JPanel implements Printable, ResourceChangeListener, AppointmentChangeListener
 {
     private ActionListener _actionListener = null;
 
-    private IScheduleModel _model = null;
+    private ScheduleModel _model = null;
 
     // The inner panel holds the real days.
     private JPanel _innerPanel;
 
-    private Map<IResource, Integer> _columnMap = new HashMap<IResource, Integer>();
+    private Map<Resource, Integer> _columnMap = new HashMap<Resource, Integer>();
 
     // The date which is currently being shown
     private LocalDate _currentDate;
@@ -63,7 +63,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
      *
      * @param model (not null) The model that should be used.
      */
-    public void setModel(@NotNull IScheduleModel model)
+    public void setModel(@NotNull ScheduleModel model)
     {
         _model = model;
 
@@ -110,20 +110,20 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
         _innerPanel = new InnerPanel(startTime, endTime);
         add(_innerPanel);
 
-        _model.visitResources(new IResourceVisitor()
+        _model.visitResources(new ResourceVisitor()
         {
             @Override
-            public boolean visitResource(@NotNull IResource resource)
+            public boolean visitResource(@NotNull Resource resource)
             {
                 addResource(resource);
                 return true;
             }
         }, date);
 
-        _model.visitAppointments(new IAppointmentVisitor()
+        _model.visitAppointments(new AppointmentVisitor()
         {
             @Override
-            public boolean visitAppointment(@NotNull IAppointment appointment)
+            public boolean visitAppointment(@NotNull Appointment appointment)
             {
                 addAppointment(appointment);
                 return true;
@@ -138,7 +138,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
 
 
 
-    private void addResource(@NotNull IResource resource)
+    private void addResource(@NotNull Resource resource)
     {
         // Get the next available column.
         int column = _nextResource ++;
@@ -152,7 +152,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
     }
 
 
-    private void removeResource(@NotNull IResource resource)
+    private void removeResource(@NotNull Resource resource)
     {
         // We have to find the one to remove ... we could use a map but I don't think there are going to be a
         //  lot so this is more straight forward
@@ -178,11 +178,11 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
      *
      * @param appointment (not null) Appointment to add.
      */
-    private void addAppointment(@NotNull IAppointment appointment)
+    private void addAppointment(@NotNull Appointment appointment)
     {
         AbstractAppointmentComponent appointmentComponent = _componentFactory.makeAppointmentComponent(appointment);
 
-        IResource resource = appointment.getResource();
+        Resource resource = appointment.getResource();
         Integer column = _columnMap.get(resource);
         if (column == null) {
             // TODO - deal with unassigned resource.
@@ -234,7 +234,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
 
 
     @Override
-    public void resourceAdded(@NotNull IResource resource, @NotNull LocalDate date)
+    public void resourceAdded(@NotNull Resource resource, @NotNull LocalDate date)
     {
         // This is a day view so we only care if the day matches
         if (! date.equals(_currentDate)) { return; }
@@ -251,7 +251,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
 
 
     @Override
-    public void resourceRemoved(@NotNull IResource resource, @NotNull LocalDate date)
+    public void resourceRemoved(@NotNull Resource resource, @NotNull LocalDate date)
     {
         // This is a day view so we only care if the day matches
         if (! date.equals(_currentDate)) { return; }
@@ -268,7 +268,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
 
 
     @Override
-    public void resourceUpdated(@NotNull IResource resource)
+    public void resourceUpdated(@NotNull Resource resource)
     {
         // I think this is just a repaint
         repaint();
@@ -276,7 +276,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
 
 
     @Override
-    public void appointmentAdded(@NotNull IAppointment appointment)
+    public void appointmentAdded(@NotNull Appointment appointment)
     {
         LocalDate date = appointment.getDateTime().toLocalDate();
 
@@ -291,7 +291,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
 
 
     @Override
-    public void appointmentRemoved(@NotNull IAppointment appointment)
+    public void appointmentRemoved(@NotNull Appointment appointment)
     {
         LocalDate date = appointment.getDateTime().toLocalDate();
 
@@ -306,7 +306,7 @@ public class DaySchedule extends JPanel implements Printable, IResourceChangeLis
 
 
     @Override
-    public void appointmentUpdated(@NotNull IAppointment appointment)
+    public void appointmentUpdated(@NotNull Appointment appointment)
     {
         // The appointment may have moved so re-layout
         revalidate();

@@ -1,6 +1,6 @@
 package com.thirdnf.ResourceScheduler.components;
 
-import com.thirdnf.ResourceScheduler.IAppointment;
+import com.thirdnf.ResourceScheduler.Appointment;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -18,7 +18,7 @@ import javax.swing.*;
 public class AbstractAppointmentComponent extends JComponent
 {
     // The appointment this component is wrapping.
-    protected final IAppointment _appointment;
+    protected final Appointment _appointment;
 
 
     /**
@@ -26,7 +26,7 @@ public class AbstractAppointmentComponent extends JComponent
      *
      * @param appointment (not null) The appointment to wrap
      */
-    protected AbstractAppointmentComponent(@NotNull IAppointment appointment)
+    protected AbstractAppointmentComponent(@NotNull Appointment appointment)
     {
         _appointment = appointment;
     }
@@ -38,7 +38,7 @@ public class AbstractAppointmentComponent extends JComponent
      * @return (not null) The appointment this component was wrapping.
      */
     @NotNull
-    public IAppointment getAppointment()
+    public Appointment getAppointment()
     {
         return _appointment;
     }

@@ -24,10 +24,10 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     private static final DemoCategory Blue  = new DemoCategory("Blue", new Color(9, 171, 246, 200));
 
     // Resources
-    private List<IResource> _resources = new ArrayList<IResource>();
+    private List<Resource> _resources = new ArrayList<Resource>();
 
     // The appointments
-    private List<IAppointment> _appointments = new ArrayList<IAppointment>();
+    private List<Appointment> _appointments = new ArrayList<Appointment>();
 
 
     public ScheduleModelDemo()
@@ -48,20 +48,20 @@ public class ScheduleModelDemo extends AbstractScheduleModel
 
 
     @Override
-    public void visitAppointments(IAppointmentVisitor visitor, @NotNull LocalDate dateTime)
+    public void visitAppointments(AppointmentVisitor visitor, @NotNull LocalDate dateTime)
     {
         // TODO - Actually break the appointments down by days.
 
-        for (IAppointment appointment : _appointments) {
+        for (Appointment appointment : _appointments) {
             visitor.visitAppointment(appointment);
         }
     }
 
 
     @Override
-    public void visitResources(IResourceVisitor visitor, @NotNull LocalDate dateTime)
+    public void visitResources(ResourceVisitor visitor, @NotNull LocalDate dateTime)
     {
-        for (IResource resource : _resources) {
+        for (Resource resource : _resources) {
             visitor.visitResource(resource);
         }
     }
@@ -69,7 +69,7 @@ public class ScheduleModelDemo extends AbstractScheduleModel
 
     public void addResource(@NotNull String title, @NotNull Color color)
     {
-        IResource resource = new DemoResource(title, color);
+        Resource resource = new DemoResource(title, color);
         _resources.add(resource);
 
         fireResourceAdded(resource, new LocalDate());
@@ -91,7 +91,7 @@ public class ScheduleModelDemo extends AbstractScheduleModel
 
 
 
-    public static class DemoResource implements IResource
+    public static class DemoResource implements Resource
     {
         private final String _title;
         private final Color _color;
@@ -117,7 +117,6 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         }
 
 
-        @Override
         @NotNull
         public Color getColor()
         {
@@ -166,16 +165,16 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     }
 
 
-    public static class DemoAppointment implements IAppointment
+    public static class DemoAppointment implements Appointment
     {
         private final DemoCategory _category;
-        private final IResource _resource;
+        private final Resource _resource;
         private final String _title;
         private DateTime _time;
         private Duration _length;
 
 
-        public DemoAppointment(@NotNull String title, DemoCategory category, IResource resource)
+        public DemoAppointment(@NotNull String title, DemoCategory category, Resource resource)
         {
             _title = title;
             _category = category;
@@ -197,7 +196,7 @@ public class ScheduleModelDemo extends AbstractScheduleModel
 
 
         @Override
-        public IResource getResource()
+        public Resource getResource()
         {
             return _resource;
         }
@@ -230,7 +229,7 @@ public class ScheduleModelDemo extends AbstractScheduleModel
 
 
         public static DemoAppointment create(@NotNull String title, @NotNull DemoCategory category,
-                                             @Nullable IResource resource,
+                                             @Nullable Resource resource,
                                              @NotNull LocalTime time, int minutes)
         {
             DemoAppointment appointment = new DemoAppointment(title, category, resource);

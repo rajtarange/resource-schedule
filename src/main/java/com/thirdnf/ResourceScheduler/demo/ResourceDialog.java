@@ -9,7 +9,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
-import com.thirdnf.ResourceScheduler.IResource;
+import com.thirdnf.ResourceScheduler.Resource;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,7 +30,7 @@ public class ResourceDialog extends JDialog
     }
 
 
-    public ResourceDialog(@NotNull Frame owner, @NotNull IResource resource)
+    public ResourceDialog(@NotNull Frame owner, @NotNull Resource resource)
     {
         super(owner);
         initComponents();
@@ -38,7 +38,7 @@ public class ResourceDialog extends JDialog
         setTitle("Edit Resource");
 
         _titleField.setText(resource.getTitle());
-        _color = resource.getColor();
+//        _color = resource.getColor();
         _selectButton.setBackground(_color);
     }
 

@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
-public interface IScheduleModel
+public interface ScheduleModel
 {
     /**
      * Visit all appointments for the given date time.  The Resource Scheduler uses Joda DateTime
@@ -13,10 +13,10 @@ public interface IScheduleModel
      * @param visitor (not null) The visitor to visit with every appointment for the given day
      * @param dateTime (not null) The day to visit the appointments for.
      */
-    void visitAppointments(IAppointmentVisitor visitor, @NotNull LocalDate dateTime);
+    void visitAppointments(AppointmentVisitor visitor, @NotNull LocalDate dateTime);
 
 
-    void visitResources(IResourceVisitor visitor, @NotNull LocalDate dateTime);
+    void visitResources(ResourceVisitor visitor, @NotNull LocalDate dateTime);
 
 
     /**
@@ -39,7 +39,7 @@ public interface IScheduleModel
      *
      * @param listener (not null) Listener to notify when a resource has been added or removed.
      */
-    void addResourceChangeListener(IResourceChangeListener listener);
+    void addResourceChangeListener(ResourceChangeListener listener);
 
 
     /**
@@ -48,11 +48,11 @@ public interface IScheduleModel
      *
      * @param listener (not null) Listener to notify when a resource has been added or removed.
      */
-    void removeResourceChangeListener(IResourceChangeListener listener);
+    void removeResourceChangeListener(ResourceChangeListener listener);
 
 
-    void addAppointmentChangeListener(@NotNull IAppointmentChangeListener listener);
+    void addAppointmentChangeListener(@NotNull AppointmentChangeListener listener);
 
 
-    void removeAppointmentChangeListener(@NotNull IAppointmentChangeListener listener);
+    void removeAppointmentChangeListener(@NotNull AppointmentChangeListener listener);
 }

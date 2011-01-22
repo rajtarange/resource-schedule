@@ -1,6 +1,6 @@
 package com.thirdnf.ResourceScheduler.demo;
 
-import com.thirdnf.ResourceScheduler.IAppointment;
+import com.thirdnf.ResourceScheduler.Appointment;
 import com.thirdnf.ResourceScheduler.components.BasicAppointmentComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ public class DemoAppointmentComponent extends BasicAppointmentComponent implemen
 {
     // The single action listener which will get click events.  This is a single entity for now, but we
     //  could make this a list if there was a need for it.
-    private ActionListener _actionListener = null;
+    private AppointmentListener _appointmentListener = null;
 
     private final JPopupMenu _popupMenu;
 
@@ -26,7 +26,7 @@ public class DemoAppointmentComponent extends BasicAppointmentComponent implemen
      *
      * @param appointment (not null) The appointment to wrap.
      */
-    public DemoAppointmentComponent(@NotNull IAppointment appointment)
+    public DemoAppointmentComponent(@NotNull Appointment appointment)
     {
         super(appointment);
 
@@ -46,7 +46,7 @@ public class DemoAppointmentComponent extends BasicAppointmentComponent implemen
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                handleEdit();
+                if (_appointmentListener != null) { _appointmentListener.handleEdit(_appointment); }
             }
         });
         _popupMenu.add(editItem);
@@ -56,42 +56,29 @@ public class DemoAppointmentComponent extends BasicAppointmentComponent implemen
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                handleDelete();
+                if (_appointmentListener != null) { _appointmentListener.handleDelete(_appointment); }
             }
         });
         _popupMenu.add(deleteItem);
     }
 
 
-    private void handleEdit()
-    {
-        System.out.println("Need to edit");
-    }
-
-
-    private void handleDelete()
-    {
-        System.out.println("Need to delete");
-    }
-
-
     /**
-     * Set the one and only action listener which will get called on mouse clicks.
+     * Set the one and only appointment listener which will get called on mouse clicks.
      *
-     * @param actionListener (not null) The action listener who cares about mouse clicks.
+     * @param appointmentListener (not null) The appointment listener who cares about mouse clicks.
      */
-    public void setActionListener(@NotNull ActionListener actionListener)
+    public void setAppointmentListener(@NotNull AppointmentListener appointmentListener)
     {
-        _actionListener = actionListener;
+        _appointmentListener = appointmentListener;
     }
 
 
     @Override
     public void mouseClicked(MouseEvent e)
     {
-        if (_actionListener != null) {
-            ActionEvent actionEvent = new ActionEvent(_appointment, ActionEvent.ACTION_PERFORMED, _appointment.getTitle());
-            _actionListener.actionPerformed(actionEvent);
+        if (_appointmentListener != null) {
+            _appointmentListener.handleClick(_appointment);
         }
     }
 

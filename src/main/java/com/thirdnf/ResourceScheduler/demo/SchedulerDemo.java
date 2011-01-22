@@ -14,7 +14,8 @@ import javax.swing.border.*;
 
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
-import com.thirdnf.ResourceScheduler.IAppointment;
+import com.thirdnf.ResourceScheduler.Appointment;
+import com.thirdnf.ResourceScheduler.Resource;
 import com.thirdnf.ResourceScheduler.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
@@ -56,9 +57,42 @@ public class SchedulerDemo extends JFrame
         DemoComponentFactory componentFactory = new DemoComponentFactory();
         componentFactory.setAppointmentListener(new AppointmentListener() {
             @Override
-            public void handleClick(@NotNull IAppointment appointment)
+            public void handleClick(@NotNull Appointment appointment)
             {
                 handleAppointmentClick(appointment);
+            }
+
+            @Override
+            public void handleDelete(@NotNull Appointment appointment)
+            {
+                handleAppointmentDelete(appointment);
+            }
+
+            @Override
+            public void handleEdit(@NotNull Appointment appointment)
+            {
+                handleAppointmentEdit(appointment);
+            }
+        });
+
+        componentFactory.setResourceListener(new ResourceListener()
+        {
+            @Override
+            public void handleClick(@NotNull Resource resource)
+            {
+                handleResourceClick(resource);
+            }
+
+            @Override
+            public void handleDelete(@NotNull Resource resource)
+            {
+                handleResourceDelete(resource);
+            }
+
+            @Override
+            public void handleEdit(@NotNull Resource resource)
+            {
+                handleResourceEdit(resource);
             }
         });
 
@@ -70,24 +104,49 @@ public class SchedulerDemo extends JFrame
     }
 
 
-    private void handleAppointmentClick(IAppointment appointment)
+    private void handleAppointmentClick(Appointment appointment)
     {
         StringBuilder stringBuilder = new StringBuilder();
         LocalTime time = appointment.getDateTime().toLocalTime();
         Period period = appointment.getDuration().toPeriod();
-//        ICategory category = appointment.getCategory();
 
         stringBuilder.append("Info About: ").append(appointment.getTitle()).append('\n')
                 .append("Start time: ").append(time.toString("h:mm a")).append('\n')
                 .append("Duration: ").append(period.toString(PeriodFormat.getDefault())).append('\n');
-//        if (category != null) {
-//            stringBuilder.append("Category: ").append(category.getTitle()).append('\n');
-//        }
-
         stringBuilder.append("For Resource: ").append(appointment.getResource());
 
 
         _detailsPane.setText(stringBuilder.toString());
+    }
+
+
+    public void handleAppointmentDelete(@NotNull Appointment appointment)
+    {
+        System.out.println("Delete request for appointment");
+    }
+
+
+    public void handleAppointmentEdit(@NotNull Appointment appointment)
+    {
+        System.out.println("Edit request for appointment");
+    }
+
+
+    public void handleResourceClick(@NotNull Resource resource)
+    {
+        System.out.println("Click request for resource");
+    }
+
+
+    public void handleResourceDelete(@NotNull Resource resource)
+    {
+        System.out.println("Delete request for resource");
+    }
+
+
+    public void handleResourceEdit(@NotNull Resource resource)
+    {
+        System.out.println("Edit request for resource");
     }
 
 

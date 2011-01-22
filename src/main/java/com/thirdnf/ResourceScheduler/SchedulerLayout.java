@@ -154,7 +154,7 @@ public class SchedulerLayout implements LayoutManager2
                 else if (component instanceof AbstractAppointmentComponent) {
                     AbstractAppointmentComponent appointmentComponent = (AbstractAppointmentComponent)component;
 
-                    IAppointment appointment = appointmentComponent.getAppointment();
+                    Appointment appointment = appointmentComponent.getAppointment();
                     LocalTime time = appointment.getDateTime().toLocalTime();
                     Duration duration = appointment.getDuration();
 

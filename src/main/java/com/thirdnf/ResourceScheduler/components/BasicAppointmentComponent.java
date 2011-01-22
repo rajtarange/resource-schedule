@@ -1,6 +1,6 @@
 package com.thirdnf.ResourceScheduler.components;
 
-import com.thirdnf.ResourceScheduler.IAppointment;
+import com.thirdnf.ResourceScheduler.Appointment;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -23,7 +23,7 @@ public class BasicAppointmentComponent extends AbstractAppointmentComponent
      *
      * @param appointment (not null) The appointment to wrap.
      */
-    public BasicAppointmentComponent(@NotNull IAppointment appointment)
+    public BasicAppointmentComponent(@NotNull Appointment appointment)
     {
         super(appointment);
 

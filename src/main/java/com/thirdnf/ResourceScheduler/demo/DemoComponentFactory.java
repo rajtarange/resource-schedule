@@ -1,46 +1,63 @@
 package com.thirdnf.ResourceScheduler.demo;
 
-import com.thirdnf.ResourceScheduler.IAppointment;
-import com.thirdnf.ResourceScheduler.IResource;
+import com.thirdnf.ResourceScheduler.Appointment;
+import com.thirdnf.ResourceScheduler.Resource;
 import com.thirdnf.ResourceScheduler.components.AbstractAppointmentComponent;
 import com.thirdnf.ResourceScheduler.components.AbstractResourceComponent;
 import com.thirdnf.ResourceScheduler.components.ComponentFactory;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-
+/**
+ * This is the demo component factory which is used to create custom resource and appointment components.
+ *
+ * @author Joshua Gerth - jgerth@thirdnf.com
+ */
 public class DemoComponentFactory extends ComponentFactory
 {
+    // The appointment listener to call for mouse clicks on the appointments.
     private AppointmentListener _appointmentListener;
 
-
-    @Override
-    public AbstractResourceComponent makeResourceComponent(@NotNull IResource resource)
-    {
-        return new DemoResourceComponent(resource);
-    }
+    // The resource listener to call for mouse clicks on the resources.
+    private ResourceListener _resourceListener;
 
 
     @Override
-    public AbstractAppointmentComponent makeAppointmentComponent(@NotNull final IAppointment appointment)
+    @NotNull
+    public AbstractResourceComponent makeResourceComponent(@NotNull final Resource resource)
     {
-        DemoAppointmentComponent component = new DemoAppointmentComponent(appointment);
-        component.setActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if (_appointmentListener != null) { _appointmentListener.handleClick(appointment); }
-            }
-        });
+        DemoResourceComponent component = new DemoResourceComponent(resource);
+        component.setResourceListener(_resourceListener);
 
         return component;
     }
 
 
+    @Override
+    @NotNull
+    public AbstractAppointmentComponent makeAppointmentComponent(@NotNull final Appointment appointment)
+    {
+        DemoAppointmentComponent component = new DemoAppointmentComponent(appointment);
+        component.setAppointmentListener(_appointmentListener);
+
+        return component;
+    }
+
+
+    /**
+     * Set the appointment listener.  This will be passed into every appointment component which
+     * is created.
+     *
+     * @param appointmentListener (not null) The listener to call for mouse clicks on the appointments.
+     */
     public void setAppointmentListener(@NotNull AppointmentListener appointmentListener)
     {
         _appointmentListener = appointmentListener;
+    }
+
+
+    public void setResourceListener(@NotNull ResourceListener resourceListener)
+    {
+        _resourceListener = resourceListener;
     }
 }

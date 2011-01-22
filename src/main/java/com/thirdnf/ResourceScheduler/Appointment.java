@@ -4,14 +4,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 
 
 /**
  * Instances of this class will be appointments to add to the schedule.
  */
-public interface IAppointment
+public interface Appointment
 {
     /**
      * Get the appointment title/name.  This is what the gui will display.
@@ -37,7 +35,7 @@ public interface IAppointment
      * @return (nullable) The resource this appointment has been assigned to.
      */
     @Nullable
-    IResource getResource();
+    Resource getResource();
 
 
     /**

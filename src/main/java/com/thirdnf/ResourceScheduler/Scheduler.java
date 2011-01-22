@@ -72,7 +72,7 @@ public class Scheduler extends JPanel implements Printable
      *
      * @param model (not null) The model to use for the component.
      */
-    public void setModel(@NotNull IScheduleModel model)
+    public void setModel(@NotNull ScheduleModel model)
     {
         _daySchedule.setModel(model);
     }

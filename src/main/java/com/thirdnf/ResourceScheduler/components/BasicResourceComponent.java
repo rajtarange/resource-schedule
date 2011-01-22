@@ -1,23 +1,30 @@
 package com.thirdnf.ResourceScheduler.components;
 
-import com.thirdnf.ResourceScheduler.IResource;
+import com.thirdnf.ResourceScheduler.Resource;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 
+/**
+ * This is a very basic implementation of the AbstractResourceComponent.  This component does not
+ * draw any color or have any mouse notifications.  If you want to change the rendering or
+ * add mouse notification you need to create your own ComponentFactory and extend AbstractResourceComponent.
+ * You can also just extend this one if you only want to modify it slightly.
+ *
+ * @author Joshua Gerth - jgerth@thirdnf.com
+ */
 public class BasicResourceComponent extends AbstractResourceComponent
 {
-    public BasicResourceComponent(@NotNull IResource resource)
+    public BasicResourceComponent(@NotNull Resource resource)
     {
         super(resource);
 
         setPreferredSize(new Dimension(100, 100));
-        setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-        setBackground(resource.getColor());
+        setBorder(BorderFactory.createEtchedBorder());
+        setBackground(Color.lightGray);
     }
 
 
