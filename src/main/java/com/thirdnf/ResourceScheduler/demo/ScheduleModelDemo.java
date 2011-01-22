@@ -13,66 +13,110 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A demo model, has its database hard coded.
+ * A demo model, has its database hard coded and it is only capable of showing two days, Today and
+ * Tomorrow.  Everything else is blank and will ignore updates.
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
 public class ScheduleModelDemo extends AbstractScheduleModel
 {
+    private static final LocalDate Today    = new LocalDate();
+    private static final LocalDate Tomorrow = Today.plusDays(1);
+
+    private static final List<Resource> TodayResources    = new ArrayList<Resource>();
+    private static final List<Resource> TomorrowResources = new ArrayList<Resource>();
+
+    private static final List<Appointment> TodayAppointments = new ArrayList<Appointment>();
+    private static final List<Appointment> TomorrowAppointments = new ArrayList<Appointment>();
+
+    // Resources
+    private static final DemoResource Bobby = new DemoResource("Bobby", new Color(251, 198, 12, 200));
+    private static final DemoResource Johnny = new DemoResource("Johnny", new Color(12, 251, 160, 200));
+    private static final DemoResource Sally = new DemoResource("Sally", new Color(166, 251, 12, 200));
+
+
     // Our categories for our appointments
     private static final DemoCategory Green = new DemoCategory("Green", new Color(9, 246, 76, 200));
     private static final DemoCategory Blue  = new DemoCategory("Blue", new Color(9, 171, 246, 200));
 
-    // Resources
-    private List<Resource> _resources = new ArrayList<Resource>();
+    // This initializes the defaults.
+    static {
+        TodayResources.add(Bobby);
+        TodayResources.add(Johnny);
+        TodayResources.add(Sally);
 
-    // The appointments
-    private List<Appointment> _appointments = new ArrayList<Appointment>();
+        // Populate some default appointments
+        TodayAppointments.add(DemoAppointment.create("Appointment1", Green, Bobby, new LocalTime(10, 5, 0),  45));
+        TodayAppointments.add(DemoAppointment.create("Appointment2", Blue, Johnny, new LocalTime(13, 0, 0), 75));
+        TodayAppointments.add(DemoAppointment.create("Appointment3", Blue, Sally, new LocalTime(8, 0, 0), 60));
+        TodayAppointments.add(DemoAppointment.create("Appointment4", Green, Sally, new LocalTime(8, 45, 0), 120));
+        TodayAppointments.add(DemoAppointment.create("Appointment5", Blue, Sally, new LocalTime(10, 45, 0), 30));
+        TodayAppointments.add(DemoAppointment.create("Appointment7", Green, Sally, new LocalTime(12, 30, 0), 40));
+    }
 
 
     public ScheduleModelDemo()
     {
-        // Populate some default resources
-        _resources.add(new DemoResource("Bobby", new Color(251, 198, 12, 200)));
-        _resources.add(new DemoResource("Johnny", new Color(12, 251, 160, 200)));
-        _resources.add(new DemoResource("Sally", new Color(166, 251, 12, 200)));
-
-        // Populate some default appointments
-        _appointments.add(DemoAppointment.create("Appointment1", Green, _resources.get(0), new LocalTime(10, 5, 0),  45));
-        _appointments.add(DemoAppointment.create("Appointment2", Blue, _resources.get(1), new LocalTime(13, 0, 0),  75));
-        _appointments.add(DemoAppointment.create("Appointment3", Blue, _resources.get(2),  new LocalTime(8, 0, 0),   60));
-        _appointments.add(DemoAppointment.create("Appointment4", Green, _resources.get(2), new LocalTime(8, 45, 0),  120));
-        _appointments.add(DemoAppointment.create("Appointment5", Blue, _resources.get(2), new LocalTime(10, 45, 0),  30));
-        _appointments.add(DemoAppointment.create("Appointment7", Green, _resources.get(2), new LocalTime(12, 30, 0), 40));
     }
 
 
     @Override
     public void visitAppointments(AppointmentVisitor visitor, @NotNull LocalDate dateTime)
     {
-        // TODO - Actually break the appointments down by days.
+        List<Appointment> appointments;
+        if (dateTime.equals(Today)) {
+            appointments = TodayAppointments;
+        }
+        else if (dateTime.equals(Tomorrow)) {
+            appointments = TomorrowAppointments;
+        }
+        else {
+            return;
+        }
 
-        for (Appointment appointment : _appointments) {
+        for (Appointment appointment : appointments) {
             visitor.visitAppointment(appointment);
         }
     }
 
 
     @Override
-    public void visitResources(ResourceVisitor visitor, @NotNull LocalDate dateTime)
+    public void visitResources(ResourceVisitor visitor, @NotNull LocalDate date)
     {
-        for (Resource resource : _resources) {
+        List<Resource> resources;
+        if (date.equals(Today)) {
+            resources = TodayResources;
+        }
+        else if (date.equals(Tomorrow)) {
+            resources = TomorrowResources;
+        }
+        else {
+            return;
+        }
+
+        for (Resource resource : resources) {
             visitor.visitResource(resource);
         }
     }
 
 
-    public void addResource(@NotNull String title, @NotNull Color color)
+    public void addResource(@NotNull LocalDate date, @NotNull String title, @NotNull Color color)
     {
-        Resource resource = new DemoResource(title, color);
-        _resources.add(resource);
+        List<Resource> resources = null;
+        if (date.equals(Today)) {
+            resources = TodayResources;
+        }
+        else if (date.equals(Tomorrow)) {
+            resources = TomorrowResources;
+        }
+        else {
+            return;
+        }
 
-        fireResourceAdded(resource, new LocalDate());
+        Resource resource = new DemoResource(title, color);
+        resources.add(resource);
+
+        fireResourceAdded(resource, date);
     }
 
 

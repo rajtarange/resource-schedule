@@ -8,7 +8,7 @@ public interface ScheduleModel
 {
     /**
      * Visit all appointments for the given date time.  The Resource Scheduler uses Joda DateTime
-     * rather than Java's DateTime for the flexability.
+     * rather than Java's DateTime for the flexibility.
      *
      * @param visitor (not null) The visitor to visit with every appointment for the given day
      * @param dateTime (not null) The day to visit the appointments for.
@@ -16,6 +16,13 @@ public interface ScheduleModel
     void visitAppointments(AppointmentVisitor visitor, @NotNull LocalDate dateTime);
 
 
+     /**
+     * Visit all appointments for the given date time.  The Resource Scheduler uses Joda DateTime
+     * rather than Java's DateTime for the flexibility.
+     *
+     * @param visitor (not null) The visitor to visit with every appointment for the given day
+     * @param dateTime (not null) The day to visit the appointments for.
+     */
     void visitResources(ResourceVisitor visitor, @NotNull LocalDate dateTime);
 
 

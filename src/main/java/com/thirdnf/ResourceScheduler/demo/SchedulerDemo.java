@@ -25,7 +25,10 @@ import org.joda.time.format.PeriodFormat;
 
 
 /**
- * Just a demo application to show how to use the ResourceScheduler
+ * Just a demo application to show how to use the ResourceScheduler.  The coding in here is very
+ * rough and not polished.  I would not necessarily suggest copying this code exactly into your
+ * production application.  You can if you choose, but some of this was hacked to make it
+ * work rather than make it production worth.
  *
  * @author Joshua Gerth
  */
@@ -33,6 +36,9 @@ import org.joda.time.format.PeriodFormat;
 public class SchedulerDemo extends JFrame
 {
     private final ScheduleModelDemo _model;
+
+    private static final LocalDate Today = new LocalDate();
+    private static final LocalDate Tomorrow = Today.plusDays(1);
 
     /**
      * Main entry point.  This method is responsible for creating the main window and showing it.
@@ -180,11 +186,27 @@ public class SchedulerDemo extends JFrame
             @Override
             public void handleOkay(@NotNull String title, @NotNull Color color)
             {
-                _model.addResource(title, color);
+                if (_todayRadio.isSelected()) {
+                    _model.addResource(Today, title, color);
+                }
+                else if (_tomorrowRadio.isSelected()) {
+                    _model.addResource(Tomorrow, title, color);
+                }
             }
         });
         dialog.pack();
         dialog.setVisible(true);
+    }
+
+
+    private void handleSelectToday()
+    {
+        _scheduler.showDate(Today);
+    }
+
+    private void handleSelectTomorrow()
+    {
+        _scheduler.showDate(Tomorrow);
     }
 
 
@@ -194,8 +216,10 @@ public class SchedulerDemo extends JFrame
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         panel1 = new JPanel();
+        panel2 = new JPanel();
         label1 = new JLabel();
-        textField1 = new JTextField();
+        _todayRadio = new JRadioButton();
+        _tomorrowRadio = new JRadioButton();
         _scheduler = new Scheduler();
         scrollPane1 = new JScrollPane();
         _detailsPane = new JTextPane();
@@ -218,10 +242,38 @@ public class SchedulerDemo extends JFrame
                 "2*(default, $lcgap), default:grow",
                 "default, $lgap, default:grow, 2*($lgap, default)"));
 
-            //---- label1 ----
-            label1.setText("Date:");
-            panel1.add(label1, CC.xy(1, 1));
-            panel1.add(textField1, CC.xy(3, 1));
+            //======== panel2 ========
+            {
+                panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
+
+                //---- label1 ----
+                label1.setText("Date:");
+                panel2.add(label1);
+
+                //---- _todayRadio ----
+                _todayRadio.setText("Today");
+                _todayRadio.setSelected(true);
+                _todayRadio.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        handleSelectToday();
+                    }
+                });
+                panel2.add(_todayRadio);
+
+                //---- _tomorrowRadio ----
+                _tomorrowRadio.setText("Tomorrow");
+                _tomorrowRadio.addActionListener(new ActionListener()
+                {
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        handleSelectTomorrow();
+                    }
+                });
+                panel2.add(_tomorrowRadio);
+            }
+            panel1.add(panel2, CC.xywh(1, 1, 3, 1, CC.FILL, CC.FILL));
             panel1.add(_scheduler, CC.xywh(5, 1, 1, 7, CC.DEFAULT, CC.FILL));
 
             //======== scrollPane1 ========
@@ -236,11 +288,9 @@ public class SchedulerDemo extends JFrame
 
             //---- button2 ----
             button2.setText("Add Resource");
-            button2.addActionListener(new ActionListener()
-            {
+            button2.addActionListener(new ActionListener() {
                 @Override
-                public void actionPerformed(ActionEvent e)
-                {
+                public void actionPerformed(ActionEvent e) {
                     handleAddResource();
                 }
             });
@@ -263,13 +313,20 @@ public class SchedulerDemo extends JFrame
         contentPane.add(panel1, new CellConstraints(1, 1, 1, 1, CC.DEFAULT, CC.FILL, new Insets(5, 5, 5, 5)));
         pack();
         setLocationRelativeTo(getOwner());
+
+        //---- buttonGroup1 ----
+        ButtonGroup buttonGroup1 = new ButtonGroup();
+        buttonGroup1.add(_todayRadio);
+        buttonGroup1.add(_tomorrowRadio);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JPanel panel1;
+    private JPanel panel2;
     private JLabel label1;
-    private JTextField textField1;
+    private JRadioButton _todayRadio;
+    private JRadioButton _tomorrowRadio;
     private Scheduler _scheduler;
     private JScrollPane scrollPane1;
     private JTextPane _detailsPane;

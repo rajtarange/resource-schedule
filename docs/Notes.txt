@@ -38,6 +38,12 @@ To-do Before Release:
 
 + Add click, double click, and context click to the demo for appointments and resources.
 
++ Allow inserting of resources and not just add.
+
++ Enable printing, even if it is a simple scaling of the inner panel.
+
++ Documentation and Tutorial
+
 
 Version 2.0 Features:
 ---------------------
@@ -62,3 +68,6 @@ Version 2.0 Features:
   the ones in Google Calendar.  Another goal is for the header color to actual color the entire background
   for that column, but very lightly.  The reason for this is so when you are in a calendar or week view
   you can easily tell which resources have been assigned for which days.
+
++ Make printing look nice.  For 1.0 it will likely be just a simple scaling of the panel, but for 2.0 it
+  would be best to really make it render specifically for the printer.
