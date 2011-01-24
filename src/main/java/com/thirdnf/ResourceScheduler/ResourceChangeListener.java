@@ -16,8 +16,9 @@ public interface ResourceChangeListener extends EventListener
      *
      * @param resource (not null) Resource being made available for the date.
      * @param date (not null) the date.
+     * @param index Location to add, use -1 to indicate an add.
      */
-    void resourceAdded(@NotNull Resource resource, @NotNull LocalDate date);
+    void resourceAdded(@NotNull Resource resource, @NotNull LocalDate date, int index);
 
 
     void resourceRemoved(@NotNull Resource resource, @NotNull LocalDate date);

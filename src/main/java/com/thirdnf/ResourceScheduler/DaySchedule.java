@@ -11,7 +11,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.util.*;
 
 
 /**
@@ -32,8 +31,6 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
 
     // The inner panel holds the real days.
     private JPanel _innerPanel;
-
-    private Map<Resource, Integer> _columnMap = new HashMap<Resource, Integer>();
 
     // The date which is currently being shown
     private LocalDate _currentDate;
@@ -97,7 +94,6 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
         if (_innerPanel != null) {
             remove(_innerPanel);
         }
-        _columnMap.clear();
         _nextResource = 0;
 
         _currentDate = date;
@@ -115,7 +111,7 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
             @Override
             public boolean visitResource(@NotNull Resource resource)
             {
-                addResource(resource);
+                addResource(resource, -1);
                 return true;
             }
         }, date);
@@ -141,18 +137,19 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
      * Add a resource to the panel by wrapping it in a component and then adding it to the
      * layout.
      * @param resource (not null) The resource to add.
+     * @param index Location to add resource, -1 is an add
      */
-    private void addResource(@NotNull Resource resource)
+    private void addResource(@NotNull Resource resource, int index)
     {
         // Get the next available column.
-        int column = _nextResource ++;
+        if (index == -1) {
+            index = _nextResource ++;
+        }
 
         // Wrap the resource in a component
         AbstractResourceComponent resourceComponent = _componentFactory.makeResourceComponent(resource);
 
-        _columnMap.put(resource, column);
-
-        _innerPanel.add(resourceComponent, new Integer(column));
+        _innerPanel.add(resourceComponent, new Integer(index));
     }
 
 
@@ -186,17 +183,7 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
     {
         AbstractAppointmentComponent appointmentComponent = _componentFactory.makeAppointmentComponent(appointment);
 
-        Resource resource = appointment.getResource();
-        Integer column = _columnMap.get(resource);
-        if (column == null) {
-            // TODO - deal with unassigned resource.
-            // This is an unassigned resource for this day
-            System.out.println("Deal with unassigned resource.");
-
-            column = 1;
-        }
-
-        _innerPanel.add(appointmentComponent, column);
+        _innerPanel.add(appointmentComponent);
     }
 
 
@@ -238,13 +225,13 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
 
 
     @Override
-    public void resourceAdded(@NotNull Resource resource, @NotNull LocalDate date)
+    public void resourceAdded(@NotNull Resource resource, @NotNull LocalDate date, int index)
     {
         // This is a day view so we only care if the day matches
         if (! date.equals(_currentDate)) { return; }
 
         // Add it to the panel
-        addResource(resource);
+        addResource(resource, index);
 
         // Force the layout to redraw
         revalidate();

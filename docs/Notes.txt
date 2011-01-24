@@ -21,6 +21,14 @@ Notes:
   for now it stays a pop-up dialog, which I don't like and a "real" application would probably want to do
   something fancier.
 
++ Unassigned appointments, or those appointments which are for resources not available on that
+  day default to column 0.  There is always a column 0 so we are sure the appointment will
+  not be lost.  For version 2.0 perhaps these will instead default to an auto-created unassigned
+  column.  The problem with this is that the layout can't automatically create a column since it
+  can't create the component for the header.  So the caller needs to do this .. which means that
+  the caller would have to say "layout, here is a resource to assign all unassigned appointments
+  to".  This is probably the best approach, but for now a default to column 0 is probably okay.
+
 
 Known Restrictions:
 -------------------
@@ -36,8 +44,6 @@ Known Restrictions:
 
 To-do Before Release:
 ---------------------
-+ Need to automatically detect unassigned appointments and add an unassigned column.
-
 + Add click, double click, and context click to the demo for appointments and resources.
 
 + Allow inserting of resources and not just add.
@@ -73,3 +79,6 @@ Version 2.0 Features:
 
 + Make printing look nice.  For 1.0 it will likely be just a simple scaling of the panel, but for 2.0 it
   would be best to really make it render specifically for the printer.
+
++ I have some round-off errors which are making some of the appointments one pixel to small on the
+  width.  Eventually I should fix this so things look better.

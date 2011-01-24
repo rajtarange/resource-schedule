@@ -34,7 +34,7 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     private static final DemoResource Bobby = new DemoResource("Bobby", new Color(251, 198, 12, 200));
     private static final DemoResource Johnny = new DemoResource("Johnny", new Color(12, 251, 160, 200));
     private static final DemoResource Sally = new DemoResource("Sally", new Color(166, 251, 12, 200));
-
+    private static final DemoResource Freddy = new DemoResource("Freddy", new Color(66, 151, 12, 200));
 
     // Our categories for our appointments
     private static final DemoCategory Green = new DemoCategory("Green", new Color(9, 246, 76, 200));
@@ -46,6 +46,9 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         TodayResources.add(Johnny);
         TodayResources.add(Sally);
 
+        // Freddy is not going to be listed for today, but an appointment today is going to be assigned
+        //  to Freddy.  The appointment should show up as unassigned for the day.
+
         // Populate some default appointments
         TodayAppointments.add(DemoAppointment.create("Appointment1", Green, Bobby, new LocalTime(10, 5, 0),  45));
         TodayAppointments.add(DemoAppointment.create("Appointment2", Blue, Johnny, new LocalTime(13, 0, 0), 75));
@@ -53,9 +56,13 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         TodayAppointments.add(DemoAppointment.create("Appointment4", Green, Sally, new LocalTime(8, 45, 0), 120));
         TodayAppointments.add(DemoAppointment.create("Appointment5", Blue, Sally, new LocalTime(10, 45, 0), 30));
         TodayAppointments.add(DemoAppointment.create("Appointment7", Green, Sally, new LocalTime(12, 30, 0), 40));
+        TodayAppointments.add(DemoAppointment.create("Appointment8", Blue, Freddy, new LocalTime(13, 0, 0), 50));
     }
 
 
+    /**
+     * Boring empty constructor for our model.
+     */
     public ScheduleModelDemo()
     {
     }
@@ -101,9 +108,18 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     }
 
 
+    /**
+     * Our model has been told to add a resource to its database.  This method will add the
+     *  resource to the underlying database and then trigger a redraw to any components using
+     *  this model.
+     *
+     * @param date (not null) The date to add the resource to.
+     * @param title (not null) Title for the resource.
+     * @param color (not null) Color for the resource
+     */
     public void addResource(@NotNull LocalDate date, @NotNull String title, @NotNull Color color)
     {
-        List<Resource> resources = null;
+        List<Resource> resources;
         if (date.equals(Today)) {
             resources = TodayResources;
         }
@@ -118,6 +134,26 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         resources.add(resource);
 
         fireResourceAdded(resource, date);
+    }
+
+
+    public void insertResource(@NotNull LocalDate date, @NotNull String title, @NotNull Color color, int column)
+    {
+        List<Resource> resources;
+        if (date.equals(Today)) {
+            resources = TodayResources;
+        }
+        else if (date.equals(Tomorrow)) {
+            resources = TomorrowResources;
+        }
+        else {
+            return;
+        }
+
+        Resource resource = new DemoResource(title, color);
+        resources.add(column, resource);
+
+        fireResourceInserted(resource, date, column);
     }
 
 
@@ -140,9 +176,6 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     {
         private final String _title;
         private final Color _color;
-        private final LocalTime _startTime;
-        private final LocalTime _endTime;
-
 
 
         /**
@@ -154,8 +187,6 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         {
             _title = title;
             _color = color;
-            _startTime = new LocalTime(8, 0, 0);
-            _endTime   = new LocalTime(17, 0, 0);
         }
 
 
@@ -185,6 +216,12 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         }
 
 
+        /**
+         * Get the color for our resource.  This is used by the demo resource component to paint
+         *  the component.
+         *
+         * @return (not null) The color to paint the component.
+         */
         @NotNull
         public Color getColor()
         {
@@ -218,6 +255,11 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         }
 
 
+        /**
+         * This model uses categories to color the appointments so this category color determines the
+         * appointment color.
+         * @return (not null) Color for the category.
+         */
         @NotNull
         public Color getColor()
         {

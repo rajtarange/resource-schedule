@@ -22,7 +22,7 @@ import java.util.List;
 public class SchedulerLayout implements LayoutManager2
 {
     // Location map telling us which column each appointment belongs to.
-    private Map<Component, Integer> _columnMap = new HashMap<Component, Integer>();
+    private List<Resource> _resources = new ArrayList<Resource>();
 
     // Space to give to the top header.
     private int _topHeader = 25;
@@ -37,9 +37,6 @@ public class SchedulerLayout implements LayoutManager2
 
     // Y offset location, equal to the inset.top
     private int  _y;
-
-    // Total number of columns, equal to number of resources + unassigned optional
-    private int _columns;
 
     // Our scaling factor assuming 1:1 means one pixel == one second
     private float _scale;
@@ -125,13 +122,13 @@ public class SchedulerLayout implements LayoutManager2
     public void layoutContainer(Container target)
     {
         synchronized (target.getTreeLock()) {
-            recomputeLayout(target);
+            int columnCount = recomputeLayout(target);
 
             // In order to do intersection checking in the column we need to sort the appointments by their
             //  column first.  The suppress warnings is here due to a bug/feature in java that can't deal
             //  with generic array creation.
             @SuppressWarnings({"unchecked"})
-            List<AbstractAppointmentComponent>[] columns = (List<AbstractAppointmentComponent>[])new List[_columns+1];
+            List<AbstractAppointmentComponent>[] columns = (List<AbstractAppointmentComponent>[])new List[columnCount];
 
             int componentCount = target.getComponentCount();
             for (int i = 0 ; i < componentCount ; ++i) {
@@ -139,9 +136,11 @@ public class SchedulerLayout implements LayoutManager2
                 if (! component.isVisible()) { continue; }
 
                 if (component instanceof AbstractResourceComponent) {
-                    // These are placed at the top of their row
+                    AbstractResourceComponent resourceComponent = (AbstractResourceComponent)component;
+                    Resource resource = resourceComponent.getResource();
 
-                    int column = _columnMap.get(component);
+                    // These are placed at the top of their row
+                    int column = _resources.indexOf(resource);
 
                     int x = _x + _leftHeader + (int)(_columnWidth * column);
 
@@ -159,7 +158,15 @@ public class SchedulerLayout implements LayoutManager2
                     LocalTime time = appointment.getDateTime().toLocalTime();
                     Duration duration = appointment.getDuration();
 
-                    int column = _columnMap.get(component);
+                    Resource resource = appointment.getResource();
+
+                    int column = resource == null ? -1 : _resources.indexOf(resource);
+
+                    if (column == -1) {
+                        // Give them to column 0 .... I can't think of something better to do
+                        //  at the moment.
+                        column = 0;
+                    }
 
                     int y = getY(time);
                     int x = getX(column);
@@ -281,17 +288,12 @@ public class SchedulerLayout implements LayoutManager2
      * a panel resize or on startup.
      *
      * @param target (not null) the containing panel.
+     * @return Number of columns
      */
-    private void recomputeLayout(@NotNull Container target)
+    private int recomputeLayout(@NotNull Container target)
     {
-        // Dynamically determine how many columns we are going to need.
-        _columns = 0;
-        Collection<Integer> values =  _columnMap.values();
-        for (Integer column : values) {
-            _columns = Math.max(_columns, column);
-        }
-        // The number of columns is one greater than the last column index.
-        _columns +=1;
+        // Cache the number of columns ... this seems sort of stupid
+        int columns = _resources.size();
 
         Insets insets = target.getInsets();
         _x = insets.left;
@@ -301,7 +303,9 @@ public class SchedulerLayout implements LayoutManager2
         int height = target.getHeight() - insets.top - insets.bottom;
 
         _scale       = (float)(height - _topHeader) / (float)_totalSeconds;
-        _columnWidth = (float)(width - _leftHeader) / (float) _columns;
+        _columnWidth = (float)(width - _leftHeader) / (float) columns;
+
+        return columns;
     }
 
 
@@ -344,7 +348,7 @@ public class SchedulerLayout implements LayoutManager2
      */
     public int getColumnCount()
     {
-        return _columns;
+        return _resources.size();
     }
 
 
@@ -352,12 +356,17 @@ public class SchedulerLayout implements LayoutManager2
     public void addLayoutComponent(@NotNull Component comp, @Nullable Object constraints)
     {
         // Appointments are added without constraints, Resources must specify a column
-
-        if (! (constraints instanceof Integer)) {
-            throw new IllegalArgumentException("Constraint must be a Location");
+        if (comp instanceof AbstractAppointmentComponent && constraints != null) {
+            throw new IllegalArgumentException("Constraints for appointments must be null.");
         }
+        if (comp instanceof AbstractResourceComponent) {
+            if (! (constraints instanceof Integer)) {
+                throw new IllegalArgumentException("Constraints for resources must specify column.");
+            }
 
-        _columnMap.put(comp, (Integer)constraints);
+            // This may be an insert
+            _resources.add((Integer)constraints, ((AbstractResourceComponent)comp).getResource());
+        }
     }
 
 

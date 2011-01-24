@@ -45,8 +45,19 @@ public class ResourceDialog extends JDialog
 
     private void handleOkay()
     {
+        String columnString = _columnField.getText().trim();
+        int column = -1;
+        if (! columnString.isEmpty()) {
+            try {
+                column = Integer.parseInt(columnString);
+            }
+            catch (NumberFormatException ignored) {
+                column = -1;
+            }
+        }
+
         if (_listener != null) {
-            _listener.handleOkay(_titleField.getText(), _color);
+            _listener.handleOkay(_titleField.getText(), _color, column-1);
         }
         dispose();
     }
@@ -71,7 +82,7 @@ public class ResourceDialog extends JDialog
 
     public static interface IOkayListener
     {
-        void handleOkay(@NotNull String title, @NotNull Color color);
+        void handleOkay(@NotNull String title, @NotNull Color color, int column);
     }
 
 
@@ -83,6 +94,8 @@ public class ResourceDialog extends JDialog
         _titleField = new JTextField();
         label2 = new JLabel();
         _selectButton = new JButton();
+        label3 = new JLabel();
+        _columnField = new JTextField();
         buttonBar = new JPanel();
         okButton = new JButton();
         cancelButton = new JButton();
@@ -113,15 +126,21 @@ public class ResourceDialog extends JDialog
 
                 //---- _selectButton ----
                 _selectButton.setText("Select");
-                _selectButton.addActionListener(new ActionListener()
-                {
+                _selectButton.addActionListener(new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
+                    public void actionPerformed(ActionEvent e) {
                         handleSelectColor();
                     }
                 });
                 contentPanel.add(_selectButton, CC.xy(3, 3));
+
+                //---- label3 ----
+                label3.setText("Column");
+                contentPanel.add(label3, CC.xy(1, 5));
+
+                //---- _columnField ----
+                _columnField.setToolTipText("Leave empty for an add, or enter a column number.");
+                contentPanel.add(_columnField, CC.xy(3, 5));
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -167,6 +186,8 @@ public class ResourceDialog extends JDialog
     private JTextField _titleField;
     private JLabel label2;
     private JButton _selectButton;
+    private JLabel label3;
+    private JTextField _columnField;
     private JPanel buttonBar;
     private JButton okButton;
     private JButton cancelButton;

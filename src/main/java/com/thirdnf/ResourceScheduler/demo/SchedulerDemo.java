@@ -184,13 +184,20 @@ public class SchedulerDemo extends JFrame
         ResourceDialog dialog = new ResourceDialog(this);
         dialog.setOkayListener(new ResourceDialog.IOkayListener() {
             @Override
-            public void handleOkay(@NotNull String title, @NotNull Color color)
+            public void handleOkay(@NotNull String title, @NotNull Color color, int column)
             {
                 if (_todayRadio.isSelected()) {
-                    _model.addResource(Today, title, color);
+                    if (column == -1) {
+                        _model.addResource(Today, title, color);
+                    }
+                    else {
+                        _model.insertResource(Today, title, color, column);
+                    }
                 }
                 else if (_tomorrowRadio.isSelected()) {
-                    _model.addResource(Tomorrow, title, color);
+                    if (column == -1) {
+                        _model.addResource(Tomorrow, title, color);
+                    }
                 }
             }
         });
