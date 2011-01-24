@@ -37,6 +37,13 @@ public interface ScheduleModel
     LocalTime getStartTime(@NotNull LocalDate dateTime);
 
 
+    /**
+     * Get the end time for the day ... I'm thinking that this should really be a dynamic value and
+     *  not something set through the model.
+     *
+     * @param dateTime (not null) Day to get the end date for.
+     * @return (not null) The time
+     */
     LocalTime getEndTime(@NotNull LocalDate dateTime);
 
 

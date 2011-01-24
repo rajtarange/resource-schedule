@@ -3,6 +3,7 @@ package com.thirdnf.ResourceScheduler;
 import com.thirdnf.ResourceScheduler.components.AbstractAppointmentComponent;
 import com.thirdnf.ResourceScheduler.components.AbstractResourceComponent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
@@ -348,8 +349,10 @@ public class SchedulerLayout implements LayoutManager2
 
 
     @Override
-    public void addLayoutComponent(Component comp, Object constraints)
+    public void addLayoutComponent(@NotNull Component comp, @Nullable Object constraints)
     {
+        // Appointments are added without constraints, Resources must specify a column
+
         if (! (constraints instanceof Integer)) {
             throw new IllegalArgumentException("Constraint must be a Location");
         }

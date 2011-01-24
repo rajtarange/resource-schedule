@@ -31,6 +31,8 @@ Known Restrictions:
 + Appointments can not span multiple days.  This would probably be a nice feature some day but I'm not
   even planning for it now.
 
++ If a resource is scheduled more than once on any given day it will appear in two columns.
+
 
 To-do Before Release:
 ---------------------

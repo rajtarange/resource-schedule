@@ -39,8 +39,9 @@ public interface Appointment
 
 
     /**
-     * Get the length of the appointment.
-     * @return
+     * Get the length of the appointment on the given day.
+     *
+     * @return (not null) Length of the appointment
      */
     @NotNull
     Duration getDuration();

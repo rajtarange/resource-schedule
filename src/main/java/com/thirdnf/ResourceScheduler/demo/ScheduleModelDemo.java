@@ -10,6 +10,7 @@ import org.joda.time.LocalTime;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -139,6 +140,9 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     {
         private final String _title;
         private final Color _color;
+        private final LocalTime _startTime;
+        private final LocalTime _endTime;
+
 
 
         /**
@@ -150,6 +154,8 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         {
             _title = title;
             _color = color;
+            _startTime = new LocalTime(8, 0, 0);
+            _endTime   = new LocalTime(17, 0, 0);
         }
 
 
@@ -158,6 +164,24 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         public String getTitle()
         {
             return _title;
+        }
+
+
+        @NotNull
+        @Override
+        public Iterator<Availability> getAvailability(@NotNull LocalDate date)
+        {
+            List<Availability> list = new ArrayList<Availability>();
+
+            // Today the availability is from 8 - 3, tomorrow it is from 10 - 5
+            if (date.equals(Today)) {
+                list.add(new Availability(new LocalTime(8, 0, 0), Duration.standardHours(6)));
+            }
+            else if (date.equals(Tomorrow)) {
+                list.add(new Availability(new LocalTime(10, 0, 0), Duration.standardHours(6)));
+            }
+
+            return list.iterator();
         }
 
 

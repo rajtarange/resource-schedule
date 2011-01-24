@@ -137,7 +137,11 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
     }
 
 
-
+    /**
+     * Add a resource to the panel by wrapping it in a component and then adding it to the
+     * layout.
+     * @param resource (not null) The resource to add.
+     */
     private void addResource(@NotNull Resource resource)
     {
         // Get the next available column.
