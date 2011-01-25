@@ -26,7 +26,7 @@ public class DayScheduleLayout implements LayoutManager2
 
     // Space to give to the top header.
     private int _topHeader = 25;
-    private int _leftHeader = 100;
+    private int _leftHeader = 75;
 
     private final LocalTime _startTime;
 
@@ -98,7 +98,12 @@ public class DayScheduleLayout implements LayoutManager2
     @Override
     public void removeLayoutComponent(Component comp)
     {
-        // Not used by this class
+        // In addition to removing the component we need to also remove the entry from the resource list
+        //  if this is a resource.
+        if (comp instanceof AbstractResourceComponent) {
+            AbstractResourceComponent resourceComponent = (AbstractResourceComponent)comp;
+            _resources.remove(resourceComponent.getResource());
+        }
     }
 
 

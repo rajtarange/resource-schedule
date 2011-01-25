@@ -6,9 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ResourceListener
 {
-    void handleClick(@NotNull Resource resource);
-
-
     void handleDelete(@NotNull Resource resource);
 
 

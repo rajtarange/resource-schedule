@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 
 
 /**
@@ -18,12 +17,24 @@ import java.awt.geom.Rectangle2D;
  */
 public class BasicResourceComponent extends AbstractResourceComponent
 {
+    /**
+     * Constructor given a resource to wrap.  This just saves off the resource and sets
+     *  a default background color of light gray.  To change the background color extend the
+     *  ComponentFactory and make your own components.
+     *
+     * @param resource (not null) Resource to wrap.
+     */
     public BasicResourceComponent(@NotNull Resource resource)
     {
         super(resource);
 
+        // This is mostly ignored.
         setPreferredSize(new Dimension(100, 100));
+
+        // The beveled one doesn't look as good.
         setBorder(BorderFactory.createEtchedBorder());
+
+        // Default gray background
         setBackground(Color.lightGray);
     }
 
@@ -33,16 +44,15 @@ public class BasicResourceComponent extends AbstractResourceComponent
     {
         super.paintComponent(g);
 
+        // Save off the old color so we can restore it at the end.
         Color oldColor = g.getColor();
 
         Graphics2D graphics = (Graphics2D)g;
-
         RenderingHints renderHints = graphics.getRenderingHints();
-
         Insets insets = getInsets();
 
-        int width = getWidth() - insets.left - insets.right;
-        int height = getHeight() - insets.top - insets.bottom;
+        int width  = getWidth()  - insets.left - insets.right;
+        int height = getHeight() - insets.top  - insets.bottom;
 
         g.setColor(getBackground());
         graphics.fillRect(insets.left, insets.top, insets.left + width - 1, insets.top + height - 1);
@@ -53,9 +63,11 @@ public class BasicResourceComponent extends AbstractResourceComponent
 
         FontMetrics fontMetrics = getFontMetrics(getFont());
 
-        Rectangle2D rect = fontMetrics.getStringBounds(_resource.getTitle(), graphics);
-        double stringWidth  = rect.getWidth();
-        double stringHeight = rect.getHeight();
+        double stringWidth  = fontMetrics.stringWidth(_resource.getTitle());
+
+        // For the height we need to subtract the descent to get to the baseline and not the bottom of the font
+        //  as the drawing occurs at the baseline.
+        double stringHeight = fontMetrics.getHeight() - fontMetrics.getDescent();
         double stringX      = ((double)width - stringWidth)/2.0;
         double stringY      = ((double)height - stringHeight)/2.0 + stringHeight;
 

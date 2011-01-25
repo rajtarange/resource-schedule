@@ -113,12 +113,11 @@ public class ScheduleModelDemo extends AbstractScheduleModel
      *  resource to the underlying database and then trigger a redraw to any components using
      *  this model.
      *
+     * @param resource (not null) Resource to add
      * @param date (not null) The date to add the resource to.
-     * @param title (not null) Title for the resource.
-     * @param color (not null) Color for the resource
      * @param index Position to add the resource, -1 indicates that it should be added a the end.
      */
-    public void addResource(@NotNull LocalDate date, @NotNull String title, @NotNull Color color, int index)
+    public void addResource(@NotNull Resource resource, LocalDate date, int index)
     {
         List<Resource> resources;
         if (date.equals(Today)) {
@@ -131,10 +130,50 @@ public class ScheduleModelDemo extends AbstractScheduleModel
             return;
         }
 
-        Resource resource = new DemoResource(title, color);
         resources.add(resource);
 
         fireResourceAdded(resource, date, index);
+    }
+
+
+    public void deleteResource(@NotNull Resource resource, @NotNull LocalDate date)
+    {
+        List<Resource> resources;
+        if (date.equals(Today)) {
+            resources = TodayResources;
+        }
+        else if (date.equals(Tomorrow)) {
+            resources = TomorrowResources;
+        }
+        else {
+            return;
+        }
+
+        resources.remove(resource);
+        fireResourceRemoved(resource, date);
+    }
+
+
+    public void deleteAppointment(@NotNull Appointment appointment)
+    {
+        LocalDate date = appointment.getDateTime().toLocalDate();
+
+        List<Appointment> appointments;
+        if (date.equals(Today)) {
+            appointments = TodayAppointments;
+        }
+        else if (date.equals(Tomorrow)) {
+            appointments = TomorrowAppointments;
+        }
+        else {
+            return;
+        }
+
+        // Remove it from our list
+        appointments.remove(appointment);
+
+        // Let any listeners know we have removed this appointment.
+        fireAppointmentRemoved(appointment);
     }
 
 
@@ -324,8 +363,8 @@ public class ScheduleModelDemo extends AbstractScheduleModel
                                              @NotNull LocalTime time, int minutes)
         {
             DemoAppointment appointment = new DemoAppointment(title, category, resource);
-
-            DateTime date = new DateTime(2011, 1, 20, time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute(), 0);
+            DateTime date = new DateTime(Today.getYear(), Today.getMonthOfYear(), Today.getDayOfMonth(),
+                    time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute(), 0);
             appointment.setTime(date);
             appointment.setLength(Duration.standardMinutes(minutes));
 

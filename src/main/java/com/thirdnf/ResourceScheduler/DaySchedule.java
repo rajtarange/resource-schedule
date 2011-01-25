@@ -6,7 +6,8 @@ import org.joda.time.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -23,14 +24,13 @@ import java.awt.print.PrinterException;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class DaySchedule extends JPanel implements Printable, ResourceChangeListener, AppointmentChangeListener
+public class DaySchedule extends JPanel
+        implements Printable, ResourceChangeListener, AppointmentChangeListener
 {
-    private ActionListener _actionListener = null;
-
     private ScheduleModel _model = null;
 
     // The inner panel holds the real days.
-    private JPanel _innerPanel;
+    private InnerPanel _innerPanel;
 
     // The date which is currently being shown
     private LocalDate _currentDate;
@@ -42,7 +42,13 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
 
     private ComponentFactory _componentFactory;
 
+    private ScheduleListener _scheduleListener = null;
 
+
+    /**
+     * Basic constructor.  This sets up the date label at the top but does not create the inner panel until
+     *  it has been asked to show a day.
+     */
     public DaySchedule()
     {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -104,6 +110,9 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
         LocalTime endTime = _model.getEndTime(date);
 
         _innerPanel = new InnerPanel(startTime, endTime);
+        // Attach the listener
+        if (_scheduleListener != null) { _innerPanel.setScheduleListener(_scheduleListener); }
+
         add(_innerPanel);
 
         _model.visitResources(new ResourceVisitor()
@@ -153,6 +162,14 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
     }
 
 
+    /**
+     * Helper method to remove a resource.  Since we don't have a map of resource to component (as I'm trying to
+     *  not duplicate information) we need to run through all the resource in the innerPanel and check if any
+     *  of their resources match the one provided.  This is not expected to be an expensive operation as 99%
+     *  of the time we are likely to have less than 10 or 15 resources and possibly far less.
+     *
+     * @param resource (not null) The resource to remove.
+     */
     private void removeResource(@NotNull Resource resource)
     {
         // We have to find the one to remove ... we could use a map but I don't think there are going to be a
@@ -160,7 +177,7 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
         int count = _innerPanel.getComponentCount();
 
         for (int index=0; index<count; ++index) {
-            Component component = _innerPanel.getComponent(count);
+            Component component = _innerPanel.getComponent(index);
             if (component instanceof AbstractResourceComponent) {
                 AbstractResourceComponent resourceComponent = (AbstractResourceComponent) component;
                 if (resourceComponent.getResource().equals(resource)) {
@@ -187,17 +204,38 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
     }
 
 
+    private void removeAppointment(@NotNull Appointment appointment)
+    {
+        // We have to find the one to remove ... we could use a map but I don't think there are going to be a
+        //  lot so this is more straight forward
+        int count = _innerPanel.getComponentCount();
+
+        for (int index=0; index<count; ++index) {
+            Component component = _innerPanel.getComponent(index);
+            if (component instanceof AbstractAppointmentComponent) {
+                AbstractAppointmentComponent appointmentComponent = (AbstractAppointmentComponent) component;
+                if (appointmentComponent.getAppointment().equals(appointment)) {
+                    // This is the guy to remove
+                    _innerPanel.remove(appointmentComponent);
+                    return;
+                }
+            }
+        }
+    }
+
+
     /**
-     * Add an action listener to be notified when a user clicks anywhere in the panel which is not
+     * Add a schedule listener to be notified when a user clicks anywhere in the panel which is not
      * on an appointment or resource.  The values sent are the "time" location of the event and
      * the resource column.  From this the listener could pull up a dialog box and ask to add
      * an appointment if they wanted to.
      *
-     * @param actionListener (not null) the action listener to be notified on an appointment click.
+     * @param scheduleListener (not null) the listener to be notified on an appointment click.
      */
-    public void setActionListener(@NotNull ActionListener actionListener)
+    public void setScheduleListener(@NotNull ScheduleListener scheduleListener)
     {
-        _actionListener = actionListener;
+        _scheduleListener = scheduleListener;
+        if (_innerPanel != null) { _innerPanel.setScheduleListener(scheduleListener); }
     }
 
 
@@ -289,10 +327,13 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
         // This is a day view so we only care if the day matches
         if (! date.equals(_currentDate)) { return; }
 
-        // TODO - Handle this in the existing frame without forcing a redraw of everything
+        removeAppointment(appointment);
 
-        // For now we are going to cheat and just reload the date
-        setDate(_currentDate);
+        // This may cause a conflicted appointment to change sizes so invalidate everything.
+        revalidate();
+
+        // Repaint to remove the old one.
+        repaint();
     }
 
 
@@ -310,11 +351,14 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
      * This is the inner panel that actually holds the components.  This panel can be removed and replaced
      * as the date changes or as otherwise needed.
      */
-    private static class InnerPanel extends JPanel
+    private static class InnerPanel extends JPanel implements MouseListener
     {
         private final LocalTime _startTime;
         private final LocalTime _endTime;
         private final Duration  _increments;
+
+        private ScheduleListener _scheduleListener = null;
+
 
 
         /**
@@ -331,10 +375,14 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
             _endTime    = endTime;
             _increments = Duration.standardMinutes(15);
 
-            setLayout(new DayScheduleLayout(startTime, endTime));
+            DayScheduleLayout layout = new DayScheduleLayout(startTime, endTime);
+
+            setLayout(layout);
             setBackground(Color.white);
             setOpaque(true);
             setBorder(BorderFactory.createEtchedBorder());
+
+            addMouseListener(this);
         }
 
 
@@ -376,15 +424,11 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
                 if (y != null) {
                     boolean onTheHour = time.getMinuteOfHour() == 0;
 
-                    int x = insets.left;
                     if (onTheHour) {
                         graphics.setColor(Color.black);
                     }
-                    else {
-                        x = leftHeader;
-                    }
 
-                    graphics.drawLine(x, y, insets.left + width, y);
+                    graphics.drawLine(leftHeader, y, insets.left + width, y);
 
                     if (onTheHour) {
                         // We want to draw hour markers and right justify them.
@@ -393,7 +437,7 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
                         Rectangle2D rect = fontMetrics.getStringBounds(timeString, graphics);
                         int stringX = (int)(leftHeader - rect.getWidth() - 10);
 
-                        graphics.drawString(timeString, stringX, y + fontHeight);
+                        graphics.drawString(timeString, stringX, y + fontHeight/2);
                         graphics.setColor(Color.lightGray);
                     }
                 }
@@ -401,5 +445,51 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
 
             graphics.setColor(oldColor);
         }
+
+
+        /**
+         * Add a schedule listener to be notified when a user clicks anywhere in the panel which is not
+         * on an appointment or resource.  The values sent are the "time" location of the event and
+         * the resource column.  From this the listener could pull up a dialog box and ask to add
+         * an appointment if they wanted to.
+         *
+         * @param scheduleListener (not null) the listener to be notified on an appointment click.
+         */
+        public void setScheduleListener(@NotNull ScheduleListener scheduleListener)
+        {
+            _scheduleListener = scheduleListener;
+        }
+
+
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e)
+        {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e)
+        {
+
+            if (_scheduleListener != null) {
+                System.out.println("resease on the screen");
+                // Let the action listener know of our mouse click location.  They may want to pull up a dialog
+                //  box to add an appointment
+            }
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) { }
+
+        @Override
+        public void mouseExited(MouseEvent e) { }
+
+
+
     }
 }

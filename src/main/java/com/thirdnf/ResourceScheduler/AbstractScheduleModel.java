@@ -53,6 +53,7 @@ public abstract class AbstractScheduleModel implements ScheduleModel
      *
      * @param resource (not null) Resource which has been added to the model.
      * @param dateTime (not null) Date the resource was added.
+     * @param index The location to add the resource, or -1 to add it at the end.
      */
     protected void fireResourceAdded(@NotNull Resource resource, @NotNull LocalDate dateTime, int index)
     {

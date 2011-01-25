@@ -58,7 +58,7 @@ public class BasicAppointmentComponent extends AbstractAppointmentComponent
         graphics.drawRoundRect(insets.left, insets.top, insets.left+width-1, insets.top+height-1, arc, arc);
 
         FontMetrics fontMetrics = getFontMetrics(getFont());
-        int fontHeight = fontMetrics.getHeight();
+        int fontHeight = fontMetrics.getHeight() - fontMetrics.getDescent();
 
         graphics.setColor(Color.black);
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

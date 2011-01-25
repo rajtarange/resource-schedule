@@ -60,6 +60,8 @@ public class SchedulerDemo extends JFrame
     {
         initComponents();
 
+        _model = new ScheduleModelDemo();
+
         DemoComponentFactory componentFactory = new DemoComponentFactory();
         componentFactory.setAppointmentListener(new AppointmentListener() {
             @Override
@@ -71,7 +73,7 @@ public class SchedulerDemo extends JFrame
             @Override
             public void handleDelete(@NotNull Appointment appointment)
             {
-                handleAppointmentDelete(appointment);
+                _model.deleteAppointment(appointment);
             }
 
             @Override
@@ -84,15 +86,11 @@ public class SchedulerDemo extends JFrame
         componentFactory.setResourceListener(new ResourceListener()
         {
             @Override
-            public void handleClick(@NotNull Resource resource)
-            {
-                handleResourceClick(resource);
-            }
-
-            @Override
             public void handleDelete(@NotNull Resource resource)
             {
-                handleResourceDelete(resource);
+                // Pass this directly down to the model
+                LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
+                _model.deleteResource(resource, date);
             }
 
             @Override
@@ -104,7 +102,6 @@ public class SchedulerDemo extends JFrame
 
         _scheduler.setComponentFactory(componentFactory);
 
-        _model = new ScheduleModelDemo();
         _scheduler.setModel(_model);
         _scheduler.showDate(new LocalDate());
     }
@@ -126,27 +123,9 @@ public class SchedulerDemo extends JFrame
     }
 
 
-    public void handleAppointmentDelete(@NotNull Appointment appointment)
-    {
-        System.out.println("Delete request for appointment");
-    }
-
-
     public void handleAppointmentEdit(@NotNull Appointment appointment)
     {
         System.out.println("Edit request for appointment");
-    }
-
-
-    public void handleResourceClick(@NotNull Resource resource)
-    {
-        System.out.println("Click request for resource");
-    }
-
-
-    public void handleResourceDelete(@NotNull Resource resource)
-    {
-        System.out.println("Delete request for resource");
     }
 
 
@@ -187,7 +166,9 @@ public class SchedulerDemo extends JFrame
             public void handleOkay(@NotNull String title, @NotNull Color color, int column)
             {
                 LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
-                _model.addResource(date, title, color, column);
+
+                Resource resource = new ScheduleModelDemo.DemoResource(title, color);
+                _model.addResource(resource, date, column);
             }
         });
         dialog.pack();

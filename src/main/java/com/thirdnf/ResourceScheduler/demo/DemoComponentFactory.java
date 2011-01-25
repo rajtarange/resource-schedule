@@ -24,7 +24,7 @@ public class DemoComponentFactory extends ComponentFactory
 
     @Override
     @NotNull
-    public AbstractResourceComponent makeResourceComponent(@NotNull final Resource resource)
+    public AbstractResourceComponent makeResourceComponent(@NotNull Resource resource)
     {
         DemoResourceComponent component = new DemoResourceComponent(resource);
         component.setResourceListener(_resourceListener);
@@ -35,7 +35,7 @@ public class DemoComponentFactory extends ComponentFactory
 
     @Override
     @NotNull
-    public AbstractAppointmentComponent makeAppointmentComponent(@NotNull final Appointment appointment)
+    public AbstractAppointmentComponent makeAppointmentComponent(@NotNull Appointment appointment)
     {
         DemoAppointmentComponent component = new DemoAppointmentComponent(appointment);
         component.setAppointmentListener(_appointmentListener);

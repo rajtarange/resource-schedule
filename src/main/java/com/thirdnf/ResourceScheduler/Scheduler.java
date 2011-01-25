@@ -10,9 +10,9 @@ import javax.swing.event.EventListenerList;
 import com.thirdnf.ResourceScheduler.components.ComponentFactory;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -46,17 +46,18 @@ public class Scheduler extends JPanel implements Printable
         _daySchedule = new DaySchedule();
         add(_daySchedule, DayView);
 
-        _daySchedule.setActionListener(new ActionListener() {
+        _daySchedule.setScheduleListener(new ScheduleListener()
+        {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void actionPerformed(@NotNull Resource resource, @NotNull LocalTime time)
             {
                 // Guaranteed to return a non-null array
                 Object[] listeners = _listenerList.getListenerList();
                 // Process the listeners last to first, notifying
                 // those that are interested in this event
-                for (int i = listeners.length-2; i>=0; i-=2) {
-                    if (listeners[i]==ActionListener.class) {
-                        ((ActionListener)listeners[i+1]).actionPerformed(e);
+                for (int i = listeners.length - 2; i >= 0; i -= 2) {
+                    if (listeners[i] == ActionListener.class) {
+                        ((ScheduleListener) listeners[i + 1]).actionPerformed(resource, time);
                     }
                 }
             }
@@ -92,15 +93,15 @@ public class Scheduler extends JPanel implements Printable
     }
 
 
-    public void addActionListener(@NotNull ActionListener actionListener)
+    public void addScheduleListener(@NotNull ScheduleListener scheduleListener)
     {
-        _listenerList.add(ActionListener.class, actionListener);
+        _listenerList.add(ScheduleListener.class, scheduleListener);
     }
 
 
-    public void removeActionListener(@NotNull ActionListener actionListener)
+    public void removeScheduleListener(@NotNull ScheduleListener scheduleListener)
     {
-        _listenerList.remove(ActionListener.class, actionListener);
+        _listenerList.remove(ScheduleListener.class, scheduleListener);
     }
 
 
