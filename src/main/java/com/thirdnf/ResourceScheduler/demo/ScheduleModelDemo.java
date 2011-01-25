@@ -116,8 +116,9 @@ public class ScheduleModelDemo extends AbstractScheduleModel
      * @param date (not null) The date to add the resource to.
      * @param title (not null) Title for the resource.
      * @param color (not null) Color for the resource
+     * @param index Position to add the resource, -1 indicates that it should be added a the end.
      */
-    public void addResource(@NotNull LocalDate date, @NotNull String title, @NotNull Color color)
+    public void addResource(@NotNull LocalDate date, @NotNull String title, @NotNull Color color, int index)
     {
         List<Resource> resources;
         if (date.equals(Today)) {
@@ -133,27 +134,7 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         Resource resource = new DemoResource(title, color);
         resources.add(resource);
 
-        fireResourceAdded(resource, date);
-    }
-
-
-    public void insertResource(@NotNull LocalDate date, @NotNull String title, @NotNull Color color, int column)
-    {
-        List<Resource> resources;
-        if (date.equals(Today)) {
-            resources = TodayResources;
-        }
-        else if (date.equals(Tomorrow)) {
-            resources = TomorrowResources;
-        }
-        else {
-            return;
-        }
-
-        Resource resource = new DemoResource(title, color);
-        resources.add(column, resource);
-
-        fireResourceInserted(resource, date, column);
+        fireResourceAdded(resource, date, index);
     }
 
 

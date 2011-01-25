@@ -331,7 +331,7 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
             _endTime    = endTime;
             _increments = Duration.standardMinutes(15);
 
-            setLayout(new SchedulerLayout(startTime, endTime));
+            setLayout(new DayScheduleLayout(startTime, endTime));
             setBackground(Color.white);
             setOpaque(true);
             setBorder(BorderFactory.createEtchedBorder());
@@ -343,7 +343,7 @@ public class DaySchedule extends JPanel implements Printable, ResourceChangeList
         {
             super.paintComponent(g);
 
-            SchedulerLayout layout = (SchedulerLayout)getLayout();
+            DayScheduleLayout layout = (DayScheduleLayout)getLayout();
 
             Graphics2D graphics = (Graphics2D)g;
 

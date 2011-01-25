@@ -45,17 +45,23 @@ public class ResourceDialog extends JDialog
 
     private void handleOkay()
     {
-        String columnString = _columnField.getText().trim();
         int column = -1;
-        if (! columnString.isEmpty()) {
-            try {
-                column = Integer.parseInt(columnString);
-            }
-            catch (NumberFormatException ignored) {
-                column = -1;
+
+        // If they have decided to go with a specified column then try to parse that, if it fails we default to -1
+        //  which is an add
+        if (_columnRadio.isSelected()) {
+            String columnString = _columnField.getText().trim();
+            if (! columnString.isEmpty()) {
+                try {
+                    column = Integer.parseInt(columnString);
+                }
+                catch (NumberFormatException ignored) {
+                    column = -1;
+                }
             }
         }
 
+        System.out.println("Using column: " + column);
         if (_listener != null) {
             _listener.handleOkay(_titleField.getText(), _color, column-1);
         }
@@ -71,6 +77,17 @@ public class ResourceDialog extends JDialog
     {
         _color = JColorChooser.showDialog(this, "Choose a color", _color );
         _selectButton.setBackground(_color);
+    }
+
+    private void handleAddRadioClicked()
+    {
+        _columnField.setText("");
+        _columnField.setEnabled(false);
+    }
+
+    private void handleColumnRadioClicked()
+    {
+        _columnField.setEnabled(true);
     }
 
 
@@ -95,6 +112,9 @@ public class ResourceDialog extends JDialog
         label2 = new JLabel();
         _selectButton = new JButton();
         label3 = new JLabel();
+        panel1 = new JPanel();
+        _addRadio = new JRadioButton();
+        _columnRadio = new JRadioButton();
         _columnField = new JTextField();
         buttonBar = new JPanel();
         okButton = new JButton();
@@ -138,9 +158,36 @@ public class ResourceDialog extends JDialog
                 label3.setText("Column");
                 contentPanel.add(label3, CC.xy(1, 5));
 
-                //---- _columnField ----
-                _columnField.setToolTipText("Leave empty for an add, or enter a column number.");
-                contentPanel.add(_columnField, CC.xy(3, 5));
+                //======== panel1 ========
+                {
+                    panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
+
+                    //---- _addRadio ----
+                    _addRadio.setText("Add");
+                    _addRadio.setSelected(true);
+                    _addRadio.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            handleAddRadioClicked();
+                        }
+                    });
+                    panel1.add(_addRadio);
+
+                    //---- _columnRadio ----
+                    _columnRadio.setText("Specify Column");
+                    _columnRadio.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            handleColumnRadioClicked();
+                        }
+                    });
+                    panel1.add(_columnRadio);
+
+                    //---- _columnField ----
+                    _columnField.setEnabled(false);
+                    panel1.add(_columnField);
+                }
+                contentPanel.add(panel1, CC.xy(3, 5, CC.DEFAULT, CC.FILL));
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -176,6 +223,11 @@ public class ResourceDialog extends JDialog
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(getOwner());
+
+        //---- buttonGroup1 ----
+        ButtonGroup buttonGroup1 = new ButtonGroup();
+        buttonGroup1.add(_addRadio);
+        buttonGroup1.add(_columnRadio);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
@@ -187,6 +239,9 @@ public class ResourceDialog extends JDialog
     private JLabel label2;
     private JButton _selectButton;
     private JLabel label3;
+    private JPanel panel1;
+    private JRadioButton _addRadio;
+    private JRadioButton _columnRadio;
     private JTextField _columnField;
     private JPanel buttonBar;
     private JButton okButton;

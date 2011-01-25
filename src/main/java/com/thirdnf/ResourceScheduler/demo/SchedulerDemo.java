@@ -186,19 +186,8 @@ public class SchedulerDemo extends JFrame
             @Override
             public void handleOkay(@NotNull String title, @NotNull Color color, int column)
             {
-                if (_todayRadio.isSelected()) {
-                    if (column == -1) {
-                        _model.addResource(Today, title, color);
-                    }
-                    else {
-                        _model.insertResource(Today, title, color, column);
-                    }
-                }
-                else if (_tomorrowRadio.isSelected()) {
-                    if (column == -1) {
-                        _model.addResource(Tomorrow, title, color);
-                    }
-                }
+                LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
+                _model.addResource(date, title, color, column);
             }
         });
         dialog.pack();
@@ -210,6 +199,7 @@ public class SchedulerDemo extends JFrame
     {
         _scheduler.showDate(Today);
     }
+
 
     private void handleSelectTomorrow()
     {

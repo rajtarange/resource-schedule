@@ -54,21 +54,7 @@ public abstract class AbstractScheduleModel implements ScheduleModel
      * @param resource (not null) Resource which has been added to the model.
      * @param dateTime (not null) Date the resource was added.
      */
-    protected void fireResourceAdded(@NotNull Resource resource, @NotNull LocalDate dateTime)
-    {
-        // Guaranteed to return a non-null array
-        Object[] listeners = _listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==ResourceChangeListener.class) {
-                ((ResourceChangeListener)listeners[i+1]).resourceAdded(resource, dateTime, -1);
-            }
-        }
-    }
-
-
-    protected void fireResourceInserted(@NotNull Resource resource, @NotNull LocalDate dateTime, int index)
+    protected void fireResourceAdded(@NotNull Resource resource, @NotNull LocalDate dateTime, int index)
     {
         // Guaranteed to return a non-null array
         Object[] listeners = _listenerList.getListenerList();

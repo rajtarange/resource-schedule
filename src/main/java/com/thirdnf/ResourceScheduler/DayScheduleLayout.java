@@ -19,7 +19,7 @@ import java.util.List;
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public class SchedulerLayout implements LayoutManager2
+public class DayScheduleLayout implements LayoutManager2
 {
     // Location map telling us which column each appointment belongs to.
     private List<Resource> _resources = new ArrayList<Resource>();
@@ -51,7 +51,7 @@ public class SchedulerLayout implements LayoutManager2
      * @param startTime (not null) Time of the day to start.
      * @param endTime (not null) Time of the day to end.
      */
-    public SchedulerLayout(@NotNull LocalTime startTime, @NotNull LocalTime endTime)
+    public DayScheduleLayout(@NotNull LocalTime startTime, @NotNull LocalTime endTime)
     {
         _startTime = startTime;
 
@@ -360,12 +360,22 @@ public class SchedulerLayout implements LayoutManager2
             throw new IllegalArgumentException("Constraints for appointments must be null.");
         }
         if (comp instanceof AbstractResourceComponent) {
-            if (! (constraints instanceof Integer)) {
-                throw new IllegalArgumentException("Constraints for resources must specify column.");
+            AbstractResourceComponent resourceComponent = (AbstractResourceComponent) comp;
+
+            int column = -1;
+            if (constraints instanceof Integer) {
+                column = (Integer)constraints;
             }
 
-            // This may be an insert
-            _resources.add((Integer)constraints, ((AbstractResourceComponent)comp).getResource());
+            if (column >= 0 && column < _resources.size()) {
+                System.out.println("Layout inserting at column: " + column);
+                // An invalid index so default to an add
+                _resources.add(column, resourceComponent.getResource());
+            }
+            else {
+                // This may be an insert
+                _resources.add(resourceComponent.getResource());
+            }
         }
     }
 
