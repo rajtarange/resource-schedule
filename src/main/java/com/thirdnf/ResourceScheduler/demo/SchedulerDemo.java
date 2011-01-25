@@ -132,6 +132,21 @@ public class SchedulerDemo extends JFrame
     public void handleResourceEdit(@NotNull Resource resource)
     {
         System.out.println("Edit request for resource");
+
+        ResourceDialog dialog = new ResourceDialog(this, resource);
+        dialog.setOkayListener(new ResourceDialog.IOkayListener() {
+            @Override
+            public void handleOkay(@NotNull String title, @NotNull Color color, int column)
+            {
+                System.out.println("Resource updated");
+//                LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
+//
+//                Resource resource = new ScheduleModelDemo.DemoResource(title, color);
+//                _model.addResource(resource, date, column);
+            }
+        });
+        dialog.pack();
+        dialog.setVisible(true);
     }
 
 
@@ -185,6 +200,23 @@ public class SchedulerDemo extends JFrame
     private void handleSelectTomorrow()
     {
         _scheduler.showDate(Tomorrow);
+    }
+
+    private void handleAddAppointment()
+    {
+        AppointmentDialog dialog = new AppointmentDialog(this);
+//        dialog.setOkayListener(new ResourceDialog.IOkayListener() {
+//            @Override
+//            public void handleOkay(@NotNull String title, @NotNull Color color, int column)
+//            {
+//                LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
+//
+//                Resource resource = new ScheduleModelDemo.DemoResource(title, color);
+//                _model.addResource(resource, date, column);
+//            }
+//        });
+        dialog.pack();
+        dialog.setVisible(true);
     }
 
 
@@ -241,11 +273,9 @@ public class SchedulerDemo extends JFrame
 
                 //---- _tomorrowRadio ----
                 _tomorrowRadio.setText("Tomorrow");
-                _tomorrowRadio.addActionListener(new ActionListener()
-                {
+                _tomorrowRadio.addActionListener(new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
+                    public void actionPerformed(ActionEvent e) {
                         handleSelectTomorrow();
                     }
                 });
@@ -276,6 +306,14 @@ public class SchedulerDemo extends JFrame
 
             //---- button3 ----
             button3.setText("Add Appointment");
+            button3.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    handleAddAppointment();
+                }
+            });
             panel1.add(button3, CC.xy(3, 5));
 
             //---- button1 ----

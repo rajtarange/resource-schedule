@@ -5,6 +5,7 @@
 package com.thirdnf.ResourceScheduler.demo;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
@@ -18,6 +19,20 @@ public class AppointmentDialog extends JDialog
     {
         super(owner);
         initComponents();
+    }
+
+    private void handleCancel()
+    {
+        dispose();
+    }
+
+    private void handleOkay()
+    {
+        dispose();
+    }
+
+    private void handleCancelButton() {
+        // TODO add your code here
     }
 
 
@@ -85,10 +100,22 @@ public class AppointmentDialog extends JDialog
 
                 //---- okButton ----
                 okButton.setText("OK");
+                okButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        handleOkay();
+                    }
+                });
                 buttonBar.add(okButton, CC.xy(2, 1));
 
                 //---- cancelButton ----
                 cancelButton.setText("Cancel");
+                cancelButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        handleCancelButton();
+                    }
+                });
                 buttonBar.add(cancelButton, CC.xy(4, 1));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);

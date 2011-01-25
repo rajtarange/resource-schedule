@@ -262,6 +262,14 @@
           <void property="name"> 
            <string>button3</string> 
           </void> 
+          <void method="addEvent"> 
+           <object class="com.jformdesigner.model.FormEvent"> 
+            <string>java.awt.event.ActionListener</string> 
+            <string>actionPerformed</string> 
+            <string>handleAddAppointment</string> 
+            <boolean>false</boolean> 
+           </object> 
+          </void> 
          </object> 
          <object class="com.jformdesigner.model.FormLayoutConstraints"> 
           <class>com.jgoodies.forms.layout.CellConstraints</class> 

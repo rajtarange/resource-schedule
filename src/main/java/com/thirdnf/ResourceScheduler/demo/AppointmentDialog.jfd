@@ -250,6 +250,14 @@
             <void property="name"> 
              <string>okButton</string> 
             </void> 
+            <void method="addEvent"> 
+             <object class="com.jformdesigner.model.FormEvent"> 
+              <string>java.awt.event.ActionListener</string> 
+              <string>actionPerformed</string> 
+              <string>handleOkay</string> 
+              <boolean>false</boolean> 
+             </object> 
+            </void> 
            </object> 
            <object class="com.jformdesigner.model.FormLayoutConstraints"> 
             <class>com.jgoodies.forms.layout.CellConstraints</class> 
@@ -272,6 +280,14 @@
             </void> 
             <void property="name"> 
              <string>cancelButton</string> 
+            </void> 
+            <void method="addEvent"> 
+             <object class="com.jformdesigner.model.FormEvent"> 
+              <string>java.awt.event.ActionListener</string> 
+              <string>actionPerformed</string> 
+              <string>handleCancelButton</string> 
+              <boolean>false</boolean> 
+             </object> 
             </void> 
            </object> 
            <object class="com.jformdesigner.model.FormLayoutConstraints"> 

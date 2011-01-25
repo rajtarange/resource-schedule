@@ -20,7 +20,11 @@ public class ResourceDialog extends JDialog
     private IOkayListener _listener;
     private Color _color = Color.gray;
 
-
+    /**
+     * Resource dialog constructor for a new resource.
+     *
+     * @param owner (not null) Owning frame for the dialog.
+     */
     public ResourceDialog(@NotNull Frame owner)
     {
         super(owner);
@@ -30,6 +34,12 @@ public class ResourceDialog extends JDialog
     }
 
 
+    /**
+     * Resource dialog constructor for editing a resource.
+     *
+     * @param owner (not null) Owning frame for the dialog.
+     * @param resource (not null) Resource to edit.
+     */
     public ResourceDialog(@NotNull Frame owner, @NotNull Resource resource)
     {
         super(owner);
