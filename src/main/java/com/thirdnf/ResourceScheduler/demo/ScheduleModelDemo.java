@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.junit.experimental.categories.Categories;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -107,6 +108,13 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     }
 
 
+    public void visitCategories(@NotNull CategoryVisitor visitor)
+    {
+        visitor.visitCategory(Green);
+        visitor.visitCategory(Blue);
+    }
+
+
     /**
      * Our model has been told to add a resource to its database.  This method will add the
      *  resource to the underlying database and then trigger a redraw to any components using
@@ -193,43 +201,6 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     public LocalTime getStartTime(@NotNull LocalDate dateTime)
     {
         return new LocalTime(8, 0, 0); // 8 am
-    }
-
-
-    public static class DemoCategory
-    {
-        private final Color _color;
-        private final String _title;
-
-        /**
-         * Create the category.
-         * @param title (not null) Title of the category
-         * @param color (not null) Color for the category
-         */
-        public DemoCategory(@NotNull String title, @NotNull Color color)
-        {
-            _title = title;
-            _color = color;
-        }
-
-
-        /**
-         * This model uses categories to color the appointments so this category color determines the
-         * appointment color.
-         * @return (not null) Color for the category.
-         */
-        @NotNull
-        public Color getColor()
-        {
-            return _color;
-        }
-
-
-        @NotNull
-        public String getTitle()
-        {
-            return _title;
-        }
     }
 
 

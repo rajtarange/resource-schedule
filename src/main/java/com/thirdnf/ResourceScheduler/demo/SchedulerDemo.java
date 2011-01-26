@@ -118,7 +118,13 @@ public class SchedulerDemo extends JFrame
     }
 
 
-    private void handleAppointmentClick(Appointment appointment)
+    /**
+     * Handle when the user clicks on an appointment.  This just displays appointment information in the
+     * appointment text area.
+     *
+     * @param appointment (not null) The appointment clicked on
+     */
+    private void handleAppointmentClick(@NotNull Appointment appointment)
     {
         StringBuilder stringBuilder = new StringBuilder();
         LocalTime time = appointment.getDateTime().toLocalTime();
@@ -200,12 +206,18 @@ public class SchedulerDemo extends JFrame
     }
 
 
+    /**
+     * Handle the user clicking on the Today radio button by telling the scheduler the date has changed.
+     */
     private void handleSelectToday()
     {
         _scheduler.showDate(Today);
     }
 
 
+    /**
+     * Handle the user clicking on the Tomorrow radio button by telling the scheduler the date has changed.
+     */
     private void handleSelectTomorrow()
     {
         _scheduler.showDate(Tomorrow);
@@ -214,15 +226,8 @@ public class SchedulerDemo extends JFrame
 
     private void handleAddAppointment()
     {
-        System.out.println("Add appt");
-    }
-
-
-    private void handleAddAppointment(@Nullable Resource resource, @NotNull DateTime dateTime)
-    {
-        System.out.println("SchedulerDemo.handleAddAppointment - pull up dialog with: " + dateTime );
-
-        AppointmentDialog dialog = new AppointmentDialog(this);
+        LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
+        AppointmentDialog dialog = new AppointmentDialog(this, date, _model);
 //        dialog.setOkayListener(new ResourceDialog.IOkayListener() {
 //            @Override
 //            public void handleOkay(@NotNull DemoResource resource, int column)
@@ -233,6 +238,24 @@ public class SchedulerDemo extends JFrame
 //        });
         dialog.pack();
         dialog.setVisible(true);
+    }
+
+
+    private void handleAddAppointment(@Nullable Resource resource, @NotNull DateTime dateTime)
+    {
+        System.out.println("SchedulerDemo.handleAddAppointment - pull up dialog with: " + dateTime );
+
+//        AppointmentDialog dialog = new AppointmentDialog(this);
+////        dialog.setOkayListener(new ResourceDialog.IOkayListener() {
+////            @Override
+////            public void handleOkay(@NotNull DemoResource resource, int column)
+////            {
+////                LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
+////                _model.addResource(resource, date, column);
+////            }
+////        });
+//        dialog.pack();
+//        dialog.setVisible(true);
     }
 
 

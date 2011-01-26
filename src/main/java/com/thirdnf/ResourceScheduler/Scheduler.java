@@ -13,7 +13,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -34,9 +33,6 @@ public class Scheduler extends JPanel implements Printable
     protected final EventListenerList _listenerList = new EventListenerList();
 
     private final DaySchedule _daySchedule;
-    private ComponentFactory _componentFactory;
-    private ScheduleModel _scheduleModel;
-    private LocalDate _localDate;
 
 
 
@@ -81,14 +77,12 @@ public class Scheduler extends JPanel implements Printable
      */
     public void setModel(@NotNull ScheduleModel model)
     {
-        _scheduleModel = model;
         _daySchedule.setModel(model);
     }
 
 
     public void setComponentFactory(@NotNull ComponentFactory componentFactory)
     {
-        _componentFactory = componentFactory;
         _daySchedule.setComponentFactory(componentFactory);
     }
 
@@ -96,7 +90,6 @@ public class Scheduler extends JPanel implements Printable
     public void showDate(@NotNull LocalDate date)
     {
         // TODO - Make sure the day view is loaded
-        _localDate = date;
         _daySchedule.setDate(date);
     }
 

@@ -42,8 +42,6 @@ To-do Before Release:
 ---------------------
 + Add and modify appointments.
 
-+ Enable setting of availability from resource edit.
-
 + Fix printing ... even smooth looks HORRIBLE.
 
 + Investigate Drag & Drop.  I'm now of the mind that perhaps D&D is a vial feature before a 1.0 release.  I need

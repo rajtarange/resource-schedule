@@ -213,6 +213,15 @@ public class DayScheduleLayout implements LayoutManager2
     }
 
 
+    /**
+     * This is under construction so I would not suggest using it.  It asks the layout to paint
+     * the components on the given graphics.  The layout knows how to layout the appointments so
+     * it seems like the best candidate for drawing this.
+     *
+     * @param target   (not null) The component which has all the real components added to it.
+     * @param graphics (not null) The graphics reference to draw to.
+     * @param area     (not null) The area in the graphics this method owns and can draw to.
+     */
     public void print(@NotNull Component target, @NotNull Graphics2D graphics, @NotNull Rectangle area)
     {
         System.out.println("DaySchedule layout for area");

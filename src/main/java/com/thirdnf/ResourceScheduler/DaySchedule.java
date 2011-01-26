@@ -414,13 +414,9 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
 
             Color oldColor = graphics.getColor();
 
-            graphics.setColor(Color.lightGray);
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
             int leftHeader = layout.getX(0);
-
             int columns    = layout.getColumnCount();
-
 
             // Color in times which they are not available.  This goes through and basically draws from the
             //  top to the first appointment, then from that appointment to the next and so forth and so on

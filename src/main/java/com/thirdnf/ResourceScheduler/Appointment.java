@@ -8,6 +8,8 @@ import org.joda.time.Duration;
 
 /**
  * Instances of this class will be appointments to add to the schedule.
+ *
+ * @author Joshua Gerth - jgerth@thirdnf.com
  */
 public interface Appointment
 {

@@ -31,6 +31,13 @@ public class ComponentFactory
     }
 
 
+    /**
+     * Factory method to create an appointment component for the given appointment.
+     *
+     * @param appointment (not null) The appointment for this appointment component.
+     *
+     * @return (not null) An appointment component which derives from AbstractAppointmentComponent
+     */
     @NotNull
     public AbstractAppointmentComponent makeAppointmentComponent(@NotNull Appointment appointment)
     {
