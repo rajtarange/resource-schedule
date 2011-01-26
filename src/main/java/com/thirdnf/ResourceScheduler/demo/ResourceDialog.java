@@ -7,18 +7,48 @@ package com.thirdnf.ResourceScheduler.demo;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.Border;
+
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
-import com.thirdnf.ResourceScheduler.Resource;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.LocalTime;
 
 /**
  * @author Joshua Gerth
  */
 public class ResourceDialog extends JDialog
 {
+    private static final Color[] Colors = new Color[] {
+            new Color(51, 204, 255),
+            new Color(55, 102, 205),
+            new Color(204, 255, 51),
+            new Color(251, 198, 12, 200),
+            new Color(12, 251, 160, 200),
+            new Color(166, 251, 12, 200),
+            new Color(66, 151, 12, 200),
+    };
+
+
+    private static final LocalTime[] StartTimes = new LocalTime[] {
+            new LocalTime(8, 0, 0),
+            new LocalTime(8, 30, 0),
+            new LocalTime(9, 0, 0),
+            new LocalTime(9, 30, 0),
+            new LocalTime(10, 0, 0)
+    };
+
+
+    private static final LocalTime[] EndTimes = new LocalTime[] {
+            new LocalTime(15, 0, 0),
+            new LocalTime(15, 30, 0),
+            new LocalTime(16, 0, 0),
+            new LocalTime(16, 30, 0),
+            new LocalTime(17, 0, 0)
+    };
+
     private IOkayListener _listener;
-    private Color _color = Color.gray;
+    private DemoResource _resource;
 
     /**
      * Resource dialog constructor for a new resource.
@@ -30,6 +60,8 @@ public class ResourceDialog extends JDialog
         super(owner);
         initComponents();
 
+        initialize();
+
         setTitle("Add Resource");
     }
 
@@ -40,19 +72,54 @@ public class ResourceDialog extends JDialog
      * @param owner (not null) Owning frame for the dialog.
      * @param resource (not null) Resource to edit.
      */
-    public ResourceDialog(@NotNull Frame owner, @NotNull Resource resource)
+    public ResourceDialog(@NotNull Frame owner, @NotNull DemoResource resource)
     {
         super(owner);
         initComponents();
 
+        _resource = resource;
+
         setTitle("Edit Resource");
 
         _titleField.setText(resource.getTitle());
-//        _color = resource.getColor();
-        _selectButton.setBackground(_color);
+        initialize();
+
+        _colorSelect.setSelectedItem(resource.getColor());
+
+        // For edits don't let them change the column.  Changing the column means it is basically just
+        //  an add and we want to test/demo update
+        _columnLabel.setVisible(false);
+        _columnPanel.setVisible(false);
     }
 
 
+    /**
+     * Private initialize method which just sets up a default regardless if we are editing a resource or
+     *  adding new one.
+     */
+    private void initialize()
+    {
+        _colorSelect.setRenderer(new ColoredCellRenderer());
+        for (Color c : Colors) {
+            _colorSelect.addItem(c);
+        }
+
+        _startTimeSelect.setRenderer(new TimeCellRenderer());
+        for (LocalTime time : StartTimes) {
+            _startTimeSelect.addItem(time);
+        }
+
+        _endTimeSelect.setRenderer(new TimeCellRenderer());
+        for (LocalTime time : EndTimes) {
+            _endTimeSelect.addItem(time);
+        }
+    }
+
+
+    /**
+     * Handle when the user has clicked on the okay button.  This builds or updates the resource and
+     * notifies the okay listener if one was configured.
+     */
     private void handleOkay()
     {
         int column = -1;
@@ -71,22 +138,28 @@ public class ResourceDialog extends JDialog
             }
         }
 
-        System.out.println("Using column: " + column);
         if (_listener != null) {
-            _listener.handleOkay(_titleField.getText(), _color, column-1);
+            Color color = (Color)_colorSelect.getSelectedItem();
+            if (_resource == null) {
+                _resource = new DemoResource(_titleField.getText(), color);
+            }
+            else {
+                _resource.setTitle(_titleField.getText());
+                _resource.setColor(color);
+            }
+
+            _listener.handleOkay(_resource, column - 1);
         }
         dispose();
     }
 
+
+    /**
+     * Handle when the user clicks on the cancel ... which is to just close the dialog.
+     */
     private void handleCancel()
     {
         dispose();
-    }
-
-    private void handleSelectColor()
-    {
-        _color = JColorChooser.showDialog(this, "Choose a color", _color );
-        _selectButton.setBackground(_color);
     }
 
     private void handleAddRadioClicked()
@@ -109,10 +182,63 @@ public class ResourceDialog extends JDialog
 
     public static interface IOkayListener
     {
-        void handleOkay(@NotNull String title, @NotNull Color color, int column);
+        void handleOkay(@NotNull DemoResource resource, int column);
     }
 
 
+    private static class TimeCellRenderer extends DefaultListCellRenderer
+    {
+        @Override
+        public Component getListCellRendererComponent(@NotNull JList list, @NotNull Object value,
+                                                      int index, boolean isSelected, boolean cellHasFocus)
+        {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            setText(((LocalTime)value).toString("h:mm a"));
+
+            return this;
+        }
+    }
+
+
+    private static class ColoredCellRenderer extends DefaultListCellRenderer
+    {
+        private Border _unselectedBorder = null;
+        private Border _selectedBorder = null;
+        private boolean _isBordered = true;
+
+        @Override
+        public void setBackground(Color col)
+        {
+            // Ignore setting the background, we will do that
+        }
+
+
+        @Override
+        public Component getListCellRendererComponent(@NotNull JList list, @NotNull Object color,
+                                                      int index, boolean isSelected, boolean cellHasFocus)
+        {
+            setText(" ");
+            super.setBackground((Color) color);
+            if (_isBordered) {
+                if (isSelected) {
+                    if (_selectedBorder == null) {
+                        _selectedBorder = BorderFactory.createMatteBorder(2,5,2,5, list.getSelectionBackground());
+                    }
+                    setBorder(_selectedBorder);
+                }
+                else {
+                    if (_unselectedBorder == null) {
+                        _unselectedBorder = BorderFactory.createMatteBorder(2,5,2,5, list.getBackground());
+                    }
+                    setBorder(_unselectedBorder);
+                }
+            }
+            return this;
+        }
+    }
+
+
+    /** JFormDesigner init ... don't mess */
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         dialogPane = new JPanel();
@@ -120,9 +246,16 @@ public class ResourceDialog extends JDialog
         label1 = new JLabel();
         _titleField = new JTextField();
         label2 = new JLabel();
-        _selectButton = new JButton();
+        _colorSelect = new JComboBox();
         label3 = new JLabel();
         panel1 = new JPanel();
+        label4 = new JLabel();
+        _startTimeSelect = new JComboBox();
+        label5 = new JLabel();
+        _endTimeSelect = new JComboBox();
+        checkBox1 = new JCheckBox();
+        _columnLabel = new JLabel();
+        _columnPanel = new JPanel();
         _addRadio = new JRadioButton();
         _columnRadio = new JRadioButton();
         _columnField = new JTextField();
@@ -142,8 +275,8 @@ public class ResourceDialog extends JDialog
             //======== contentPanel ========
             {
                 contentPanel.setLayout(new FormLayout(
-                    "default, $lcgap, [100dlu,default]:grow",
-                    "2*(default, $lgap), default"));
+                        "default, $lcgap, [100dlu,default]:grow",
+                        "3*(default, $lgap), default"));
 
                 //---- label1 ----
                 label1.setText("Enter Resource Name:");
@@ -153,24 +286,39 @@ public class ResourceDialog extends JDialog
                 //---- label2 ----
                 label2.setText("Color:");
                 contentPanel.add(label2, CC.xy(1, 3));
-
-                //---- _selectButton ----
-                _selectButton.setText("Select");
-                _selectButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        handleSelectColor();
-                    }
-                });
-                contentPanel.add(_selectButton, CC.xy(3, 3));
+                contentPanel.add(_colorSelect, CC.xy(3, 3));
 
                 //---- label3 ----
-                label3.setText("Column");
+                label3.setText("Availability:");
                 contentPanel.add(label3, CC.xy(1, 5));
 
                 //======== panel1 ========
                 {
                     panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
+
+                    //---- label4 ----
+                    label4.setText("From");
+                    panel1.add(label4);
+                    panel1.add(_startTimeSelect);
+
+                    //---- label5 ----
+                    label5.setText("To");
+                    panel1.add(label5);
+                    panel1.add(_endTimeSelect);
+
+                    //---- checkBox1 ----
+                    checkBox1.setText("Lunch Break");
+                    panel1.add(checkBox1);
+                }
+                contentPanel.add(panel1, CC.xy(3, 5, CC.DEFAULT, CC.FILL));
+
+                //---- _columnLabel ----
+                _columnLabel.setText("Column");
+                contentPanel.add(_columnLabel, CC.xy(1, 7));
+
+                //======== _columnPanel ========
+                {
+                    _columnPanel.setLayout(new BoxLayout(_columnPanel, BoxLayout.X_AXIS));
 
                     //---- _addRadio ----
                     _addRadio.setText("Add");
@@ -181,7 +329,7 @@ public class ResourceDialog extends JDialog
                             handleAddRadioClicked();
                         }
                     });
-                    panel1.add(_addRadio);
+                    _columnPanel.add(_addRadio);
 
                     //---- _columnRadio ----
                     _columnRadio.setText("Specify Column");
@@ -191,13 +339,13 @@ public class ResourceDialog extends JDialog
                             handleColumnRadioClicked();
                         }
                     });
-                    panel1.add(_columnRadio);
+                    _columnPanel.add(_columnRadio);
 
                     //---- _columnField ----
                     _columnField.setEnabled(false);
-                    panel1.add(_columnField);
+                    _columnPanel.add(_columnField);
                 }
-                contentPanel.add(panel1, CC.xy(3, 5, CC.DEFAULT, CC.FILL));
+                contentPanel.add(_columnPanel, CC.xy(3, 7, CC.DEFAULT, CC.FILL));
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -205,8 +353,8 @@ public class ResourceDialog extends JDialog
             {
                 buttonBar.setBorder(Borders.BUTTON_BAR_GAP_BORDER);
                 buttonBar.setLayout(new FormLayout(
-                    "$glue, $button, $rgap, $button",
-                    "pref"));
+                        "$glue, $button, $rgap, $button",
+                        "pref"));
 
                 //---- okButton ----
                 okButton.setText("OK");
@@ -247,9 +395,16 @@ public class ResourceDialog extends JDialog
     private JLabel label1;
     private JTextField _titleField;
     private JLabel label2;
-    private JButton _selectButton;
+    private JComboBox _colorSelect;
     private JLabel label3;
     private JPanel panel1;
+    private JLabel label4;
+    private JComboBox _startTimeSelect;
+    private JLabel label5;
+    private JComboBox _endTimeSelect;
+    private JCheckBox checkBox1;
+    private JLabel _columnLabel;
+    private JPanel _columnPanel;
     private JRadioButton _addRadio;
     private JRadioButton _columnRadio;
     private JTextField _columnField;

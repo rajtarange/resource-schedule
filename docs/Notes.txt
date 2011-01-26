@@ -16,10 +16,8 @@ Notes:
 + I'm going to make a sincere attempt to not use abbreviations in any API names or really any abbreviations in
   the code at all.  'ID' is okay, but just about everything else ends up only making things more confusing.
 
-+ I am not going to spend a lot of time polishing the demo.  For example, I think having a dialog box pull up a
-  dialog box for a color picker seems silly.  But the JColorChooser is too large to try to embed directly so
-  for now it stays a pop-up dialog, which I don't like and a "real" application would probably want to do
-  something fancier.
++ I'm a little unnerved that my demo application has 10+ primary classes to it.  It was intended to
+  be simple but has turned a bit larger than I expected.
 
 + Unassigned appointments, or those appointments which are for resources not available on that
   day default to column 0.  There is always a column 0 so we are sure the appointment will
@@ -39,16 +37,17 @@ Known Restrictions:
 + Appointments can not span multiple days.  This would probably be a nice feature some day but I'm not
   even planning for it now.
 
-+ If a resource is scheduled more than once on any given day it will appear in two columns.
-
 
 To-do Before Release:
 ---------------------
-+ Add click, double click, and context click to the demo for appointments and resources.
++ Add and modify appointments.
 
-+ Allow inserting of resources and not just add.
++ Enable setting of availability from resource edit.
 
-+ Enable printing, even if it is a simple scaling of the inner panel.
++ Fix printing ... even smooth looks HORRIBLE.
+
++ Investigate Drag & Drop.  I'm now of the mind that perhaps D&D is a vial feature before a 1.0 release.  I need
+  to check into how difficult this would be to do as I don't want to feature creep this application.
 
 + Documentation and Tutorial
 
@@ -63,22 +62,10 @@ Version 2.0 Features:
   on which days.  For each resource it might be nice to show percentage of availability.  Like resource
   1 is 50% booked on the 5th of November.
 
-+ Allow per-resource scheduling in the day.  In other words, resource 1 could be available
-  from 8am - 1pm and resource 2 from 12pm - 5pm.
-
-+ Related to the last feature, it might be nice to be able to block out portions of the day.
-  Like simply say lunch is from 12-1 ... always, so block it out.
-
-+ Optimizes changes triggered from the model.  Right now nearly every update simply triggers a complete
-  redraw of the layout.
-
 + Make the appointments and resources look better.  I would sort of like the appointments to look like
   the ones in Google Calendar.  Another goal is for the header color to actual color the entire background
   for that column, but very lightly.  The reason for this is so when you are in a calendar or week view
   you can easily tell which resources have been assigned for which days.
-
-+ Make printing look nice.  For 1.0 it will likely be just a simple scaling of the panel, but for 2.0 it
-  would be best to really make it render specifically for the printer.
 
 + I have some round-off errors which are making some of the appointments one pixel to small on the
   width.  Eventually I should fix this so things look better.

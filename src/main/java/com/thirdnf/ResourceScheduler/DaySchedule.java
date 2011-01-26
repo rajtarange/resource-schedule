@@ -2,6 +2,7 @@ package com.thirdnf.ResourceScheduler;
 
 import com.thirdnf.ResourceScheduler.components.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joda.time.*;
 
 import javax.swing.*;
@@ -9,9 +10,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
+import java.util.Iterator;
 
 
 /**
@@ -24,8 +23,7 @@ import java.awt.print.PrinterException;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class DaySchedule extends JPanel
-        implements Printable, ResourceChangeListener, AppointmentChangeListener
+public class DaySchedule extends JPanel implements ResourceChangeListener, AppointmentChangeListener
 {
     private ScheduleModel _model = null;
 
@@ -107,9 +105,9 @@ public class DaySchedule extends JPanel
 
         // The model knows the begin and end times of the day for this date
         LocalTime startTime = _model.getStartTime(date);
-        LocalTime endTime = _model.getEndTime(date);
+        LocalTime endTime   = _model.getEndTime(date);
 
-        _innerPanel = new InnerPanel(startTime, endTime);
+        _innerPanel = new InnerPanel(_currentDate, startTime, endTime);
         // Attach the listener
         if (_scheduleListener != null) { _innerPanel.setScheduleListener(_scheduleListener); }
 
@@ -163,34 +161,6 @@ public class DaySchedule extends JPanel
 
 
     /**
-     * Helper method to remove a resource.  Since we don't have a map of resource to component (as I'm trying to
-     *  not duplicate information) we need to run through all the resource in the innerPanel and check if any
-     *  of their resources match the one provided.  This is not expected to be an expensive operation as 99%
-     *  of the time we are likely to have less than 10 or 15 resources and possibly far less.
-     *
-     * @param resource (not null) The resource to remove.
-     */
-    private void removeResource(@NotNull Resource resource)
-    {
-        // We have to find the one to remove ... we could use a map but I don't think there are going to be a
-        //  lot so this is more straight forward
-        int count = _innerPanel.getComponentCount();
-
-        for (int index=0; index<count; ++index) {
-            Component component = _innerPanel.getComponent(index);
-            if (component instanceof AbstractResourceComponent) {
-                AbstractResourceComponent resourceComponent = (AbstractResourceComponent) component;
-                if (resourceComponent.getResource().equals(resource)) {
-                    // This is the guy to remove
-                    _innerPanel.remove(resourceComponent);
-                    return;
-                }
-            }
-        }
-    }
-
-
-    /**
      * Private method to add an appointment to the panel.  This takes the appointment given and wraps it
      * in a component and adds the component to the inner panel.
      *
@@ -204,7 +174,45 @@ public class DaySchedule extends JPanel
     }
 
 
-    private void removeAppointment(@NotNull Appointment appointment)
+    /**
+     * Helper method to find component which represents the given resource.  We could (and maybe should) do
+     * this with a map, but I cringe at yet another structure to hold what is essentially duplicate data.
+     * I don't think the number of components will be excessive and I don't expect this to be called a lot
+     * anyhow.  Later we could add a map in and easily update this method.
+     *
+     * @param resource (not null) The resource to find the component for.
+     * @return (nullable) Component for this resource or null if it can't find one.
+     */
+    @Nullable
+    private AbstractResourceComponent getResourceComponent(@NotNull Resource resource)
+    {
+        // We have to find the one to remove ... we could use a map but I don't think there are going to be a
+        //  lot so this is more straight forward
+        int count = _innerPanel.getComponentCount();
+
+        for (int index=0; index<count; ++index) {
+            Component component = _innerPanel.getComponent(index);
+            if (component instanceof AbstractResourceComponent) {
+                AbstractResourceComponent resourceComponent = (AbstractResourceComponent) component;
+                if (resourceComponent.getResource().equals(resource)) {
+                    return resourceComponent;
+                }
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Helper method to find a component which represents the given appointment.  See the javadoc for
+     * {@link #getResourceComponent(Resource)} for more details.
+     *
+     * @param appointment (not null) Appointment to find the component for
+     * @return (nullable) Component for the appointment or null if it could not be found.
+     */
+    @Nullable
+    private AbstractAppointmentComponent getAppointmentComponent(@NotNull Appointment appointment)
     {
         // We have to find the one to remove ... we could use a map but I don't think there are going to be a
         //  lot so this is more straight forward
@@ -215,12 +223,11 @@ public class DaySchedule extends JPanel
             if (component instanceof AbstractAppointmentComponent) {
                 AbstractAppointmentComponent appointmentComponent = (AbstractAppointmentComponent) component;
                 if (appointmentComponent.getAppointment().equals(appointment)) {
-                    // This is the guy to remove
-                    _innerPanel.remove(appointmentComponent);
-                    return;
+                    return appointmentComponent;
                 }
             }
         }
+        return null;
     }
 
 
@@ -239,26 +246,15 @@ public class DaySchedule extends JPanel
     }
 
 
-    @Override
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
-            throws PrinterException
+    public void print(@NotNull Graphics2D graphics, @NotNull Rectangle area)
     {
-        // TODO - Implement print
+        Color oldColor = graphics.getColor();
 
-        if (pageIndex > 0) {
-            return NO_SUCH_PAGE;
-        }
+        graphics.setColor(Color.white);
+        _innerPanel.print(graphics, area);
+        graphics.fillRect(area.x, area.y, area.width, area.height);
 
-        // User (0,0) is typically outside the imageable area, so we must
-        // translate by the X and Y values in the PageFormat to avoid clipping
-        //
-        Graphics2D g2d = (Graphics2D)graphics;
-        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-
-        _innerPanel.paintComponents(g2d);
-
-        // tell the caller that this page is part of the printed document
-        return PAGE_EXISTS;
+        graphics.setColor(oldColor);
     }
 
 
@@ -286,7 +282,10 @@ public class DaySchedule extends JPanel
         if (! date.equals(_currentDate)) { return; }
 
         // First remove the component
-        removeResource(resource);
+        Component component = getResourceComponent(resource);
+        if (component != null) {
+            _innerPanel.remove(component);
+        }
 
         // Force the layout to redraw
         revalidate();
@@ -299,8 +298,10 @@ public class DaySchedule extends JPanel
     @Override
     public void resourceUpdated(@NotNull Resource resource)
     {
-        // I think this is just a repaint
-        repaint();
+        Component component = getResourceComponent(resource);
+        if (component != null) {
+            component.repaint();
+        }
     }
 
 
@@ -327,7 +328,9 @@ public class DaySchedule extends JPanel
         // This is a day view so we only care if the day matches
         if (! date.equals(_currentDate)) { return; }
 
-        removeAppointment(appointment);
+
+        Component component = getAppointmentComponent(appointment);
+        if (component != null) { _innerPanel.remove(component); }
 
         // This may cause a conflicted appointment to change sizes so invalidate everything.
         revalidate();
@@ -353,6 +356,7 @@ public class DaySchedule extends JPanel
      */
     private static class InnerPanel extends JPanel implements MouseListener
     {
+        private final LocalDate _date;
         private final LocalTime _startTime;
         private final LocalTime _endTime;
         private final Duration  _increments;
@@ -366,11 +370,13 @@ public class DaySchedule extends JPanel
          * total span that should be shown for the day.  There is no way to specify a day which spans midnight,
          * this library is simply not being designed to handle that.
          *
+         * @param date (not null) Date the inner panel is showing.  Needed for availability checking.
          * @param startTime (not null) Time of the day to start.
          * @param endTime (not null) Time of the day to end.
          */
-        InnerPanel(@NotNull LocalTime startTime, @NotNull LocalTime endTime)
+        InnerPanel(@NotNull LocalDate date, @NotNull LocalTime startTime, @NotNull LocalTime endTime)
         {
+            _date = date;
             _startTime  = startTime;
             _endTime    = endTime;
             _increments = Duration.standardMinutes(15);
@@ -418,7 +424,6 @@ public class DaySchedule extends JPanel
 
             Period period = _increments.toPeriod();
 
-
             for (LocalTime time = _startTime; time.compareTo(_endTime) < 0; time = time.plus(period)) {
                 Integer y = layout.getY(time);
                 if (y != null) {
@@ -443,7 +448,49 @@ public class DaySchedule extends JPanel
                 }
             }
 
+
+            // Color in times which they are not available.  This goes through and basically draws from the
+            //  top to the first appointment, then from that appointment to the next and so forth and so on
+            //  at the end it then draws from the last appointment to the bottom.
+            graphics.setColor(Color.lightGray);
+            for (int i=0; i<columns; ++i) {
+                int y1 = layout.getTopHeader();
+                int x1 = layout.getX(i);
+                int x2 = layout.getX(i+1);
+
+                Resource resource = layout.getResource(i);
+                Iterator<Availability> iterator = resource.getAvailability(_date);
+                while (iterator.hasNext()) {
+                    Availability availability = iterator.next();
+                    // Color this availability white
+                    LocalTime startTime = availability.getTime();
+                    Duration duration = availability.getDuration();
+                    int y2 = layout.getY(startTime);
+
+                    if (y2 > y1) { graphics.fillRect(x1, y1, x2-x1, y2-y1); }
+
+                    LocalTime endTime = startTime.plus(duration.toPeriod());
+                    y1 = layout.getY(endTime);
+                }
+
+                int y2 = insets.top+height;
+                if (y2 > y1) {
+                    graphics.fillRect(x1, y1, x2, y2);
+                }
+            }
+
+            // Reset the graphics
             graphics.setColor(oldColor);
+            graphics.setPaintMode();
+        }
+
+
+        public void print(@NotNull Graphics2D graphics, @NotNull Rectangle area)
+        {
+            // TODO - draw the background
+
+            DayScheduleLayout layout = (DayScheduleLayout)getLayout();
+            layout.print(this, graphics, area);
         }
 
 
@@ -462,24 +509,45 @@ public class DaySchedule extends JPanel
 
 
         @Override
-        public void mouseClicked(MouseEvent e)
-        {
-        }
+        public void mouseClicked(MouseEvent e) { }
 
         @Override
-        public void mousePressed(MouseEvent e)
-        {
+        public void mousePressed(MouseEvent e) { }
 
-        }
 
         @Override
         public void mouseReleased(MouseEvent e)
         {
-
             if (_scheduleListener != null) {
-                System.out.println("resease on the screen");
-                // Let the action listener know of our mouse click location.  They may want to pull up a dialog
-                //  box to add an appointment
+                int x = e.getX();
+                int y = e.getY();
+
+                DayScheduleLayout layout = (DayScheduleLayout)getLayout();
+
+                // Determine the resource clicked
+                Resource resource = null;
+                int columns    = layout.getColumnCount();
+                int x1 = layout.getX(0);
+
+                for (int i=0; i<columns; ++i) {
+                    int x2 = layout.getX(i+1);
+                    if (x > x1 && x < x2) {
+                        resource = layout.getResource(i);
+                    }
+                    x1 = x2;
+                }
+
+                if (resource == null) {
+                    return;
+                }
+
+                LocalTime time = layout.getTime(y);
+
+                // Now convert the time into a date time and send it to the listener
+                DateTime dateTime = new DateTime(_date.getYear(), _date.getMonthOfYear(), _date.getDayOfMonth(),
+                        time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute(), 0);
+
+                _scheduleListener.actionPerformed(resource, dateTime);
             }
         }
 

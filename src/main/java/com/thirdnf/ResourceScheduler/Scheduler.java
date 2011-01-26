@@ -9,11 +9,12 @@ import javax.swing.event.EventListenerList;
 
 import com.thirdnf.ResourceScheduler.components.ComponentFactory;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -33,6 +34,11 @@ public class Scheduler extends JPanel implements Printable
     protected final EventListenerList _listenerList = new EventListenerList();
 
     private final DaySchedule _daySchedule;
+    private ComponentFactory _componentFactory;
+    private ScheduleModel _scheduleModel;
+    private LocalDate _localDate;
+
+
 
     /**
      * Constructor for the main scheduler panel.  This is responsible for deciding which view to show
@@ -49,14 +55,14 @@ public class Scheduler extends JPanel implements Printable
         _daySchedule.setScheduleListener(new ScheduleListener()
         {
             @Override
-            public void actionPerformed(@NotNull Resource resource, @NotNull LocalTime time)
+            public void actionPerformed(@NotNull Resource resource, @NotNull DateTime time)
             {
                 // Guaranteed to return a non-null array
                 Object[] listeners = _listenerList.getListenerList();
                 // Process the listeners last to first, notifying
                 // those that are interested in this event
                 for (int i = listeners.length - 2; i >= 0; i -= 2) {
-                    if (listeners[i] == ActionListener.class) {
+                    if (listeners[i] == ScheduleListener.class) {
                         ((ScheduleListener) listeners[i + 1]).actionPerformed(resource, time);
                     }
                 }
@@ -75,12 +81,14 @@ public class Scheduler extends JPanel implements Printable
      */
     public void setModel(@NotNull ScheduleModel model)
     {
+        _scheduleModel = model;
         _daySchedule.setModel(model);
     }
 
 
     public void setComponentFactory(@NotNull ComponentFactory componentFactory)
     {
+        _componentFactory = componentFactory;
         _daySchedule.setComponentFactory(componentFactory);
     }
 
@@ -88,7 +96,7 @@ public class Scheduler extends JPanel implements Printable
     public void showDate(@NotNull LocalDate date)
     {
         // TODO - Make sure the day view is loaded
-
+        _localDate = date;
         _daySchedule.setDate(date);
     }
 
@@ -109,8 +117,26 @@ public class Scheduler extends JPanel implements Printable
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
             throws PrinterException
     {
-        // Just pass it down to the current view.
-        System.out.println("Passing it down");
-        return _daySchedule.print(graphics, pageFormat, pageIndex);
+        if (pageIndex > 0) {
+            return NO_SUCH_PAGE;
+        }
+
+
+        int width = (int) pageFormat.getImageableWidth();
+        int height = (int) pageFormat.getImageableHeight();
+
+        // Create an image the full size of the paper.
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D imageGraphics = bufferedImage.createGraphics();
+
+        _daySchedule.print(imageGraphics, new Rectangle(0, 0, width, height));
+
+        Graphics2D g2d = (Graphics2D)graphics;
+        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+        g2d.drawImage(bufferedImage, 0, 0, null);
+
+        // tell the caller that this page is part of the printed document
+        return PAGE_EXISTS;
     }
 }

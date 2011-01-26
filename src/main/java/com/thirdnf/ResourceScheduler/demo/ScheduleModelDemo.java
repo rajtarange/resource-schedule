@@ -10,7 +10,6 @@ import org.joda.time.LocalTime;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -21,8 +20,8 @@ import java.util.List;
  */
 public class ScheduleModelDemo extends AbstractScheduleModel
 {
-    private static final LocalDate Today    = new LocalDate();
-    private static final LocalDate Tomorrow = Today.plusDays(1);
+    public static final LocalDate Today    = new LocalDate();
+    public static final LocalDate Tomorrow = Today.plusDays(1);
 
     private static final List<Resource> TodayResources    = new ArrayList<Resource>();
     private static final List<Resource> TomorrowResources = new ArrayList<Resource>();
@@ -47,7 +46,7 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         TodayResources.add(Sally);
 
         // Freddy is not going to be listed for today, but an appointment today is going to be assigned
-        //  to Freddy.  The appointment should show up as unassigned for the day.
+        //  to Freddy.  The appointment should show up in the first column for the day.
 
         // Populate some default appointments
         TodayAppointments.add(DemoAppointment.create("Appointment1", Green, Bobby, new LocalTime(10, 5, 0),  45));
@@ -136,6 +135,12 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     }
 
 
+    public void updateResource(@NotNull Resource resource)
+    {
+        fireResourceUpdated(resource);
+    }
+
+
     public void deleteResource(@NotNull Resource resource, @NotNull LocalDate date)
     {
         List<Resource> resources;
@@ -188,73 +193,6 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     public LocalTime getStartTime(@NotNull LocalDate dateTime)
     {
         return new LocalTime(8, 0, 0); // 8 am
-    }
-
-
-
-    public static class DemoResource implements Resource
-    {
-        private final String _title;
-        private final Color _color;
-
-
-        /**
-         * Create the demo resource.
-         * @param title Title for the resource.
-         * @param color Color to assign the resource.
-         */
-        public DemoResource(@NotNull String title, @NotNull Color color)
-        {
-            _title = title;
-            _color = color;
-        }
-
-
-        @Override
-        @NotNull
-        public String getTitle()
-        {
-            return _title;
-        }
-
-
-        @NotNull
-        @Override
-        public Iterator<Availability> getAvailability(@NotNull LocalDate date)
-        {
-            List<Availability> list = new ArrayList<Availability>();
-
-            // Today the availability is from 8 - 3, tomorrow it is from 10 - 5
-            if (date.equals(Today)) {
-                list.add(new Availability(new LocalTime(8, 0, 0), Duration.standardHours(6)));
-            }
-            else if (date.equals(Tomorrow)) {
-                list.add(new Availability(new LocalTime(10, 0, 0), Duration.standardHours(6)));
-            }
-
-            return list.iterator();
-        }
-
-
-        /**
-         * Get the color for our resource.  This is used by the demo resource component to paint
-         *  the component.
-         *
-         * @return (not null) The color to paint the component.
-         */
-        @NotNull
-        public Color getColor()
-        {
-            return _color;
-        }
-
-
-        @Override
-        @NotNull
-        public String toString()
-        {
-            return _title;
-        }
     }
 
 

@@ -76,6 +76,16 @@ public class DayScheduleLayout implements LayoutManager2
 
 
     /**
+     * Get the top header.  This is the space from the top of the panel to where the header starts.
+     * @return Top Header
+     */
+    public int getTopHeader()
+    {
+        return _topHeader;
+    }
+
+
+    /**
      * Set the left header size to the given number of pixels.
      *
      * @param pixels Number of pixels for the left header
@@ -203,6 +213,13 @@ public class DayScheduleLayout implements LayoutManager2
     }
 
 
+    public void print(@NotNull Component target, @NotNull Graphics2D graphics, @NotNull Rectangle area)
+    {
+        System.out.println("DaySchedule layout for area");
+    }
+
+
+
     /**
      * This is an internal method to go through and fix up any appointments so they don't draw on top of
      * each other.
@@ -283,6 +300,7 @@ public class DayScheduleLayout implements LayoutManager2
             Rectangle rectangle = appointment.getBounds();
             float width = ((float)(rectangle.width))/(float)(maxColumn+1);
             int x = rectangle.x + (int)(column*width);
+
             appointment.setBounds(x, rectangle.y, (int)width, rectangle.height);
         }
     }
@@ -332,6 +350,23 @@ public class DayScheduleLayout implements LayoutManager2
 
 
     /**
+     * Translate a y position back into a time offset.
+     * <p>
+     * There seems to be a bit of an error here by like one pixel that I'm not sure the reason for.
+     * @param y Value to translate into a time offset.
+     * @return (not null) Time representing the given y
+     */
+    public LocalTime getTime(int y)
+    {
+        // Turn the y into seconds
+        int seconds = Math.round((float) (y - (_topHeader + _y)) / _scale);
+
+        // Turn seconds into a time after start time
+        return _startTime.plus(Duration.standardSeconds(seconds).toPeriod());
+    }
+
+
+    /**
      * Get the x location in the current panel for the given column id.  This gives the x location of the
      * columns left hand side.  Use (column + 1) to find the right hand location.
      *
@@ -341,6 +376,19 @@ public class DayScheduleLayout implements LayoutManager2
     public int getX(int column)
     {
         return _x + _leftHeader + (int)(column*_columnWidth);
+    }
+
+
+    /**
+     * Get the resource for the given column.
+     *
+     * @param column Column to get the resource for
+     * @return (not null) The resource.
+     */
+    @NotNull
+    public Resource getResource(int column)
+    {
+        return _resources.get(column);
     }
 
 

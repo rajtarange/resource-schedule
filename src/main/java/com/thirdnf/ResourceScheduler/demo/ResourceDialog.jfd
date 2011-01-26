@@ -36,7 +36,7 @@
            </void> 
            <void method="setProperty"> 
             <string>$rowSpecs</string> 
-            <string>default, linegap, default, linegap, default</string> 
+            <string>default, linegap, default, linegap, default, linegap, default</string> 
            </void> 
           </object> 
           <void property="name"> 
@@ -105,21 +105,9 @@
           </void> 
           <void method="add"> 
            <object class="com.jformdesigner.model.FormComponent"> 
-            <string>javax.swing.JButton</string> 
-            <void method="setProperty"> 
-             <string>text</string> 
-             <string>Select</string> 
-            </void> 
+            <string>javax.swing.JComboBox</string> 
             <void property="name"> 
-             <string>_selectButton</string> 
-            </void> 
-            <void method="addEvent"> 
-             <object class="com.jformdesigner.model.FormEvent"> 
-              <string>java.awt.event.ActionListener</string> 
-              <string>actionPerformed</string> 
-              <string>handleSelectColor</string> 
-              <boolean>false</boolean> 
-             </object> 
+             <string>_colorSelect</string> 
             </void> 
            </object> 
            <object class="com.jformdesigner.model.FormLayoutConstraints"> 
@@ -139,7 +127,7 @@
             <string>javax.swing.JLabel</string> 
             <void method="setProperty"> 
              <string>text</string> 
-             <string>Column</string> 
+             <string>Availability:</string> 
             </void> 
             <void property="name"> 
              <string>label3</string> 
@@ -169,6 +157,111 @@
             </object> 
             <void property="name"> 
              <string>panel1</string> 
+            </void> 
+            <void method="add"> 
+             <object class="com.jformdesigner.model.FormComponent"> 
+              <string>javax.swing.JLabel</string> 
+              <void method="setProperty"> 
+               <string>text</string> 
+               <string>From</string> 
+              </void> 
+              <void property="name"> 
+               <string>label4</string> 
+              </void> 
+             </object> 
+            </void> 
+            <void method="add"> 
+             <object class="com.jformdesigner.model.FormComponent"> 
+              <string>javax.swing.JComboBox</string> 
+              <void property="name"> 
+               <string>_startTimeSelect</string> 
+              </void> 
+             </object> 
+            </void> 
+            <void method="add"> 
+             <object class="com.jformdesigner.model.FormComponent"> 
+              <string>javax.swing.JLabel</string> 
+              <void method="setProperty"> 
+               <string>text</string> 
+               <string>To</string> 
+              </void> 
+              <void property="name"> 
+               <string>label5</string> 
+              </void> 
+             </object> 
+            </void> 
+            <void method="add"> 
+             <object class="com.jformdesigner.model.FormComponent"> 
+              <string>javax.swing.JComboBox</string> 
+              <void property="name"> 
+               <string>_endTimeSelect</string> 
+              </void> 
+             </object> 
+            </void> 
+            <void method="add"> 
+             <object class="com.jformdesigner.model.FormComponent"> 
+              <string>javax.swing.JCheckBox</string> 
+              <void method="setProperty"> 
+               <string>text</string> 
+               <string>Lunch Break</string> 
+              </void> 
+              <void property="name"> 
+               <string>checkBox1</string> 
+              </void> 
+             </object> 
+            </void> 
+           </object> 
+           <object class="com.jformdesigner.model.FormLayoutConstraints"> 
+            <class>com.jgoodies.forms.layout.CellConstraints</class> 
+            <void method="setProperty"> 
+             <string>gridX</string> 
+             <int>3</int> 
+            </void> 
+            <void method="setProperty"> 
+             <string>gridY</string> 
+             <int>5</int> 
+            </void> 
+            <void method="setProperty"> 
+             <string>vAlign</string> 
+             <object class="com.jgoodies.forms.layout.CellConstraints" field="FILL"/> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormComponent"> 
+            <string>javax.swing.JLabel</string> 
+            <void method="setProperty"> 
+             <string>text</string> 
+             <string>Column</string> 
+            </void> 
+            <void property="name"> 
+             <string>_columnLabel</string> 
+            </void> 
+           </object> 
+           <object class="com.jformdesigner.model.FormLayoutConstraints"> 
+            <class>com.jgoodies.forms.layout.CellConstraints</class> 
+            <void method="setProperty"> 
+             <string>gridX</string> 
+             <int>1</int> 
+            </void> 
+            <void method="setProperty"> 
+             <string>gridY</string> 
+             <int>7</int> 
+            </void> 
+           </object> 
+          </void> 
+          <void method="add"> 
+           <object class="com.jformdesigner.model.FormContainer"> 
+            <string>javax.swing.JPanel</string> 
+            <object class="com.jformdesigner.model.FormLayoutManager"> 
+             <class>javax.swing.BoxLayout</class> 
+             <void method="setProperty"> 
+              <string>axis</string> 
+              <int>0</int> 
+             </void> 
+            </object> 
+            <void property="name"> 
+             <string>_columnPanel</string> 
             </void> 
             <void method="add"> 
              <object class="com.jformdesigner.model.FormComponent"> 
@@ -247,7 +340,7 @@
             </void> 
             <void method="setProperty"> 
              <string>gridY</string> 
-             <int>5</int> 
+             <int>7</int> 
             </void> 
             <void method="setProperty"> 
              <string>vAlign</string> 
@@ -381,8 +474,8 @@
       <void method="setProperty"> 
        <string>size</string> 
        <object class="java.awt.Dimension"> 
-        <int>400</int> 
-        <int>300</int> 
+        <int>435</int> 
+        <int>225</int> 
        </object> 
       </void> 
      </object> 

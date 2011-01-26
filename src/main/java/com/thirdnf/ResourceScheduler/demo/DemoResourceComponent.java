@@ -20,7 +20,6 @@ import java.awt.event.MouseListener;
  */
 public class DemoResourceComponent extends BasicResourceComponent implements MouseListener
 {
-
     private ResourceListener _resourceListener;
 
     private final JPopupMenu _popupMenu;
@@ -34,15 +33,10 @@ public class DemoResourceComponent extends BasicResourceComponent implements Mou
     {
         super(resource);
 
-        // If our resource is a Demo Resource (and it really should be) then get its color.
-        if (resource instanceof ScheduleModelDemo.DemoResource) {
-            Color c = ((ScheduleModelDemo.DemoResource)resource).getColor();
-            setBackground(c);
-        }
-        // Allow this instance to respond to mouse clicks.  I'm a bit uncomfortable with accessing 'this' at
-        //  this point, but I think that is just an old C++ fear.
+        // Listen for mouse stuff
         addMouseListener(this);
 
+        // Create our context menu
         _popupMenu = new JPopupMenu();
         JMenuItem editItem = new JMenuItem("Edit");
         editItem.addActionListener(new ActionListener() {
@@ -66,6 +60,20 @@ public class DemoResourceComponent extends BasicResourceComponent implements Mou
     }
 
 
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        // If our resource is a Demo Resource (and it really should be) then get its color.
+        // We do this here so that if the resource is updated we will pick up its new color
+        if (_resource instanceof DemoResource) {
+            Color c = ((DemoResource)_resource).getColor();
+            setBackground(c);
+        }
+
+        super.paintComponent(g);
+    }
+
+
     /**
      * Set the one and only resource listener which will get called on mouse clicks.
      *
@@ -78,10 +86,7 @@ public class DemoResourceComponent extends BasicResourceComponent implements Mou
 
 
     @Override
-    public void mouseClicked(MouseEvent e)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public void mouseClicked(MouseEvent e) { }
 
 
     @Override
@@ -99,20 +104,19 @@ public class DemoResourceComponent extends BasicResourceComponent implements Mou
 
 
     @Override
-    public void mouseEntered(MouseEvent e)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public void mouseEntered(MouseEvent e) { }
 
 
     @Override
-    public void mouseExited(MouseEvent e)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public void mouseExited(MouseEvent e) { }
 
 
-    private void maybeShowPopup(MouseEvent e)
+    /**
+     * I'm not entirely sure of this pattern, but it was copied directly from the Javadocs.
+     *
+     * @param e (not null) The mouse event
+     */
+    private void maybeShowPopup(@NotNull MouseEvent e)
     {
         if (e.isPopupTrigger()) {
             _popupMenu.show(e.getComponent(),

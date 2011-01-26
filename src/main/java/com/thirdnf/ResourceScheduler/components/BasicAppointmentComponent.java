@@ -67,4 +67,16 @@ public class BasicAppointmentComponent extends AbstractAppointmentComponent
         graphics.setRenderingHints(renderHints);
         graphics.setColor(oldColor);
     }
+
+
+    @Override
+    public void print(@NotNull Graphics2D graphics, Rectangle area)
+    {
+        Color oldColor = graphics.getColor();
+
+        graphics.setColor(getBackground());
+        graphics.fillRect(area.x, area.y, area.width, area.height);
+
+        graphics.setColor(oldColor);
+    }
 }

@@ -4,6 +4,7 @@ import com.thirdnf.ResourceScheduler.Appointment;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
 
 
 /**
@@ -15,7 +16,7 @@ import javax.swing.*;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class AbstractAppointmentComponent extends JComponent
+public abstract class AbstractAppointmentComponent extends JComponent
 {
     // The appointment this component is wrapping.
     protected final Appointment _appointment;
@@ -42,4 +43,13 @@ public class AbstractAppointmentComponent extends JComponent
     {
         return _appointment;
     }
+
+
+    /**
+     * Print this component into the given area using the graphics handle.
+     *
+     * @param graphics (not null) Graphics handle to draw with
+     * @param area (not null) Area for printing
+     */
+    public abstract void print(@NotNull Graphics2D graphics, Rectangle area);
 }

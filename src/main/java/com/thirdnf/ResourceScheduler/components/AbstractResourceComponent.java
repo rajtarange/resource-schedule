@@ -9,7 +9,7 @@ import java.awt.*;
 
 
 @SuppressWarnings({"UnusedDeclaration"})
-public class AbstractResourceComponent extends JComponent
+public abstract class AbstractResourceComponent extends JComponent
 {
     // The resource this component is wrapping.
     protected final Resource _resource;
@@ -63,4 +63,13 @@ public class AbstractResourceComponent extends JComponent
     {
         _color = color;
     }
+
+
+    /**
+     * Print this component into the given area using the graphics handle.
+     *
+     * @param graphics (not null) Graphics handle to draw with
+     * @param area (not null) Area for printing
+     */
+    public abstract void print(@NotNull Graphics2D graphics, Rectangle area);
 }

@@ -16,8 +16,11 @@ import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 import com.thirdnf.ResourceScheduler.Appointment;
 import com.thirdnf.ResourceScheduler.Resource;
+import com.thirdnf.ResourceScheduler.ScheduleListener;
 import com.thirdnf.ResourceScheduler.Scheduler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
@@ -59,6 +62,14 @@ public class SchedulerDemo extends JFrame
     public SchedulerDemo()
     {
         initComponents();
+        _scheduler.addScheduleListener(new ScheduleListener()
+        {
+            @Override
+            public void actionPerformed(@NotNull Resource resource, @NotNull DateTime time)
+            {
+                handleAddAppointment(resource, time);
+            }
+        });
 
         _model = new ScheduleModelDemo();
 
@@ -131,18 +142,19 @@ public class SchedulerDemo extends JFrame
 
     public void handleResourceEdit(@NotNull Resource resource)
     {
-        System.out.println("Edit request for resource");
+        if (! (resource instanceof DemoResource)) {
+            System.err.println("Can't edit a non-demo resource");
+            return;
+        }
 
-        ResourceDialog dialog = new ResourceDialog(this, resource);
+        DemoResource demoResource = (DemoResource) resource;
+
+        ResourceDialog dialog = new ResourceDialog(this, demoResource);
         dialog.setOkayListener(new ResourceDialog.IOkayListener() {
             @Override
-            public void handleOkay(@NotNull String title, @NotNull Color color, int column)
+            public void handleOkay(@NotNull DemoResource resource, int column)
             {
-                System.out.println("Resource updated");
-//                LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
-//
-//                Resource resource = new ScheduleModelDemo.DemoResource(title, color);
-//                _model.addResource(resource, date, column);
+                _model.updateResource(resource);
             }
         });
         dialog.pack();
@@ -159,7 +171,6 @@ public class SchedulerDemo extends JFrame
         printJob.setPrintable(_scheduler);
         if (printJob.printDialog()) {
             try {
-                System.out.println("Printing from main");
                 printJob.print();
             }
             catch (PrinterException pe) {
@@ -178,11 +189,9 @@ public class SchedulerDemo extends JFrame
         ResourceDialog dialog = new ResourceDialog(this);
         dialog.setOkayListener(new ResourceDialog.IOkayListener() {
             @Override
-            public void handleOkay(@NotNull String title, @NotNull Color color, int column)
+            public void handleOkay(@NotNull DemoResource resource, int column)
             {
                 LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
-
-                Resource resource = new ScheduleModelDemo.DemoResource(title, color);
                 _model.addResource(resource, date, column);
             }
         });
@@ -202,16 +211,23 @@ public class SchedulerDemo extends JFrame
         _scheduler.showDate(Tomorrow);
     }
 
+
     private void handleAddAppointment()
     {
+        System.out.println("Add appt");
+    }
+
+
+    private void handleAddAppointment(@Nullable Resource resource, @NotNull DateTime dateTime)
+    {
+        System.out.println("SchedulerDemo.handleAddAppointment - pull up dialog with: " + dateTime );
+
         AppointmentDialog dialog = new AppointmentDialog(this);
 //        dialog.setOkayListener(new ResourceDialog.IOkayListener() {
 //            @Override
-//            public void handleOkay(@NotNull String title, @NotNull Color color, int column)
+//            public void handleOkay(@NotNull DemoResource resource, int column)
 //            {
 //                LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
-//
-//                Resource resource = new ScheduleModelDemo.DemoResource(title, color);
 //                _model.addResource(resource, date, column);
 //            }
 //        });
