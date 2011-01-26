@@ -421,7 +421,6 @@ public class DayScheduleLayout implements LayoutManager2
             }
 
             if (column >= 0 && column < _resources.size()) {
-                System.out.println("Layout inserting at column: " + column);
                 // An invalid index so default to an add
                 _resources.add(column, resourceComponent.getResource());
             }

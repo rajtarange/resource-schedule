@@ -12,7 +12,9 @@ import javax.swing.border.Border;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.Duration;
 import org.joda.time.LocalTime;
+import org.joda.time.Period;
 
 /**
  * @author Joshua Gerth
@@ -77,12 +79,13 @@ public class ResourceDialog extends JDialog
         super(owner);
         initComponents();
 
+        initialize();
+
         _resource = resource;
 
         setTitle("Edit Resource");
 
         _titleField.setText(resource.getTitle());
-        initialize();
 
         _colorSelect.setSelectedItem(resource.getColor());
 
@@ -90,6 +93,13 @@ public class ResourceDialog extends JDialog
         //  an add and we want to test/demo update
         _columnLabel.setVisible(false);
         _columnPanel.setVisible(false);
+
+        _lunchCheckbox.setSelected(resource.getTakeLunch());
+        LocalTime startTime = resource.getStartTime();
+        _startTimeSelect.setSelectedItem(startTime);
+        Duration duration = resource.getDuration();
+        LocalTime endTime = startTime.plus(duration.toPeriod());
+        _endTimeSelect.setSelectedItem(endTime);
     }
 
 
@@ -147,6 +157,12 @@ public class ResourceDialog extends JDialog
                 _resource.setTitle(_titleField.getText());
                 _resource.setColor(color);
             }
+            LocalTime startTime = (LocalTime)(_startTimeSelect.getSelectedItem());
+            LocalTime endTime   = (LocalTime)(_endTimeSelect.getSelectedItem());
+            Duration duration = Period.fieldDifference(startTime, endTime).toStandardDuration();
+            _resource.setStartTime(startTime);
+            _resource.setDuration(duration);
+            _resource.setTakeLunch(_lunchCheckbox.isSelected());
 
             _listener.handleOkay(_resource, column - 1);
         }
@@ -193,7 +209,7 @@ public class ResourceDialog extends JDialog
                                                       int index, boolean isSelected, boolean cellHasFocus)
         {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            setText(((LocalTime)value).toString("h:mm a"));
+            setText(((LocalTime) value).toString("h:mm a"));
 
             return this;
         }
@@ -253,7 +269,7 @@ public class ResourceDialog extends JDialog
         _startTimeSelect = new JComboBox();
         label5 = new JLabel();
         _endTimeSelect = new JComboBox();
-        checkBox1 = new JCheckBox();
+        _lunchCheckbox = new JCheckBox();
         _columnLabel = new JLabel();
         _columnPanel = new JPanel();
         _addRadio = new JRadioButton();
@@ -275,8 +291,8 @@ public class ResourceDialog extends JDialog
             //======== contentPanel ========
             {
                 contentPanel.setLayout(new FormLayout(
-                        "default, $lcgap, [100dlu,default]:grow",
-                        "3*(default, $lgap), default"));
+                    "default, $lcgap, [100dlu,default]:grow",
+                    "3*(default, $lgap), default"));
 
                 //---- label1 ----
                 label1.setText("Enter Resource Name:");
@@ -306,9 +322,9 @@ public class ResourceDialog extends JDialog
                     panel1.add(label5);
                     panel1.add(_endTimeSelect);
 
-                    //---- checkBox1 ----
-                    checkBox1.setText("Lunch Break");
-                    panel1.add(checkBox1);
+                    //---- _lunchCheckbox ----
+                    _lunchCheckbox.setText("Lunch Break");
+                    panel1.add(_lunchCheckbox);
                 }
                 contentPanel.add(panel1, CC.xy(3, 5, CC.DEFAULT, CC.FILL));
 
@@ -353,8 +369,8 @@ public class ResourceDialog extends JDialog
             {
                 buttonBar.setBorder(Borders.BUTTON_BAR_GAP_BORDER);
                 buttonBar.setLayout(new FormLayout(
-                        "$glue, $button, $rgap, $button",
-                        "pref"));
+                    "$glue, $button, $rgap, $button",
+                    "pref"));
 
                 //---- okButton ----
                 okButton.setText("OK");
@@ -402,7 +418,7 @@ public class ResourceDialog extends JDialog
     private JComboBox _startTimeSelect;
     private JLabel label5;
     private JComboBox _endTimeSelect;
-    private JCheckBox checkBox1;
+    private JCheckBox _lunchCheckbox;
     private JLabel _columnLabel;
     private JPanel _columnPanel;
     private JRadioButton _addRadio;

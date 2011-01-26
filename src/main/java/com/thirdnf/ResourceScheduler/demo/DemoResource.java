@@ -3,9 +3,7 @@ package com.thirdnf.ResourceScheduler.demo;
 import com.thirdnf.ResourceScheduler.Availability;
 import com.thirdnf.ResourceScheduler.Resource;
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import org.joda.time.*;
 
 import java.awt.*;
 import java.util.*;
@@ -22,6 +20,9 @@ public class DemoResource implements Resource
 {
     private String _title;
     private Color _color;
+    private LocalTime _startTime = new LocalTime(9, 0, 0);
+    private Duration _duration = Duration.standardHours(6);
+    private boolean _takeLunch = true;
 
     /**
      * Create the demo resource.
@@ -43,6 +44,37 @@ public class DemoResource implements Resource
     }
 
 
+    public void setStartTime(@NotNull LocalTime time)
+    {
+        _startTime = time;
+    }
+
+    public LocalTime getStartTime()
+    {
+        return _startTime;
+    }
+
+    public void setDuration(@NotNull Duration duration)
+    {
+        _duration = duration;
+    }
+
+    public Duration getDuration()
+    {
+        return _duration;
+    }
+
+    public void setTakeLunch(boolean truth)
+    {
+        _takeLunch = truth;
+    }
+
+    public boolean getTakeLunch()
+    {
+        return _takeLunch;
+    }
+
+
     public void setTitle(@NotNull String title)
     {
         _title = title;
@@ -61,12 +93,15 @@ public class DemoResource implements Resource
     {
         List<Availability> list = new ArrayList<Availability>();
 
-        // Today the availability is from 8 - 3, tomorrow it is from 10 - 5
-        if (date.equals(ScheduleModelDemo.Today)) {
-            list.add(new Availability(new LocalTime(8, 0, 0), Duration.standardHours(7)));
+        if (_takeLunch) {
+            // Split it into two chunks and give them an hour lunch
+            Seconds seconds = _duration.toStandardSeconds().minus(3600).dividedBy(2);
+            Duration halfDay = seconds.toStandardDuration();
+            list.add(new Availability(_startTime, halfDay));
+            list.add(new Availability(_startTime.plus(seconds).plus(Period.hours(1)), halfDay));
         }
-        else if (date.equals(ScheduleModelDemo.Tomorrow)) {
-            list.add(new Availability(new LocalTime(10, 0, 0), Duration.standardHours(7)));
+        else {
+            list.add(new Availability(_startTime, _duration));
         }
 
         return list.iterator();

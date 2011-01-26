@@ -302,6 +302,9 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
         if (component != null) {
             component.repaint();
         }
+
+        // Availability may have changed
+        repaint();
     }
 
 
@@ -414,39 +417,9 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
             graphics.setColor(Color.lightGray);
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            int columns    = layout.getColumnCount();
             int leftHeader = layout.getX(0);
 
-            for (int i=0; i<columns; ++i) {
-                int x = layout.getX(i);
-                graphics.drawLine(x, insets.top, x, insets.top+height);
-            }
-
-            Period period = _increments.toPeriod();
-
-            for (LocalTime time = _startTime; time.compareTo(_endTime) < 0; time = time.plus(period)) {
-                Integer y = layout.getY(time);
-                if (y != null) {
-                    boolean onTheHour = time.getMinuteOfHour() == 0;
-
-                    if (onTheHour) {
-                        graphics.setColor(Color.black);
-                    }
-
-                    graphics.drawLine(leftHeader, y, insets.left + width, y);
-
-                    if (onTheHour) {
-                        // We want to draw hour markers and right justify them.
-                        String timeString = time.toString("h:mm a");
-
-                        Rectangle2D rect = fontMetrics.getStringBounds(timeString, graphics);
-                        int stringX = (int)(leftHeader - rect.getWidth() - 10);
-
-                        graphics.drawString(timeString, stringX, y + fontHeight/2);
-                        graphics.setColor(Color.lightGray);
-                    }
-                }
-            }
+            int columns    = layout.getColumnCount();
 
 
             // Color in times which they are not available.  This goes through and basically draws from the
@@ -475,8 +448,41 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
 
                 int y2 = insets.top+height;
                 if (y2 > y1) {
-                    graphics.fillRect(x1, y1, x2, y2);
+                    graphics.fillRect(x1, y1, x2-x1, y2-y1);
                 }
+            }
+
+            Period period = _increments.toPeriod();
+
+            for (LocalTime time = _startTime; time.compareTo(_endTime) < 0; time = time.plus(period)) {
+                Integer y = layout.getY(time);
+                if (y != null) {
+                    boolean onTheHour = time.getMinuteOfHour() == 0;
+
+                    if (onTheHour) {
+                        graphics.setColor(Color.black);
+                    }
+
+                    graphics.drawLine(leftHeader, y, insets.left + width, y);
+
+                    if (onTheHour) {
+                        // We want to draw hour markers and right justify them.
+                        String timeString = time.toString("h:mm a");
+
+                        Rectangle2D rect = fontMetrics.getStringBounds(timeString, graphics);
+                        int stringX = (int)(leftHeader - rect.getWidth() - 10);
+
+                        graphics.drawString(timeString, stringX, y + fontHeight/2);
+                        graphics.setColor(Color.lightGray);
+                    }
+                }
+            }
+
+            // Finally draw the column lines over everything
+            graphics.setColor(Color.black);
+            for (int i=0; i<columns; ++i) {
+                int x = layout.getX(i);
+                graphics.drawLine(x, insets.top, x, insets.top+height);
             }
 
             // Reset the graphics

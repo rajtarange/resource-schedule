@@ -206,7 +206,7 @@
                <string>Lunch Break</string> 
               </void> 
               <void property="name"> 
-               <string>checkBox1</string> 
+               <string>_lunchCheckbox</string> 
               </void> 
              </object> 
             </void> 
