@@ -66,4 +66,4 @@ Version 2.0 Features:
   you can easily tell which resources have been assigned for which days.
 
 + I have some round-off errors which are making some of the appointments one pixel to small on the
-  width.  Eventually I should fix this so things look better.
+  width.  Eventually this should be fixed so things look better.
