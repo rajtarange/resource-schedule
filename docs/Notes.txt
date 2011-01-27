@@ -2,8 +2,8 @@ This is an unorganized collection of random notes and comments as I develop this
 
 Notes:
 ------
-+ I'm still learning the maven structure so right now the SchedulerDemo is embedded in the library
-  which I would really prefer to pull out and into its own area.
++ I'm still learning about how to set up a project with maven but I've managed to pull
+  out the demo into its own "Example" module so I think that is working correctly now.
 
 + I've decided to use Joda as a replacement for the Java Date libraries as I find the java date stuff
   unnecessarily complicated to use and I would rather spend my time understanding higher level concepts.

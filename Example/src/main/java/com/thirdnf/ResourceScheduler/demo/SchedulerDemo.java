@@ -135,7 +135,6 @@ public class SchedulerDemo extends JFrame
                 .append("Duration: ").append(period.toString(PeriodFormat.getDefault())).append('\n');
         stringBuilder.append("For Resource: ").append(appointment.getResource());
 
-
         _detailsPane.setText(stringBuilder.toString());
     }
 
