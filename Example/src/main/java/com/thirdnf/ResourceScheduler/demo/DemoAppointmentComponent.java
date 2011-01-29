@@ -31,8 +31,8 @@ public class DemoAppointmentComponent extends BasicAppointmentComponent implemen
         super(appointment);
 
         // Is this the right place for this?
-        if (appointment instanceof ScheduleModelDemo.DemoAppointment) {
-            Color c = ((ScheduleModelDemo.DemoAppointment)appointment).getCategory().getColor();
+        if (appointment instanceof DemoAppointment) {
+            Color c = ((DemoAppointment)appointment).getCategory().getColor();
             setBackground(c);
         }
 
@@ -78,7 +78,7 @@ public class DemoAppointmentComponent extends BasicAppointmentComponent implemen
     public void mouseClicked(MouseEvent e)
     {
         if (_appointmentListener != null) {
-            _appointmentListener.handleClick(_appointment);
+            _appointmentListener.handleClick(_appointment, e.getClickCount());
         }
     }
 

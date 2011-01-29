@@ -76,9 +76,14 @@ public class SchedulerDemo extends JFrame
         DemoComponentFactory componentFactory = new DemoComponentFactory();
         componentFactory.setAppointmentListener(new AppointmentListener() {
             @Override
-            public void handleClick(@NotNull Appointment appointment)
+            public void handleClick(@NotNull Appointment appointment, int clickCount)
             {
-                handleAppointmentClick(appointment);
+                if (clickCount == 1) {
+                    handleAppointmentClick(appointment);
+                }
+                else {
+                    handleAppointmentEdit(appointment);
+                }
             }
 
             @Override
@@ -141,7 +146,22 @@ public class SchedulerDemo extends JFrame
 
     public void handleAppointmentEdit(@NotNull Appointment appointment)
     {
-        System.out.println("Edit request for appointment");
+        if (! (appointment instanceof DemoAppointment)) {
+            System.err.println("Can't edit non-demo appointment.");
+            return;
+        }
+        DemoAppointment demoAppointment = (DemoAppointment)appointment;
+
+        AppointmentDialog dialog = new AppointmentDialog(this, demoAppointment, _model);
+        dialog.setOkayListener(new AppointmentDialog.IOkayListener() {
+            @Override
+            public void handleOkay(@NotNull DemoAppointment appointment)
+            {
+                _model.updateAppointment(appointment);
+            }
+        });
+        dialog.pack();
+        dialog.setVisible(true);
     }
 
 
@@ -223,18 +243,22 @@ public class SchedulerDemo extends JFrame
     }
 
 
+    /**
+     * Handle an add appointment.  This is usually from when the client has clicked
+     * the 'add appointment' button, as opposed to responding to a click on the
+     * schedule itself.
+     */
     private void handleAddAppointment()
     {
         LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
         AppointmentDialog dialog = new AppointmentDialog(this, date, _model);
-//        dialog.setOkayListener(new ResourceDialog.IOkayListener() {
-//            @Override
-//            public void handleOkay(@NotNull DemoResource resource, int column)
-//            {
-//                LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
-//                _model.addResource(resource, date, column);
-//            }
-//        });
+        dialog.setOkayListener(new AppointmentDialog.IOkayListener() {
+            @Override
+            public void handleOkay(@NotNull DemoAppointment appointment)
+            {
+                _model.addAppointment(appointment);
+            }
+        });
         dialog.pack();
         dialog.setVisible(true);
     }
@@ -242,19 +266,18 @@ public class SchedulerDemo extends JFrame
 
     private void handleAddAppointment(@Nullable Resource resource, @NotNull DateTime dateTime)
     {
-        System.out.println("SchedulerDemo.handleAddAppointment - pull up dialog with: " + dateTime );
+        System.out.println("SchedulerDemo.handleAddAppointment - pull up dialog with: " + resource );
 
-//        AppointmentDialog dialog = new AppointmentDialog(this);
-////        dialog.setOkayListener(new ResourceDialog.IOkayListener() {
-////            @Override
-////            public void handleOkay(@NotNull DemoResource resource, int column)
-////            {
-////                LocalDate date = _todayRadio.isSelected() ? Today : Tomorrow;
-////                _model.addResource(resource, date, column);
-////            }
-////        });
-//        dialog.pack();
-//        dialog.setVisible(true);
+        AppointmentDialog dialog = new AppointmentDialog(this, resource, dateTime, _model);
+        dialog.setOkayListener(new AppointmentDialog.IOkayListener() {
+            @Override
+            public void handleOkay(@NotNull DemoAppointment appointment)
+            {
+                _model.addAppointment(appointment);
+            }
+        });
+        dialog.pack();
+        dialog.setVisible(true);
     }
 
 

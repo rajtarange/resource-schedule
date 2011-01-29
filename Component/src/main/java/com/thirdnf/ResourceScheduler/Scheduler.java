@@ -58,6 +58,7 @@ public class Scheduler extends JPanel implements Printable
                 // Process the listeners last to first, notifying
                 // those that are interested in this event
                 for (int i = listeners.length - 2; i >= 0; i -= 2) {
+                    //noinspection ObjectEquality
                     if (listeners[i] == ScheduleListener.class) {
                         ((ScheduleListener) listeners[i + 1]).actionPerformed(resource, time);
                     }

@@ -27,13 +27,14 @@ public interface ScheduleModel
 
 
     /**
-     * Get the start time for a particular date.  Eventually I am thinking that this should really get
-     * a date *and* a resource, since not all resources may be available for the same portions of the day.
-     * Like, for example, a mechanic that works in the morning and another that works in the evening.
+     * Get the start time for a particular date.  Currently there is a not-null requirement
+     * on this, but eventually this should allow nulls and just determine the start time
+     * automatically from the start times of all the available resources.
      *
      * @param dateTime (not null) The day to get the start time for.
      * @return (not null) The time the day starts for the given day.
      */
+    @NotNull
     LocalTime getStartTime(@NotNull LocalDate dateTime);
 
 

@@ -2,12 +2,8 @@ package com.thirdnf.ResourceScheduler.demo;
 
 import com.thirdnf.ResourceScheduler.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
-import org.junit.experimental.categories.Categories;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -27,8 +23,7 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     private static final List<Resource> TodayResources    = new ArrayList<Resource>();
     private static final List<Resource> TomorrowResources = new ArrayList<Resource>();
 
-    private static final List<Appointment> TodayAppointments = new ArrayList<Appointment>();
-    private static final List<Appointment> TomorrowAppointments = new ArrayList<Appointment>();
+    private static final List<Appointment> Appointments = new ArrayList<Appointment>();
 
     // Resources
     private static final DemoResource Bobby = new DemoResource("Bobby", new Color(251, 198, 12, 200));
@@ -50,13 +45,13 @@ public class ScheduleModelDemo extends AbstractScheduleModel
         //  to Freddy.  The appointment should show up in the first column for the day.
 
         // Populate some default appointments
-        TodayAppointments.add(DemoAppointment.create("Appointment1", Green, Bobby, new LocalTime(10, 5, 0),  45));
-        TodayAppointments.add(DemoAppointment.create("Appointment2", Blue, Johnny, new LocalTime(13, 0, 0), 75));
-        TodayAppointments.add(DemoAppointment.create("Appointment3", Blue, Sally, new LocalTime(8, 0, 0), 60));
-        TodayAppointments.add(DemoAppointment.create("Appointment4", Green, Sally, new LocalTime(8, 45, 0), 120));
-        TodayAppointments.add(DemoAppointment.create("Appointment5", Blue, Sally, new LocalTime(10, 45, 0), 30));
-        TodayAppointments.add(DemoAppointment.create("Appointment7", Green, Sally, new LocalTime(12, 30, 0), 40));
-        TodayAppointments.add(DemoAppointment.create("Appointment8", Blue, Freddy, new LocalTime(13, 0, 0), 50));
+        Appointments.add(DemoAppointment.create("Appointment1", Green, Bobby, new LocalTime(10, 5, 0),  45));
+        Appointments.add(DemoAppointment.create("Appointment2", Blue, Johnny, new LocalTime(13, 0, 0), 75));
+        Appointments.add(DemoAppointment.create("Appointment3", Blue, Sally, new LocalTime(8, 0, 0), 60));
+        Appointments.add(DemoAppointment.create("Appointment4", Green, Sally, new LocalTime(8, 45, 0), 120));
+        Appointments.add(DemoAppointment.create("Appointment5", Blue, Sally, new LocalTime(10, 45, 0), 30));
+        Appointments.add(DemoAppointment.create("Appointment7", Green, Sally, new LocalTime(12, 30, 0), 40));
+        Appointments.add(DemoAppointment.create("Appointment8", Blue, Freddy, new LocalTime(13, 0, 0), 50));
     }
 
 
@@ -69,20 +64,13 @@ public class ScheduleModelDemo extends AbstractScheduleModel
 
 
     @Override
-    public void visitAppointments(AppointmentVisitor visitor, @NotNull LocalDate dateTime)
+    public void visitAppointments(AppointmentVisitor visitor, @NotNull LocalDate date)
     {
-        List<Appointment> appointments;
-        if (dateTime.equals(Today)) {
-            appointments = TodayAppointments;
-        }
-        else if (dateTime.equals(Tomorrow)) {
-            appointments = TomorrowAppointments;
-        }
-        else {
-            return;
-        }
-
-        for (Appointment appointment : appointments) {
+        for (Appointment appointment : Appointments) {
+            LocalDate appointmentDate = appointment.getDateTime().toLocalDate();
+            if (! appointmentDate.equals(date)) {
+                continue;
+            }
             visitor.visitAppointment(appointment);
         }
     }
@@ -143,6 +131,20 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     }
 
 
+    public void addAppointment(@NotNull Appointment appointment)
+    {
+        Appointments.add(appointment);
+
+        fireAppointmentAdded(appointment);
+    }
+
+
+    public void updateAppointment(@NotNull Appointment appointment)
+    {
+        fireAppointmentUpdated(appointment);
+    }
+
+
     public void updateResource(@NotNull Resource resource)
     {
         fireResourceUpdated(resource);
@@ -169,21 +171,8 @@ public class ScheduleModelDemo extends AbstractScheduleModel
 
     public void deleteAppointment(@NotNull Appointment appointment)
     {
-        LocalDate date = appointment.getDateTime().toLocalDate();
-
-        List<Appointment> appointments;
-        if (date.equals(Today)) {
-            appointments = TodayAppointments;
-        }
-        else if (date.equals(Tomorrow)) {
-            appointments = TomorrowAppointments;
-        }
-        else {
-            return;
-        }
-
         // Remove it from our list
-        appointments.remove(appointment);
+        Appointments.remove(appointment);
 
         // Let any listeners know we have removed this appointment.
         fireAppointmentRemoved(appointment);
@@ -197,6 +186,7 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     }
 
 
+    @NotNull
     @Override
     public LocalTime getStartTime(@NotNull LocalDate dateTime)
     {
@@ -204,80 +194,4 @@ public class ScheduleModelDemo extends AbstractScheduleModel
     }
 
 
-    public static class DemoAppointment implements Appointment
-    {
-        private final DemoCategory _category;
-        private final Resource _resource;
-        private final String _title;
-        private DateTime _time;
-        private Duration _length;
-
-
-        public DemoAppointment(@NotNull String title, DemoCategory category, Resource resource)
-        {
-            _title = title;
-            _category = category;
-            _resource = resource;
-        }
-
-
-        public DemoCategory getCategory()
-        {
-            return _category;
-        }
-
-        @NotNull
-        @Override
-        public DateTime getDateTime()
-        {
-            return _time;
-        }
-
-
-        @Override
-        public Resource getResource()
-        {
-            return _resource;
-        }
-
-        @NotNull
-        @Override
-        public Duration getDuration()
-        {
-            return _length;
-        }
-
-        @NotNull
-        @Override
-        public String getTitle()
-        {
-            return _title;
-        }
-
-
-        public void setTime(@NotNull DateTime time)
-        {
-            _time = time;
-        }
-
-
-        public void setLength(@NotNull Duration length)
-        {
-            _length = length;
-        }
-
-
-        public static DemoAppointment create(@NotNull String title, @NotNull DemoCategory category,
-                                             @Nullable Resource resource,
-                                             @NotNull LocalTime time, int minutes)
-        {
-            DemoAppointment appointment = new DemoAppointment(title, category, resource);
-            DateTime date = new DateTime(Today.getYear(), Today.getMonthOfYear(), Today.getDayOfMonth(),
-                    time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute(), 0);
-            appointment.setTime(date);
-            appointment.setLength(Duration.standardMinutes(minutes));
-
-            return appointment;
-        }
-    }
 }

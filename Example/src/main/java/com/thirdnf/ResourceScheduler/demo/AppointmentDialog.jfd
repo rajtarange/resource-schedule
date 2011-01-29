@@ -69,7 +69,7 @@
            <object class="com.jformdesigner.model.FormComponent"> 
             <string>javax.swing.JTextField</string> 
             <void property="name"> 
-             <string>textField1</string> 
+             <string>_titleField</string> 
             </void> 
            </object> 
            <object class="com.jformdesigner.model.FormLayoutConstraints"> 

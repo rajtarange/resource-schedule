@@ -268,10 +268,10 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
         addResource(resource, index);
 
         // Force the layout to redraw
-        revalidate();
+        _innerPanel.revalidate();
 
         // We have added a column so we need to repaint our background as well
-        repaint();
+        _innerPanel.repaint();
     }
 
 
@@ -288,10 +288,10 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
         }
 
         // Force the layout to redraw
-        revalidate();
+        _innerPanel.revalidate();
 
         // We have removed a column so we need to repaint our background as well
-        repaint();
+        _innerPanel.repaint();
     }
 
 
@@ -336,10 +336,10 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
         if (component != null) { _innerPanel.remove(component); }
 
         // This may cause a conflicted appointment to change sizes so invalidate everything.
-        revalidate();
+        _innerPanel.revalidate();
 
         // Repaint to remove the old one.
-        repaint();
+        _innerPanel.repaint();
     }
 
 
@@ -347,9 +347,10 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
     public void appointmentUpdated(@NotNull Appointment appointment)
     {
         // The appointment may have moved so re-layout
-        revalidate();
+        _innerPanel.revalidate();
 
-        // I don't think we need a repaint.
+        // Repaint to remove the old one.
+        _innerPanel.repaint();
     }
 
 

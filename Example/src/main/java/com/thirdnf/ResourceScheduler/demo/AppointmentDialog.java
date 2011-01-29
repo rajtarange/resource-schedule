@@ -11,8 +11,8 @@ import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 import com.thirdnf.ResourceScheduler.Resource;
 import com.thirdnf.ResourceScheduler.ResourceVisitor;
-import com.thirdnf.ResourceScheduler.ScheduleModel;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -22,22 +22,72 @@ import org.joda.time.LocalTime;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
+@SuppressWarnings({"FieldCanBeLocal"})
 public class AppointmentDialog extends JDialog
 {
     private static final LocalTime StartTime = new LocalTime(6, 0, 0);
     private static final LocalTime EndTime   = new LocalTime(18, 0, 0);
     private static final Duration  Increment = Duration.standardMinutes(15);
-    private final LocalDate _date;
+    private LocalDate _date;
+    private DemoAppointment _appointment;
 
-    public AppointmentDialog(@NotNull Frame owner, @NotNull LocalDate date, @NotNull ScheduleModelDemo model)
+    private IOkayListener _listener;
+
+
+    public AppointmentDialog(@NotNull Frame owner, @NotNull LocalDate date,
+                             @NotNull ScheduleModelDemo model)
     {
         super(owner);
         initComponents();
         _date = date;
+        _appointment = null;
 
         initialize(model);
 
         setTitle("Add Appointment");
+    }
+
+
+    public AppointmentDialog(@NotNull Frame owner, @NotNull Resource resource, @NotNull DateTime dateTime,
+                             @NotNull ScheduleModelDemo model)
+    {
+        super(owner);
+        initComponents();
+        _date = dateTime.toLocalDate();
+
+        _appointment = null;
+
+        initialize(model);
+        LocalTime last = null;
+        LocalTime localTime = dateTime.toLocalTime();
+        for (int index=0; index<_startTimeCombo.getItemCount(); ++index) {
+            LocalTime time = (LocalTime) _startTimeCombo.getItemAt(index);
+            if (time.compareTo(localTime) > 0) {
+                if (last != null) { _startTimeCombo.setSelectedItem(last); }
+                break;
+            }
+            last = time;
+        }
+        _resourceCombo.setSelectedItem(resource);
+    }
+
+    public AppointmentDialog(@NotNull Frame owner, @NotNull DemoAppointment appointment,
+                             @NotNull ScheduleModelDemo model)
+    {
+        super(owner);
+        initComponents();
+        _date = appointment.getDateTime().toLocalDate();
+        _appointment = appointment;
+
+        initialize(model);
+
+        _titleField.setText(_appointment.getTitle());
+        _categoryCombo.setSelectedItem(_appointment.getCategory());
+        _resourceCombo.setSelectedItem(_appointment.getResource());
+        _startTimeCombo.setSelectedItem(_appointment.getDateTime().toLocalTime());
+        _durationSpinner.setValue((int) (_appointment.getDuration().getStandardSeconds()/60));
+
+        setTitle("Edit Appointment");
     }
 
 
@@ -72,17 +122,61 @@ public class AppointmentDialog extends JDialog
     }
 
 
+    public void setOkayListener(@NotNull IOkayListener listener)
+    {
+        _listener = listener;
+    }
+
+
     private void handleOkay()
     {
+        if (_listener != null) {
+            String title = _titleField.getText().trim();
+            DemoResource resource = (DemoResource) _resourceCombo.getSelectedItem();
+            DemoCategory category = (DemoCategory) _categoryCombo.getSelectedItem();
+            LocalTime startTime = (LocalTime) _startTimeCombo.getSelectedItem();
+            int duration = (Integer) _durationSpinner.getValue();
+
+            if (_appointment == null) {
+                _appointment = new DemoAppointment(title, category, resource);
+            }
+            else {
+                _appointment.setTitle(title);
+                _appointment.setResource(resource);
+                _appointment.setCategory(category);
+            }
+            _appointment.setDateTime(new DateTime(_date.year().get(), _date.monthOfYear().get(),
+                    _date.dayOfMonth().get(), startTime.getHourOfDay(),
+                    startTime.getMinuteOfHour(), startTime.getSecondOfMinute(), 0));
+            _appointment.setDuration(Duration.standardMinutes(duration));
+
+            _listener.handleOkay(_appointment);
+        }
+
         dispose();
     }
 
 
+    /**
+     * Handle the user clicking the cancel button.  This just closes the dialog.
+     */
     private void handleCancelButton()
     {
         dispose();
     }
 
+
+
+    public static interface IOkayListener
+    {
+        /**
+         * Handle the okay button being clicked.  This should send back the appointment that was
+         *  added or updated.
+         *
+         * @param appointment (not null) Appointment which was either created or updated.
+         */
+        void handleOkay(@NotNull DemoAppointment appointment);
+    }
 
 
     private static class TimeCellRenderer extends DefaultListCellRenderer
@@ -106,7 +200,7 @@ public class AppointmentDialog extends JDialog
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         label1 = new JLabel();
-        textField1 = new JTextField();
+        _titleField = new JTextField();
         label2 = new JLabel();
         _startTimeCombo = new JComboBox();
         label3 = new JLabel();
@@ -133,13 +227,13 @@ public class AppointmentDialog extends JDialog
             //======== contentPanel ========
             {
                 contentPanel.setLayout(new FormLayout(
-                    "default, $lcgap, [50dlu,default]:grow",
-                    "4*(default, $lgap), default"));
+                        "default, $lcgap, [50dlu,default]:grow",
+                        "4*(default, $lgap), default"));
 
                 //---- label1 ----
                 label1.setText("Title");
                 contentPanel.add(label1, CC.xy(1, 1));
-                contentPanel.add(textField1, CC.xy(3, 1));
+                contentPanel.add(_titleField, CC.xy(3, 1));
 
                 //---- label2 ----
                 label2.setText("Start Time");
@@ -153,8 +247,8 @@ public class AppointmentDialog extends JDialog
                 //======== panel1 ========
                 {
                     panel1.setLayout(new FormLayout(
-                        "[50dlu,default]:grow, $lcgap, default:grow",
-                        "default"));
+                            "[50dlu,default]:grow, $lcgap, default:grow",
+                            "default"));
                     panel1.add(_durationSpinner, CC.xy(1, 1));
 
                     //---- label5 ----
@@ -179,8 +273,8 @@ public class AppointmentDialog extends JDialog
             {
                 buttonBar.setBorder(Borders.BUTTON_BAR_GAP_BORDER);
                 buttonBar.setLayout(new FormLayout(
-                    "$glue, $button, $rgap, $button",
-                    "pref"));
+                        "$glue, $button, $rgap, $button",
+                        "pref"));
 
                 //---- okButton ----
                 okButton.setText("OK");
@@ -214,7 +308,7 @@ public class AppointmentDialog extends JDialog
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel label1;
-    private JTextField textField1;
+    private JTextField _titleField;
     private JLabel label2;
     private JComboBox _startTimeCombo;
     private JLabel label3;
