@@ -38,9 +38,9 @@ Known Restrictions:
   even planning for it now.
 
 
-To-do Before Release:
+To-do Before 1.0 Release:
 ---------------------
-+ Fix printing ... even smooth looks HORRIBLE.
++ Fix printing ... even smooth scaling looks really bad.
 
 + Investigate Drag & Drop.  I'm now of the mind that perhaps D&D is a vial feature before a 1.0 release.  I need
   to check into how difficult this would be to do as I don't want to feature creep this application.
