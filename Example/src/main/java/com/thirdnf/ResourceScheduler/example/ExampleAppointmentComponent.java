@@ -30,12 +30,6 @@ public class ExampleAppointmentComponent extends BasicAppointmentComponent imple
     {
         super(appointment);
 
-        // Is this the right place for this?
-        if (appointment instanceof ExampleAppointment) {
-            Color c = ((ExampleAppointment)appointment).getCategory().getColor();
-            setBackground(c);
-        }
-
         // Allow this instance to respond to mouse clicks.  I'm a bit uncomfortable with accessing 'this' at
         //  this point, but I think that is just an old C++ fear.
         addMouseListener(this);
@@ -60,6 +54,20 @@ public class ExampleAppointmentComponent extends BasicAppointmentComponent imple
             }
         });
         _popupMenu.add(deleteItem);
+    }
+
+
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        // If our resource is a Demo Resource (and it really should be) then get its color.
+        // We do this here so that if the resource is updated we will pick up its new color
+        if (_appointment instanceof ExampleAppointment) {
+            Color c = ((ExampleAppointment)_appointment).getCategory().getColor();
+            setBackground(c);
+        }
+
+        super.paintComponent(g);
     }
 
 
