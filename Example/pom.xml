@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>ResourceScheduler</artifactId>
+        <artifactId>resource-schedule</artifactId>
         <groupId>com.thirdnf.ResourceScheduler</groupId>
         <version>1.0</version>
     </parent>
@@ -28,7 +28,7 @@
 
         <dependency>
             <groupId>com.thirdnf.ResourceScheduler</groupId>
-            <artifactId>Component</artifactId>
+            <artifactId>ResourceScheduler</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>
