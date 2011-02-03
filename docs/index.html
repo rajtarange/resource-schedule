@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>The Resource Scheduler</title>
+</head>
+<body>
+
+<table width="600" align="center">
+<tr>
+<td>
+
+<h2>Overview</h2>
+<p>
+The Resource Scheduler is a Java Swing Component which is intended to 
+help in the creation of an application for tracking resource usage.
+What is a resource?  Anything you want to track usage for.  But really, 
+a resource can be anything.
+</p><p>
+For example, if you are trying to write an application to schedule
+doctors at a doctors office you could use this component to help you. 
+Each doctor would be a resource and patients would be the appointments.
+It would be harder to use a classic calendar for something like this 
+as a calendar is really intended to schedule just one person at a time.
+On some days at a doctors office there would likely be more than one 
+doctor available and it would be useful to see the two schedules 
+side by side.
+</p><p>
+Other usages might be to schedule time for shared cars at the workplace.
+(I'm grasping a bit here).  You've got 3 shared cars and 10 people who 
+want to use them.  The cars are resources and each person using the car
+is an appointment with the car.
+</p>
+
+<h2>What is not included</h2>
+<p>
+This is not intended to be an off-the-shelf resource scheduler.  Meaning
+there is no database behind this component.  Rather there is an abstract
+Scheduling model which can be extended and backed with what ever type of 
+database you want to use.  An example is included, but that stores its 
+data in memory and is reset every time you re-launch the example.
+</p>
+
+<h2>Dependencies</h2>
+<p>
+There is currently a dependency on the JGoodies for the form layout 
+manager and Joda time library.  The JGoodies form layout is exceedingly
+easy to use and works well with JFormDesigner.  I find Java's native
+date and time library to be unnecessarily complicated to use.  Joda is
+not only easy to use, free for use, but it can also easily convert to
+and from Java's native date/time library.
+</p>
+
+<h2>Roadmap</h2>
+<p>
+Version 1.0 is intended to be functional but lacking in the fancy 
+features that would really make this suitable for production software.
+Version 1.5 is going to add printing and version 2.0 will add drag and
+drop for rearranging appointments, drag for resizing appointments, and
+a week and month view.  At this point in time there is no ETA for when 
+version 1.5 or 2.0 will be finished, but some paypal donations would 
+help to firm up those dates if those type of features were important to 
+you.
+</p>
+
+<h2>License</h2>
+<p>
+This component is licensed under the Apache 2.0 license and is free
+for use in personal or commercial projects.  You are free to modify it
+as you see fit and you are not required to give your modifications back
+to me.  I would appreciate it if you would drop me a line if you are 
+using this comonent and have found it useful (or not) and I would 
+appreciate any and all feedback.  If I think people are using it, I'll
+probably spend more time fixing it up.
+</p>
+
+<a href="./tutorial.html">Jump to the tutoral</a>
+
+</td>
+</tr>
+</table>
+
+</body>

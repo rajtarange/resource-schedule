@@ -39,18 +39,22 @@ Known Restrictions:
 
 
 To-do Before 1.0 Release:
+-------------------------
++ Documentation and Tutorial
+
+
+Version 1.5 Features:
 ---------------------
 + Fix printing ... even smooth scaling looks really bad.
-
-+ Investigate Drag & Drop.  I'm now of the mind that perhaps D&D is a vial feature before a 1.0 release.  I need
-  to check into how difficult this would be to do as I don't want to feature creep this application.
-
-+ Documentation and Tutorial
 
 
 Version 2.0 Features:
 ---------------------
-+ Drag and Drop of appointments to move them around in a day, or across schedules.
++ Drag and Drop of appointments to move them around in a day, or across schedules.  I've gone back and
+  forth on this as a feature for 1.0 or 2.0, but I think I'm going to leave it as a 2.0 feature.  I tried
+  implementing this with Java's Drag and Drop, but it really doesn't work all that well for this.
+  Java's D&D is really for dragging stuff between stuff, not for dragging around on a single panel.  So I
+  think this will be better handled as just a mouse listener.
 
 + Add week view.  This would allow dragging appointments around and resources around on given days.
 

@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>The Resource Scheduler - Tutorial</title>
+</head>
+<body>
+
+<table width="600" align="center">
+<tr>
+<td>
+
+<h2>Setup</h2>
+<p>
+This tutorial assumes you use maven for your development.  You don't 
+necessarily need to, but it makes all of the dependency management a
+lot easier.  
+</p>
+
+<h2>Step 1 - Setting up your POM</h2>
+<p>
+Configure your pom.xml so it has a dependency on the ResourceScheduler
+
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;com.acme&lt;/groupId&gt;
+    &lt;artifactId&gt;MyScheduler&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.thirdnf.ResourceScheduler&lt;/groupId&gt;
+            &lt;artifactId&gt;Component&lt;/artifactId&gt;
+            &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/project&gt;
+</pre>
+
+</p>
+
+<h2>Step 2 - File Structure</h2>
+<p>
+Your file structure should look like:
+<pre>
+.:
+pom.xml  src
+
+./src/main/java/com/acme:
+MyScheduler.java
+</pre>
+
+The MyScheduler.java file is currently blank.
+</p>
+
+<h2>Step 3 - Adding the component</h2>
+<p>
+The first thing we need to do is create a window and add the 
+</p>
+
+<h2>Step 4 - Compile it</h2>
+<p>
+Using maven this can be compile by running the following at the top level 
+directory:
+<pre>
+   mvn compile
+</pre>
+
+<h2>Step 5 - Test it</h2>
+<p>
+It can now be tested by running:
+<pre>
+   java -classpath target/classes com.acme.MyScheduler
+</pre>
+</p>
+
+<h2>Step 6 - Attaching a Model</h2>
+<p>
+
+You would then want to compile and run it as you did in steps 4 and 5.
+</p>
+
+<h2>Step 7 - Using your own components</h2>
+<p>
+
+You would then want to compile and run it as you did in steps 4 and 5.
+</p>
+
+<h2>Step 8 - Done</h2>
+<p>
+There is still more you can do to further customize it, but the purpose of
+this tutorial is really to just get you going.  I'll probably be expanding
+it slowly.
+</p>
+
+</td>
+</tr>
+</table>
+
+</body>
