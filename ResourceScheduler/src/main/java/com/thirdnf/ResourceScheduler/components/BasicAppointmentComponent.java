@@ -18,6 +18,8 @@ import java.awt.*;
  */
 public class BasicAppointmentComponent extends AbstractAppointmentComponent
 {
+    protected static final Color BackgroundColor = new Color(9, 171, 246, 200);
+
     /**
      * Constructor given an appointment to wrap.
      *
@@ -29,6 +31,9 @@ public class BasicAppointmentComponent extends AbstractAppointmentComponent
 
         // The preferred size is pretty much just ignored for right now.
         setPreferredSize(new Dimension(100, 100));
+
+        // Default our background color to blue
+        setBackground(BackgroundColor);
     }
 
 

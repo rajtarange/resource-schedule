@@ -4,6 +4,14 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
+/**
+ * Instances of this interface can be used as models for the Scheduler.  You really should not
+ * be implementing this interface directly, but rather just extending {@link AbstractScheduleModel}
+ * which will take care of the listeners for you.
+ *
+ * @author Joshua Gerth - jgerth@thirdnf.com
+ */
+@SuppressWarnings({"UnusedDeclaration"})
 public interface ScheduleModel
 {
     /**
@@ -66,8 +74,20 @@ public interface ScheduleModel
     void removeResourceChangeListener(ResourceChangeListener listener);
 
 
+    /**
+     * Request that the given listener be notified when an appointment has
+     * been either added or removed from the model.
+     *
+     * @param listener (not null) Listener to notify when a resource has been added or removed.
+     */
     void addAppointmentChangeListener(@NotNull AppointmentChangeListener listener);
 
 
+    /**
+     * Request that the given listener be removed from notification when an appointment has
+     * been either added or removed from the model.
+     *
+     * @param listener (not null) Listener to notify when a resource has been added or removed.
+     */
     void removeAppointmentChangeListener(@NotNull AppointmentChangeListener listener);
 }

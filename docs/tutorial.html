@@ -1,25 +1,30 @@
 <html>
 <head>
-<title>The Resource Scheduler - Tutorial</title>
+  <title>The Resource Scheduler - Tutorial</title>
 </head>
 <body>
 
 <table width="600" align="center">
-<tr>
-<td>
-
-<h2>Setup</h2>
-<p>
-This tutorial assumes you use maven for your development.  You don't 
-necessarily need to, but it makes all of the dependency management a
-lot easier.  
-</p>
-
-<h2>Step 1 - Setting up your POM</h2>
-<p>
-Configure your pom.xml so it has a dependency on the ResourceScheduler
-
-<pre>
+  <tr>
+    <td>
+      
+      <h2>Setup</h2>
+      <p>
+        This tutorial assumes you
+        use <a href="http://maven.apache.org/">maven</a> for your
+        development.  You don't necessarily need to, but it makes all
+        of the dependency management a lot easier.
+      </p>
+      
+      <h2>Step 1 - Setting up your POM</h2>
+      <p>
+        First you need to configure your <code>pom.xml</code> so it
+        has a dependency on the ResourceScheduler.  This will
+        automatically bring in a dependency on
+        the <a href="http://joda-time.sourceforge.net/">Joda</a>
+        date/time module.
+	
+	<pre>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -40,64 +45,313 @@ Configure your pom.xml so it has a dependency on the ResourceScheduler
 &lt;/project&gt;
 </pre>
 
-</p>
-
-<h2>Step 2 - File Structure</h2>
-<p>
-Your file structure should look like:
-<pre>
+      </p><p>
+	Your file structure should then look something like:
+	<pre>
 .:
 pom.xml  src
 
 ./src/main/java/com/acme:
 MyScheduler.java
-</pre>
+	</pre>
+	
+        The <code>MyScheduler.java</code> file is currently blank.
+      </p>
+      
+      <h2>Step 2 - Adding the component</h2>
+      <p>
+        The first thing we need to do is create a window and add the
+        Scheduler component:
+      </p>
+      <pre><code>
+package com.acme;
 
-The MyScheduler.java file is currently blank.
-</p>
+import javax.swing.*;
+import java.awt.*;
 
-<h2>Step 3 - Adding the component</h2>
-<p>
-The first thing we need to do is create a window and add the 
-</p>
+import com.thirdnf.ResourceScheduler.Scheduler;
+import org.joda.time.LocalDate;
 
-<h2>Step 4 - Compile it</h2>
-<p>
-Using maven this can be compile by running the following at the top level 
-directory:
+public class MyScheduler extends JFrame
+{
+    public MyScheduler()
+    {
+        setSize(new Dimension(400, 400));
+
+        Scheduler scheduler = new Scheduler();
+        scheduler.setModel(new MySchedulerModel());
+        scheduler.showDate(new LocalDate());
+        add(scheduler);
+    }
+
+    public static void main(String[] args)
+    {
+        MyScheduler myScheduler = new MyScheduler();
+        myScheduler.pack();
+        myScheduler.setVisible(true);
+    }
+}
+      </code></pre>
+
+This is all pretty basic swing stuff.  It just creates a top level window 
+and adds an instance of the Scheduler to it.  You could just as easily do 
+this with JFormDesigner or one of the many other GUI builders.
+      
+      <h2>Step 3 - Compile it</h2>
+      <p>
+        Using maven this can be compile by running the following at
+        the top level directory:
+      </p>
+      <pre>
+mvn compile
+      </pre>
+      and then use your IDE to try running it.  Alternatively you can
+      use maven to assemble a jar which contains all of your
+      dependencies and try running that.  If all works you should get
+      something that looks like:
+      <p/>
+      <img src="./images/blank.png"/>
+
+      <h2>Step 4 - Attaching a Model</h2>
+      <p>
+        Clearly this is not terribly useful so the next thing to do is
+        to attach a model which the scheduler will query to find out
+        the resources and appointments which are available.  The
+        easiest way to do this is to create a model which extends
+        <code>AbstractSchedulerModel</code> and implements four methods.
+      </p>
 <pre>
-   mvn compile
-</pre>
+package com.acme;
 
-<h2>Step 5 - Test it</h2>
-<p>
-It can now be tested by running:
+import com.thirdnf.ResourceScheduler.*;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+
+public class MySchedulerModel extends <b>AbstractSchedulerModel</b>
+{
+    private Resource Resource1 = new MyResource("Dr. One");
+    private Resource Resource2 = new MyResource("Dr. Two");
+
+    public void visitAppointments(AppointmentVisitor appointmentVisitor, LocalDate localDate)
+    {
+    }
+
+    public void visitResources(ResourceVisitor resourceVisitor, LocalDate localDate)
+    {
+        resourceVisitor.visitResource(Resource1);
+        resourceVisitor.visitResource(Resource2);
+    }
+
+    public LocalTime getStartTime(LocalDate localDate)
+    {
+        return new LocalTime(8,0,0);
+    }
+
+    public LocalTime getEndTime(LocalDate localDate)
+    {
+        return new LocalTime(17,0,0);
+    }
+}
+
+class MyResource implements Resource
+{
+    private final String _title;
+
+    public MyResource(String title)
+    {
+        _title = title;
+    }
+
+    public Iterator&lt;Availability&gt; getAvailability(LocalDate localDate)
+    {
+        return (new ArrayList&lt;Availability&gt;()).iterator();
+    }
+
+    public String getTitle()
+    {
+        return _title;
+    }
+}
+  
+</pre>
+      <p>
+        <code><b>getStartTime</b></code> should return when the
+        calendar should display the start time of the day.  For this
+	tutorial we are going to hard code this to 8am, but in a
+	real application this value could change from day to day.
+      </p><p>
+        <code><b>getEndTime</b></code> works in much the same way as
+        the start time, only it returns the end time for the day.  For
+        this tutorial we are going to return 5pm (12 + 5 = 17).
+      </p><p>
+	<code><b>visitAppointments</b></code> works by giving the
+	model a visitor to call for every appointment which should
+	appear on the given date.  This pattern is used in preference
+	to a method which returns a list or an iterator as it removes
+	the necessity for the model to hold a temporary list.  We are
+	going to leave this method blank for the moment.
+      </p><p>
+	<code><b>visitResources</b></code> works similar to
+	visitAppointments, except for resources.  In this case we are
+	going to visit the provided visitor with the two hard coded
+	resources.  A real application would probably query a real
+	backend database, but for this tutorial we will hard code
+	them.
+      </p><p> To use this model in the scheduler you just need call
+	the setModel method on the scheduler and tell the scheduler which
+	date you want it to show. 
+</p>
 <pre>
-   java -classpath target/classes com.acme.MyScheduler
+Scheduler scheduler = new Scheduler();
+<b>scheduler.setModel(new MySchedulerModel());</b>
+<b>scheduler.showDate(new LocalDate());</b>
+add(scheduler);
 </pre>
-</p>
+      <p>
+        The showDate call is necessary as it triggers the Scheduler
+        component to ask the model for the resources and appointments
+        for that date.  The empty construction for LocalDate will
+        create a local date for your current date.  Therefore your
+        screen will have a later date on it than mine does.
+      </p><p>
+	You would then want to compile and run it as you did in step 4.  
+	Doing this should now give you a screen which looks like.
+      </p>
+      
+      <img src="images/resources.png"/>
+      
+      <h2>Step 5 - Adding availability</h2>
+      <p>
+	You may notice that the background is all grey, this is
+        because the resources do not currently have any availability.
+        The availability is determined by each resource and is called
+	from the Scheduler through the <code>getAvailability</code> 
+	method:
+	</p>
+<pre>
+    public Iterator&lt;Availability&gt; getAvailability(LocalDate localDate)
+    {
+        return (new ArrayList&lt;Availability&gt;()).iterator();
+    }
+</pre>
+      <p>
+	In this case our iterator is empty so the Scheduler is 
+	showing that they have no availability.  To change this for 
+	a work day of 10am - 3pm you can update it to show
+	</p>
+<pre>
+    public Iterator&lt;Availability&gt; getAvailability(LocalDate localDate)
+    {
+        List&lt;Availability&gt; availabilities = new ArrayList&lt;Availability&gt;();
+        availabilities.add(new Availability(new LocalTime(10,0,0), Duration.standardHours(5)));
+        return availabilities.iterator();
+    }
+</pre>
 
-<h2>Step 6 - Attaching a Model</h2>
-<p>
+      <p>
+	Notice that the availability is set as a start time and a duration.
+	Our application now looks like:
+      </p>
 
-You would then want to compile and run it as you did in steps 4 and 5.
-</p>
+	<img src="images/resources2.png"/>
+      
+      <h2>Step 6 - Adding Appointments</h2>
+      <p>
+	Lastly we want to add some appointments to our scheduler.  This is
+	going to work almost exactly the same way the Resources worked where
+	we are gong to have our <code>visitAppointments</code> method 
+	call the visit parameter for every appointment.  To do this we
+	need to create an appointment class at the bottom of the model
+	which looks like:
+      </p>
+	<pre>
+class MyAppointment implements Appointment
+{
+    private String _title;
+    private Resource _resource;
+    private DateTime _dateTime;
 
-<h2>Step 7 - Using your own components</h2>
-<p>
+    public MyAppointment(String title, Resource resource, LocalTime time)
+    {
+        _title = title;
+        _resource = resource;
+        _dateTime = time.toDateTimeToday();
+    }
 
-You would then want to compile and run it as you did in steps 4 and 5.
-</p>
+    public DateTime getDateTime()
+    {
+        return _dateTime;
+    }
 
-<h2>Step 8 - Done</h2>
-<p>
-There is still more you can do to further customize it, but the purpose of
-this tutorial is really to just get you going.  I'll probably be expanding
-it slowly.
-</p>
+    public String getTitle()
+    {
+        return _title;
+    }
 
-</td>
-</tr>
+    public Resource getResource()
+    {
+        return _resource;
+    }
+
+    public Duration getDuration()
+    {
+        return Duration.standardMinutes(45);
+    }
+}
+	</pre>
+	<p>
+	  Now we can create two instances of our appointment just under
+	  our resource construction:
+	  </p>
+	<pre>
+
+    private Appointment Appointment1 =
+            new MyAppointment("Visit 1", Resource1, new LocalTime(10, 0, 0));
+    private Appointment Appointment2 =
+            new MyAppointment("Visit 1", Resource2, new LocalTime(13, 0, 0));
+	</pre>
+	<p>
+	  And finally we update the <code>visitAppointments</code> method
+	  like so:
+	</p>
+	<pre>
+    public void visitAppointments(AppointmentVisitor appointmentVisitor, LocalDate localDate)
+    {
+        appointmentVisitor.visitAppointment(Appointment1);
+        appointmentVisitor.visitAppointment(Appointment2);
+    }
+	</pre>
+	<p>
+	  After a compile and run our application looks like
+	</p>
+
+	<img src="./images/appointments.png"/>
+      </p>
+
+      <h2>Step 7 - What's Next</h2>
+      <p>
+	This tutorial was intended to get you started using the
+	scheduler but is not intended to show all of its capabilities.
+	Right now the appointments don't respond to mouse clicks and
+	they are all the same light blue color.  It is entirely
+	possible to change how they respond to mouse clicks and what
+	their shape and color look like by supplying your own
+	component factory.  This is not as difficult as it might
+	sound.  An example of this can be seen in the Example
+	Application which is available in the same distribution as
+	this source code.
+      </p><p>
+	As people use this component and give me feed back I'll likely be 
+	updating this tutorial to add more advanced sections, but I hope
+	this helps to get you going.
+      </p>
+    </td>
+  </tr>
 </table>
 
 </body>
+</html>

@@ -7,7 +7,7 @@ package com.thirdnf.ResourceScheduler;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 
-import com.thirdnf.ResourceScheduler.components.ComponentFactory;
+import com.thirdnf.ResourceScheduler.components.BasicComponentFactory;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -25,6 +25,7 @@ import java.awt.print.PrinterException;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public class Scheduler extends JPanel implements Printable
 {
     private static final String DayView = "DayView";
@@ -82,12 +83,24 @@ public class Scheduler extends JPanel implements Printable
     }
 
 
-    public void setComponentFactory(@NotNull ComponentFactory componentFactory)
+    /**
+     * Set the component factory that the scheduler should use when creating appointment components or resource
+     *  components.  By default this will use the {@link BasicComponentFactory}.
+     *
+     * @param componentFactory (not null) Component Factory to use.
+     */
+    public void setComponentFactory(@NotNull BasicComponentFactory componentFactory)
     {
         _daySchedule.setComponentFactory(componentFactory);
     }
 
 
+    /**
+     * Request the scheduler show the given date.  This will (eventually) automatically select the day view
+     * and bring up the requested date.
+     *
+     * @param date (not null) Date to view.
+     */
     public void showDate(@NotNull LocalDate date)
     {
         // TODO - Make sure the day view is loaded
@@ -95,12 +108,22 @@ public class Scheduler extends JPanel implements Printable
     }
 
 
+    /**
+     * Add a listener to receive mouse clicks on the scheduler with the resource and time clicked.
+     *
+     * @param scheduleListener (not null) Listener to notify.
+     */
     public void addScheduleListener(@NotNull ScheduleListener scheduleListener)
     {
         _listenerList.add(ScheduleListener.class, scheduleListener);
     }
 
 
+    /**
+     * Remove the given listener from receiving notifications on clicks.
+     *
+     * @param scheduleListener (not null) Listener to remove from the notify list.
+     */
     public void removeScheduleListener(@NotNull ScheduleListener scheduleListener)
     {
         _listenerList.remove(ScheduleListener.class, scheduleListener);

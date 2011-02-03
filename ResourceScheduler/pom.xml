@@ -4,17 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
-        <!--<artifactId>ResourceScheduler</artifactId>-->
-        <groupId>com.thirdnf.ResourceScheduler</groupId>
-        <version>1.0</version>
-
+    <artifactId>ResourceScheduler</artifactId>
+    <groupId>com.thirdnf.ResourceScheduler</groupId>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
-    <artifactId>Component</artifactId>
-
     <dependencies>
-        <!-- This project depends on joda as a replacement for Java's Date/Calendar utilities. -->
+        <!-- This project depends on joda as a replacement 
+             for Java's Date/Calendar utilities. -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
@@ -44,7 +41,6 @@
 
     <build>
         <plugins>
-            <!-- We use the assembly plugin to build a jar in the package step. -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.2</version>
@@ -55,10 +51,10 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>package</phase> <!-- append to the packaging phase. -->
+                        <id>make-assembly</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>single</goal> <!-- goals == mojos -->
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>

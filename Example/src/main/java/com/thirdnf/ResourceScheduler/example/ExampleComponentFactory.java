@@ -4,7 +4,7 @@ import com.thirdnf.ResourceScheduler.Appointment;
 import com.thirdnf.ResourceScheduler.Resource;
 import com.thirdnf.ResourceScheduler.components.AbstractAppointmentComponent;
 import com.thirdnf.ResourceScheduler.components.AbstractResourceComponent;
-import com.thirdnf.ResourceScheduler.components.ComponentFactory;
+import com.thirdnf.ResourceScheduler.components.BasicComponentFactory;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Joshua Gerth - jgerth@thirdnf.com
  */
-public class ExampleComponentFactory extends ComponentFactory
+public class ExampleComponentFactory extends BasicComponentFactory
 {
     // The appointment listener to call for mouse clicks on the appointments.
     private AppointmentListener _appointmentListener;

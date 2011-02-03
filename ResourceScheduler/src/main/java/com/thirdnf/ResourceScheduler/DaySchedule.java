@@ -38,7 +38,7 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
 
     private int _nextResource = 0;
 
-    private ComponentFactory _componentFactory;
+    private BasicComponentFactory _componentFactory;
 
     private ScheduleListener _scheduleListener = null;
 
@@ -50,12 +50,12 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
     public DaySchedule()
     {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        _currentDateLabel = new JLabel("Today's Date");
+        _currentDateLabel = new JLabel("No Date Showing");
         add(_currentDateLabel);
         setBackground(Color.white);
         setOpaque(true);
 
-        _componentFactory = new ComponentFactory();
+        _componentFactory = new BasicComponentFactory();
     }
 
 
@@ -81,7 +81,7 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
      * @param componentFactory (not null) New component factory to use when drawing appointments
      * and resources.
      */
-    public void setComponentFactory(@NotNull ComponentFactory componentFactory)
+    public void setComponentFactory(@NotNull BasicComponentFactory componentFactory)
     {
         _componentFactory = componentFactory;
     }
@@ -246,6 +246,12 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
     }
 
 
+    /**
+     * Called by a print request to the scheduler.  This DOES NOT WORK CURRENTLY.
+     *
+     * @param graphics (not null) Graphics to print to.
+     * @param area (not null) Area in which to render this schedule.
+     */
     public void print(@NotNull Graphics2D graphics, @NotNull Rectangle area)
     {
         Color oldColor = graphics.getColor();
@@ -488,6 +494,12 @@ public class DaySchedule extends JPanel implements ResourceChangeListener, Appoi
         }
 
 
+        /**
+         * Handle a print request of the inner panel.  DO NOT USE, THIS IS STILL UNDER DEVELOPMENT.
+         *
+         * @param graphics (not null) Graphics to print to.
+         * @param area (not null) Area in which to render this component.
+         */
         public void print(@NotNull Graphics2D graphics, @NotNull Rectangle area)
         {
             // TODO - draw the background
