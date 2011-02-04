@@ -7,28 +7,9 @@
     <groupId>com.thirdnf.ResourceScheduler</groupId>
     <artifactId>resource-schedule</artifactId>
     <packaging>pom</packaging>
-    <name>Resource Scheduler</name>
+    <name>Project</name>
     <version>1.0</version>
-    <description>Java Swing component for scheduling multiple resources.</description>
-    <url>http://resource-scheduler.thirdnf.com/</url>
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <scm>
-        <url>https://resource-schedule.googlecode.com/svn/</url>
-        <connection>https://resource-schedule.googlecode.com/svn/</connection>
-    </scm>
-    <developers>
-        <developer>
-            <id>jgerth</id>
-            <name>Joshua Gerth</name>
-            <email>jgerth@thirdnf.com</email>
-        </developer>
-    </developers>
+
     <modules>
         <module>ResourceScheduler</module>
         <module>Example</module>
