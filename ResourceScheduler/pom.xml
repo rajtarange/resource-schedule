@@ -12,24 +12,24 @@
     <name>Resource Scheduler</name>
     <description>Java Swing component for scheduling multiple resources.</description>
     <url>http://resource-scheduler.thirdnf.com/</url>
-     <licenses>
-         <license>
-             <name>The Apache Software License, Version 2.0</name>
-             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-             <distribution>repo</distribution>
-         </license>
-     </licenses>
-     <scm>
-         <url>https://resource-schedule.googlecode.com/svn/trunk/ResourceScheduler</url>
-         <connection>https://resource-schedule.googlecode.com/svn/trunk/ResourceScheduler</connection>
-     </scm>
-     <developers>
-         <developer>
-             <id>jgerth</id>
-             <name>Joshua Gerth</name>
-             <email>jgerth@thirdnf.com</email>
-         </developer>
-     </developers>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://resource-schedule.googlecode.com/svn/trunk/ResourceScheduler</url>
+        <connection>https://resource-schedule.googlecode.com/svn/trunk/ResourceScheduler</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>jgerth</id>
+            <name>Joshua Gerth</name>
+            <email>jgerth@thirdnf.com</email>
+        </developer>
+    </developers>
 
 
     <dependencies>
@@ -64,6 +64,39 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
+                <!--<configuration>-->
+                <!--...-->
+                <!--</configuration>-->
+                <executions>
+                    <execution>
+                        <id>make-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.2</version>
