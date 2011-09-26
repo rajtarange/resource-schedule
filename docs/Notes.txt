@@ -9,8 +9,8 @@ Notes:
   unnecessarily complicated to use and I would rather spend my time understanding higher level concepts.
 
 + If at all possible I'm trying to not use temporary lists in the API.  In other words, rather
-  than asking for a list of appointments on a given day, the API instead asks the called method
-  to visit a visitor with each appointment for a given day.  The implementations may have temporary
+  than asking for a list of scheduledAppointments on a given day, the API instead asks the called method
+  to visit a visitor with each scheduledAppointment for a given day.  The implementations may have temporary
   lists, but this can possibly be later optimized out.
 
 + I'm going to make a sincere attempt to not use abbreviations in any API names or really any abbreviations in
@@ -19,12 +19,12 @@ Notes:
 + I'm a little unnerved that my demo application has 10+ primary classes to it.  It was intended to
   be simple but has turned a bit larger than I expected.
 
-+ Unassigned appointments, or those appointments which are for resources not available on that
-  day default to column 0.  There is always a column 0 so we are sure the appointment will
++ Unassigned scheduledAppointments, or those scheduledAppointments which are for resources not available on that
+  day default to column 0.  There is always a column 0 so we are sure the scheduledAppointment will
   not be lost.  For version 2.0 perhaps these will instead default to an auto-created unassigned
   column.  The problem with this is that the layout can't automatically create a column since it
   can't create the component for the header.  So the caller needs to do this .. which means that
-  the caller would have to say "layout, here is a resource to assign all unassigned appointments
+  the caller would have to say "layout, here is a resource to assign all unassigned scheduledAppointments
   to".  This is probably the best approach, but for now a default to column 0 is probably okay.
 
 
@@ -50,22 +50,22 @@ Version 1.5 Features:
 
 Version 2.0 Features:
 ---------------------
-+ Drag and Drop of appointments to move them around in a day, or across schedules.  I've gone back and
++ Drag and Drop of scheduledAppointments to move them around in a day, or across schedules.  I've gone back and
   forth on this as a feature for 1.0 or 2.0, but I think I'm going to leave it as a 2.0 feature.  I tried
   implementing this with Java's Drag and Drop, but it really doesn't work all that well for this.
   Java's D&D is really for dragging stuff between stuff, not for dragging around on a single panel.  So I
   think this will be better handled as just a mouse listener.
 
-+ Add week view.  This would allow dragging appointments around and resources around on given days.
++ Add week view.  This would allow dragging scheduledAppointments around and resources around on given days.
 
 + Add month view.  This would convey information about what resources where scheduled to be available
   on which days.  For each resource it might be nice to show percentage of availability.  Like resource
   1 is 50% booked on the 5th of November.
 
-+ Make the appointments and resources look better.  I would sort of like the appointments to look like
++ Make the scheduledAppointments and resources look better.  I would sort of like the scheduledAppointments to look like
   the ones in Google Calendar.  Another goal is for the header color to actual color the entire background
   for that column, but very lightly.  The reason for this is so when you are in a calendar or week view
   you can easily tell which resources have been assigned for which days.
 
-+ I have some round-off errors which are making some of the appointments one pixel to small on the
++ I have some round-off errors which are making some of the scheduledAppointments one pixel to small on the
   width.  Eventually this should be fixed so things look better.

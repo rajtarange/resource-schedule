@@ -4,23 +4,21 @@ import com.thirdnf.ResourceScheduler.Appointment;
 import com.thirdnf.ResourceScheduler.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
 /**
-* Created by IntelliJ IDEA.
-* User: jgerth
-* Date: 1/28/11
-* Time: 3:53 PM
-* To change this template use File | Settings | File Templates.
-*/
+ * Example Appointment
+ *
+ * @author Joshua Gerth - jgerth@thirdnf.com
+ */
 public class ExampleAppointment implements Appointment
 {
     private ExampleCategory _category;
     private ExampleResource _resource;
     private String _title;
-    private DateTime _dateTime;
+    private LocalDateTime _dateTime;
     private Duration _duration;
 
 
@@ -46,7 +44,7 @@ public class ExampleAppointment implements Appointment
 
     @NotNull
     @Override
-    public DateTime getDateTime()
+    public LocalDateTime getDateTime()
     {
         return _dateTime;
     }
@@ -98,18 +96,18 @@ public class ExampleAppointment implements Appointment
     }
 
 
-    public void setDateTime(@NotNull DateTime time)
+    public void setDateTime(@NotNull LocalDateTime time)
     {
         _dateTime = time;
     }
 
 
     public static ExampleAppointment create(@NotNull String title, @NotNull ExampleCategory category,
-                                         @Nullable ExampleResource resource,
-                                         @NotNull LocalTime time, int minutes)
+                                            @Nullable ExampleResource resource,
+                                            @NotNull LocalTime time, int minutes)
     {
         ExampleAppointment appointment = new ExampleAppointment(title, category, resource);
-        DateTime date = new DateTime(ExampleScheduleModel.Today.getYear(), ExampleScheduleModel.Today.getMonthOfYear(), ExampleScheduleModel.Today.getDayOfMonth(),
+        LocalDateTime date = new LocalDateTime(ExampleScheduleModel.Today.getYear(), ExampleScheduleModel.Today.getMonthOfYear(), ExampleScheduleModel.Today.getDayOfMonth(),
                 time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute(), 0);
         appointment.setDateTime(date);
         appointment.setDuration(Duration.standardMinutes(minutes));

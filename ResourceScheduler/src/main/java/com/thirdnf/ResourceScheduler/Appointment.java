@@ -2,8 +2,8 @@ package com.thirdnf.ResourceScheduler;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.joda.time.LocalDateTime;
 
 
 /**
@@ -27,7 +27,7 @@ public interface Appointment
      * @return The date/time for the appointment.
      */
     @NotNull
-    DateTime getDateTime();
+    LocalDateTime getDateTime();
 
 
     /**

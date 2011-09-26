@@ -12,10 +12,7 @@ import com.jgoodies.forms.layout.*;
 import com.thirdnf.ResourceScheduler.Resource;
 import com.thirdnf.ResourceScheduler.ResourceVisitor;
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import org.joda.time.*;
 
 /**
  * Dialog to add an appointment.
@@ -145,7 +142,7 @@ public class AppointmentDialog extends JDialog
                 _appointment.setResource(resource);
                 _appointment.setCategory(category);
             }
-            _appointment.setDateTime(new DateTime(_date.year().get(), _date.monthOfYear().get(),
+            _appointment.setDateTime(new LocalDateTime(_date.year().get(), _date.monthOfYear().get(),
                     _date.dayOfMonth().get(), startTime.getHourOfDay(),
                     startTime.getMinuteOfHour(), startTime.getSecondOfMinute(), 0));
             _appointment.setDuration(Duration.standardMinutes(duration));
