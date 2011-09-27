@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.thirdnf.ResourceScheduler</groupId>
-    <artifactId>resource-schedule</artifactId>
+    <artifactId>ResourceSchedulerProject</artifactId>
     <packaging>pom</packaging>
-    <name>Project</name>
-    <version>1.0</version>
+    <name>ResourceSchedulerProject</name>
+    <version>1.1-SNAPSHOT</version>
 
     <modules>
         <module>ResourceScheduler</module>

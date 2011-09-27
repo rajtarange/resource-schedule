@@ -326,6 +326,7 @@ public class DayScheduleLayout implements LayoutManager2
     {
         // Cache the number of columns ... this seems sort of stupid
         int columns = _resources.size();
+        if (columns == 0) { columns = 1; }
 
         Insets insets = target.getInsets();
         _x = insets.left;
