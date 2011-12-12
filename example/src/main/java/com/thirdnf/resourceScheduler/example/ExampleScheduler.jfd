@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_12" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_25" class="java.beans.XMLDecoder"> 
  <object class="com.jformdesigner.model.FormModel"> 
   <void property="contentType"> 
    <string>form/swing</string> 
@@ -172,12 +172,7 @@
             <void method="setProperty"> 
              <string>border</string> 
              <object class="javax.swing.border.TitledBorder"> 
-              <null/> 
               <string>Appointment Details</string> 
-              <int>4</int> 
-              <int>0</int> 
-              <null/> 
-              <null/> 
              </object> 
             </void> 
             <void property="name"> 
@@ -204,7 +199,7 @@
         </void> 
         <void method="add"> 
          <object class="com.jformdesigner.model.FormComponent"> 
-          <string>com.thirdnf.ResourceScheduler.Scheduler</string> 
+          <string>com.thirdnf.resourceScheduler.Scheduler</string> 
           <void property="name"> 
            <string>_scheduler</string> 
           </void> 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_12" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_25" class="java.beans.XMLDecoder"> 
  <object class="com.jformdesigner.model.FormModel"> 
   <void property="contentType"> 
    <string>form/swing</string> 
@@ -180,6 +180,14 @@
             </void> 
             <void method="add"> 
              <object class="com.jformdesigner.model.FormComponent"> 
+              <string>com.jformdesigner.designer.wrapper.HSpacer</string> 
+              <void property="name"> 
+               <string>hSpacer1</string> 
+              </void> 
+             </object> 
+            </void> 
+            <void method="add"> 
+             <object class="com.jformdesigner.model.FormComponent"> 
               <string>javax.swing.JLabel</string> 
               <void method="setProperty"> 
                <string>text</string> 
@@ -195,6 +203,14 @@
               <string>javax.swing.JComboBox</string> 
               <void property="name"> 
                <string>_endTimeSelect</string> 
+              </void> 
+             </object> 
+            </void> 
+            <void method="add"> 
+             <object class="com.jformdesigner.model.FormComponent"> 
+              <string>com.jformdesigner.designer.wrapper.HSpacer</string> 
+              <void property="name"> 
+               <string>hSpacer2</string> 
               </void> 
              </object> 
             </void> 
@@ -290,6 +306,14 @@
                 <string>handleAddRadioClicked</string> 
                 <boolean>false</boolean> 
                </object> 
+              </void> 
+             </object> 
+            </void> 
+            <void method="add"> 
+             <object class="com.jformdesigner.model.FormComponent"> 
+              <string>com.jformdesigner.designer.wrapper.HSpacer</string> 
+              <void property="name"> 
+               <string>hSpacer3</string> 
               </void> 
              </object> 
             </void> 
@@ -474,7 +498,7 @@
       <void method="setProperty"> 
        <string>size</string> 
        <object class="java.awt.Dimension"> 
-        <int>435</int> 
+        <int>535</int> 
         <int>225</int> 
        </object> 
       </void> 

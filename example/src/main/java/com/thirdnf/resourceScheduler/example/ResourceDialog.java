@@ -267,18 +267,20 @@ public class ResourceDialog extends JDialog
         panel1 = new JPanel();
         label4 = new JLabel();
         _startTimeSelect = new JComboBox();
+        hSpacer1 = new JPanel(null);
         label5 = new JLabel();
         _endTimeSelect = new JComboBox();
+        hSpacer2 = new JPanel(null);
         _lunchCheckbox = new JCheckBox();
         _columnLabel = new JLabel();
         _columnPanel = new JPanel();
         _addRadio = new JRadioButton();
+        hSpacer3 = new JPanel(null);
         _columnRadio = new JRadioButton();
         _columnField = new JTextField();
         buttonBar = new JPanel();
         okButton = new JButton();
         cancelButton = new JButton();
-        CellConstraints cc = new CellConstraints();
 
         //======== this ========
         Container contentPane = getContentPane();
@@ -297,17 +299,17 @@ public class ResourceDialog extends JDialog
 
                 //---- label1 ----
                 label1.setText("Enter Resource Name:");
-                contentPanel.add(label1, cc.xy(1, 1));
-                contentPanel.add(_titleField, cc.xy(3, 1));
+                contentPanel.add(label1, CC.xy(1, 1));
+                contentPanel.add(_titleField, CC.xy(3, 1));
 
                 //---- label2 ----
                 label2.setText("Color:");
-                contentPanel.add(label2, cc.xy(1, 3));
-                contentPanel.add(_colorSelect, cc.xy(3, 3));
+                contentPanel.add(label2, CC.xy(1, 3));
+                contentPanel.add(_colorSelect, CC.xy(3, 3));
 
                 //---- label3 ----
                 label3.setText("Availability:");
-                contentPanel.add(label3, cc.xy(1, 5));
+                contentPanel.add(label3, CC.xy(1, 5));
 
                 //======== panel1 ========
                 {
@@ -317,21 +319,23 @@ public class ResourceDialog extends JDialog
                     label4.setText("From");
                     panel1.add(label4);
                     panel1.add(_startTimeSelect);
+                    panel1.add(hSpacer1);
 
                     //---- label5 ----
                     label5.setText("To");
                     panel1.add(label5);
                     panel1.add(_endTimeSelect);
+                    panel1.add(hSpacer2);
 
                     //---- _lunchCheckbox ----
                     _lunchCheckbox.setText("Lunch Break");
                     panel1.add(_lunchCheckbox);
                 }
-                contentPanel.add(panel1, cc.xy(3, 5, CellConstraints.DEFAULT, CellConstraints.FILL));
+                contentPanel.add(panel1, CC.xy(3, 5, CC.DEFAULT, CC.FILL));
 
                 //---- _columnLabel ----
                 _columnLabel.setText("Column");
-                contentPanel.add(_columnLabel, cc.xy(1, 7));
+                contentPanel.add(_columnLabel, CC.xy(1, 7));
 
                 //======== _columnPanel ========
                 {
@@ -347,6 +351,7 @@ public class ResourceDialog extends JDialog
                         }
                     });
                     _columnPanel.add(_addRadio);
+                    _columnPanel.add(hSpacer3);
 
                     //---- _columnRadio ----
                     _columnRadio.setText("Specify Column");
@@ -362,7 +367,7 @@ public class ResourceDialog extends JDialog
                     _columnField.setEnabled(false);
                     _columnPanel.add(_columnField);
                 }
-                contentPanel.add(_columnPanel, cc.xy(3, 7, CellConstraints.DEFAULT, CellConstraints.FILL));
+                contentPanel.add(_columnPanel, CC.xy(3, 7, CC.DEFAULT, CC.FILL));
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -381,7 +386,7 @@ public class ResourceDialog extends JDialog
                         handleOkay();
                     }
                 });
-                buttonBar.add(okButton, cc.xy(2, 1));
+                buttonBar.add(okButton, CC.xy(2, 1));
 
                 //---- cancelButton ----
                 cancelButton.setText("Cancel");
@@ -391,7 +396,7 @@ public class ResourceDialog extends JDialog
                         handleCancel();
                     }
                 });
-                buttonBar.add(cancelButton, cc.xy(4, 1));
+                buttonBar.add(cancelButton, CC.xy(4, 1));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -417,12 +422,15 @@ public class ResourceDialog extends JDialog
     private JPanel panel1;
     private JLabel label4;
     private JComboBox _startTimeSelect;
+    private JPanel hSpacer1;
     private JLabel label5;
     private JComboBox _endTimeSelect;
+    private JPanel hSpacer2;
     private JCheckBox _lunchCheckbox;
     private JLabel _columnLabel;
     private JPanel _columnPanel;
     private JRadioButton _addRadio;
+    private JPanel hSpacer3;
     private JRadioButton _columnRadio;
     private JTextField _columnField;
     private JPanel buttonBar;

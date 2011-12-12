@@ -11,6 +11,7 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import javax.swing.*;
 import javax.swing.border.*;
+import com.jgoodies.forms.factories.*;
 
 import com.jgoodies.forms.layout.*;
 import com.thirdnf.resourceScheduler.Appointment;
@@ -294,7 +295,6 @@ public class ExampleScheduler extends JFrame
         button2 = new JButton();
         button3 = new JButton();
         button1 = new JButton();
-        CellConstraints cc = new CellConstraints();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -340,7 +340,7 @@ public class ExampleScheduler extends JFrame
                 });
                 panel2.add(_tomorrowRadio);
             }
-            panel1.add(panel2, cc.xywh(1, 1, 3, 1, CellConstraints.FILL, CellConstraints.FILL));
+            panel1.add(panel2, CC.xywh(1, 1, 3, 1, CC.FILL, CC.FILL));
 
             //======== scrollPane1 ========
             {
@@ -350,8 +350,8 @@ public class ExampleScheduler extends JFrame
                 _detailsPane.setBorder(new TitledBorder("Appointment Details"));
                 scrollPane1.setViewportView(_detailsPane);
             }
-            panel1.add(scrollPane1, cc.xywh(1, 3, 3, 1, CellConstraints.DEFAULT, CellConstraints.FILL));
-            panel1.add(_scheduler, cc.xywh(5, 1, 1, 7));
+            panel1.add(scrollPane1, CC.xywh(1, 3, 3, 1, CC.DEFAULT, CC.FILL));
+            panel1.add(_scheduler, CC.xywh(5, 1, 1, 7));
 
             //---- button2 ----
             button2.setText("Add Resource");
@@ -361,7 +361,7 @@ public class ExampleScheduler extends JFrame
                     handleAddResource();
                 }
             });
-            panel1.add(button2, cc.xy(1, 5));
+            panel1.add(button2, CC.xy(1, 5));
 
             //---- button3 ----
             button3.setText("Add Appointment");
@@ -371,7 +371,7 @@ public class ExampleScheduler extends JFrame
                     handleAddAppointment();
                 }
             });
-            panel1.add(button3, cc.xy(3, 5));
+            panel1.add(button3, CC.xy(3, 5));
 
             //---- button1 ----
             button1.setText("Print");
@@ -381,9 +381,9 @@ public class ExampleScheduler extends JFrame
                     handlePrint();
                 }
             });
-            panel1.add(button1, cc.xywh(1, 7, 3, 1));
+            panel1.add(button1, CC.xywh(1, 7, 3, 1));
         }
-        contentPane.add(panel1, new CellConstraints(1, 1, 1, 1, CellConstraints.DEFAULT, CellConstraints.FILL, new Insets(5, 5, 5, 5)));
+        contentPane.add(panel1, new CellConstraints(1, 1, 1, 1, CC.DEFAULT, CC.FILL, new Insets(5, 5, 5, 5)));
         pack();
         setLocationRelativeTo(getOwner());
 
