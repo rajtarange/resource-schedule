@@ -10,33 +10,34 @@
 
     <dependencyManagement>
         <dependencies>
-        <!-- This project depends on joda as a replacement
-             for Java's Date/Calendar utilities. -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>1.6.2</version>
-            <scope>compile</scope>
-        </dependency>
+            <!-- This project depends on joda as a replacement
+                 for Java's Date/Calendar utilities. -->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>1.6.2</version>
+                <scope>compile</scope>
+            </dependency>
 
-        <dependency>
-            <groupId>com.intellij</groupId>
-            <artifactId>annotations</artifactId>
-            <version>7.0.3</version>
-        </dependency>
+            <dependency>
+                <groupId>com.intellij</groupId>
+                <artifactId>annotations</artifactId>
+                <version>7.0.3</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>forms</artifactId>
-            <version>1.2.1</version>
-        </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.8.2</version>
+                <scope>compile</scope>
+            </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.2</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
+            <!-- Dependency used by the example project -->
+            <dependency>
+                <groupId>com.jgoodies</groupId>
+                <artifactId>forms</artifactId>
+                <version>1.2.1</version>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
 </project>
