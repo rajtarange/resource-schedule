@@ -2,17 +2,18 @@
  * Created by JFormDesigner on Thu Jan 20 10:45:23 PST 2011
  */
 
-package com.thirdnf.ResourceScheduler.example;
+package com.thirdnf.resourceScheduler.example;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
-import com.thirdnf.ResourceScheduler.Resource;
-import com.thirdnf.ResourceScheduler.ResourceVisitor;
+import com.thirdnf.resourceScheduler.Resource;
+import com.thirdnf.resourceScheduler.ResourceVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.*;
+
 
 /**
  * Dialog to add an appointment.

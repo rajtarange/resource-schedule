@@ -1,6 +1,6 @@
-package com.thirdnf.ResourceScheduler.example;
+package com.thirdnf.resourceScheduler.example;
 
-import com.thirdnf.ResourceScheduler.*;
+import com.thirdnf.resourceScheduler.*;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;

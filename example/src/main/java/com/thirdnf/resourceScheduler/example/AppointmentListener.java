@@ -1,6 +1,6 @@
-package com.thirdnf.ResourceScheduler.example;
+package com.thirdnf.resourceScheduler.example;
 
-import com.thirdnf.ResourceScheduler.Appointment;
+import com.thirdnf.resourceScheduler.Appointment;
 import org.jetbrains.annotations.NotNull;
 
 

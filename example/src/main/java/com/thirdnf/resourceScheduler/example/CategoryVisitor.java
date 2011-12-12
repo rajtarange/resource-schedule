@@ -1,4 +1,4 @@
-package com.thirdnf.ResourceScheduler.example;
+package com.thirdnf.resourceScheduler.example;
 
 
 public interface CategoryVisitor

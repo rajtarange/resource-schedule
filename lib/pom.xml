@@ -15,6 +15,10 @@
         <version>2.0-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencies>
         <!-- This project depends on joda as a replacement 
              for Java's Date/Calendar utilities. -->

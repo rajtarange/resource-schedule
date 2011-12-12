@@ -1,4 +1,4 @@
-package com.thirdnf.ResourceScheduler.example;
+package com.thirdnf.resourceScheduler.example;
 
 import org.jetbrains.annotations.NotNull;
 

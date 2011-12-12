@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Thu Jan 13 18:25:41 PST 2011
  */
 
-package com.thirdnf.ResourceScheduler.example;
+package com.thirdnf.resourceScheduler.example;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,10 +13,10 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import com.jgoodies.forms.layout.*;
-import com.thirdnf.ResourceScheduler.Appointment;
-import com.thirdnf.ResourceScheduler.Resource;
-import com.thirdnf.ResourceScheduler.ScheduleListener;
-import com.thirdnf.ResourceScheduler.Scheduler;
+import com.thirdnf.resourceScheduler.Appointment;
+import com.thirdnf.resourceScheduler.Resource;
+import com.thirdnf.resourceScheduler.ScheduleListener;
+import com.thirdnf.resourceScheduler.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;

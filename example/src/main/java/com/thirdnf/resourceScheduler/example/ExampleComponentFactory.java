@@ -1,10 +1,10 @@
-package com.thirdnf.ResourceScheduler.example;
+package com.thirdnf.resourceScheduler.example;
 
-import com.thirdnf.ResourceScheduler.Appointment;
-import com.thirdnf.ResourceScheduler.Resource;
-import com.thirdnf.ResourceScheduler.components.AbstractAppointmentComponent;
-import com.thirdnf.ResourceScheduler.components.AbstractResourceComponent;
-import com.thirdnf.ResourceScheduler.components.BasicComponentFactory;
+import com.thirdnf.resourceScheduler.Appointment;
+import com.thirdnf.resourceScheduler.Resource;
+import com.thirdnf.resourceScheduler.components.AbstractAppointmentComponent;
+import com.thirdnf.resourceScheduler.components.AbstractResourceComponent;
+import com.thirdnf.resourceScheduler.components.BasicComponentFactory;
 import org.jetbrains.annotations.NotNull;
 
 

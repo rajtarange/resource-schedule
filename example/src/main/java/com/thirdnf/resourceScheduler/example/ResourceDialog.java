@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Thu Jan 20 08:32:49 PST 2011
  */
 
-package com.thirdnf.ResourceScheduler.example;
+package com.thirdnf.resourceScheduler.example;
 
 import java.awt.*;
 import java.awt.event.*;

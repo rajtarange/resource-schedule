@@ -1,7 +1,7 @@
-package com.thirdnf.ResourceScheduler.example;
+package com.thirdnf.resourceScheduler.example;
 
-import com.thirdnf.ResourceScheduler.Availability;
-import com.thirdnf.ResourceScheduler.Resource;
+import com.thirdnf.resourceScheduler.Availability;
+import com.thirdnf.resourceScheduler.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.*;
 
