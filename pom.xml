@@ -4,14 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.thirdnf.ResourceScheduler</groupId>
-    <artifactId>ResourceSchedulerProject</artifactId>
+    <groupId>com.thirdnf.resourceScheduler</groupId>
+    <artifactId>ResourceScheduler</artifactId>
     <packaging>pom</packaging>
-    <name>ResourceSchedulerProject</name>
-    <version>1.1-SNAPSHOT</version>
+    <name>ResourceScheduler</name>
+    <version>2.0-SNAPSHOT</version>
 
     <modules>
-        <module>ResourceScheduler</module>
-        <module>Example</module>
+        <module>parent</module>
+        <module>lib</module>
+        <module>example</module>
     </modules>
 </project>
