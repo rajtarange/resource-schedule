@@ -2,12 +2,12 @@
  * Created by JFormDesigner on Thu Jan 13 18:25:17 PST 2011
  */
 
-package com.thirdnf.ResourceScheduler;
+package com.thirdnf.resourceScheduler;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 
-import com.thirdnf.ResourceScheduler.components.BasicComponentFactory;
+import com.thirdnf.resourceScheduler.components.BasicComponentFactory;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;

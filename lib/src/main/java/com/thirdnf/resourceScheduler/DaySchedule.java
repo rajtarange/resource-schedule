@@ -1,6 +1,6 @@
-package com.thirdnf.ResourceScheduler;
+package com.thirdnf.resourceScheduler;
 
-import com.thirdnf.ResourceScheduler.components.*;
+import com.thirdnf.resourceScheduler.components.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.*;

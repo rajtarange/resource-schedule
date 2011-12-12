@@ -1,7 +1,7 @@
-package com.thirdnf.ResourceScheduler;
+package com.thirdnf.resourceScheduler;
 
-import com.thirdnf.ResourceScheduler.components.AbstractAppointmentComponent;
-import com.thirdnf.ResourceScheduler.components.AbstractResourceComponent;
+import com.thirdnf.resourceScheduler.components.AbstractAppointmentComponent;
+import com.thirdnf.resourceScheduler.components.AbstractResourceComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.Duration;

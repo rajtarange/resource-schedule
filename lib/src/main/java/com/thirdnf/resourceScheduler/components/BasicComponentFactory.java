@@ -1,8 +1,8 @@
-package com.thirdnf.ResourceScheduler.components;
+package com.thirdnf.resourceScheduler.components;
 
 
-import com.thirdnf.ResourceScheduler.Appointment;
-import com.thirdnf.ResourceScheduler.Resource;
+import com.thirdnf.resourceScheduler.Appointment;
+import com.thirdnf.resourceScheduler.Resource;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * This is the Base ComponentFactory which is responsible for creating the components which
  * wrap a resource and appointment.  If you want to use your own custom components then
  * you need to extend this factory and call the
- * {@link com.thirdnf.ResourceScheduler.Scheduler#setComponentFactory(BasicComponentFactory) setComponentFactory}
+ * {@link com.thirdnf.resourceScheduler.Scheduler#setComponentFactory(BasicComponentFactory) setComponentFactory}
  * method.
  *
  * @author Joshua Gerth - jgerth@thirdnf.com

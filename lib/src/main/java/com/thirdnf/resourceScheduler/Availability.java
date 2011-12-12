@@ -1,4 +1,4 @@
-package com.thirdnf.ResourceScheduler;
+package com.thirdnf.resourceScheduler;
 
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.Duration;
