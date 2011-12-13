@@ -37,12 +37,6 @@
             <groupId>com.jgoodies</groupId>
             <artifactId>forms</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <build>
